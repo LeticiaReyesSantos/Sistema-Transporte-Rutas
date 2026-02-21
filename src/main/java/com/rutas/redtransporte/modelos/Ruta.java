@@ -13,7 +13,7 @@ public class Ruta {
     private double costo;
     private double distancia;
     private int transbordos;
-    private String actividad; //podria ser una clase, describe si hay trafico, si es standard o si hay un accidente
+    private String actividad; //podria ser una clase, describe si hay trafico, si no ha pasado nada, si hay mucha lluvia o si hubo un accidente
     private Parada origen;
     private Parada destino;
 
@@ -109,5 +109,10 @@ public class Ruta {
 
     public void setDestino(Parada destino) {
         this.destino = destino;
+    }
+
+    @Override
+    public String toString() {
+        return nombreRuta + "-->" + destino;
     }
 }

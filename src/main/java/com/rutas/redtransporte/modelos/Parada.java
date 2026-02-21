@@ -48,10 +48,6 @@ public class Parada {
         return rutasDisponibles;
     }
 
-    public void setRutasDisponibles(List<Ruta> rutasDisponibles) {
-        this.rutasDisponibles = rutasDisponibles;
-    }
-
     /* Nombre: addRoute
        Funcion: Agrega una ruta disponible para esta parada nodo/arista
        Retorno: void
@@ -68,5 +64,10 @@ public class Parada {
     */
     public void removeRoute(Ruta route){
         rutasDisponibles.remove(route);
+    }
+
+    @Override
+    public String toString() {
+        return nombreParada;
     }
 }
