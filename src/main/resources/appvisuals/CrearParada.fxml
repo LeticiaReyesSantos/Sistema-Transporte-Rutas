@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.CrearParadaController">
+   <children>
+      <Label layoutX="150.0" layoutY="81.0" text="Parada">
+         <font>
+            <Font name="SansSerif Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label layoutX="85.0" layoutY="170.0" text="Nombre:">
+         <font>
+            <Font name="SansSerif Bold" size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtNombre" layoutX="167.0" layoutY="168.0" prefHeight="15.0" prefWidth="150.0" />
+      <Label layoutX="85.0" layoutY="231.0" text="Tipo:">
+         <font>
+            <Font name="SansSerif Bold" size="18.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="cbxTipo" layoutX="167.0" layoutY="229.0" prefWidth="150.0" promptText="Seleccionar" />
+      <Button fx:id="btnAceptar" layoutX="121.0" layoutY="315.0" mnemonicParsing="false" onMouseClicked="#btnAceptarClicked" text="Aceptar" />
+      <Button fx:id="btnCancelar" layoutX="222.0" layoutY="315.0" mnemonicParsing="false" onMouseClicked="#btnCancelarClicked" text="Cancelar" />
+   </children>
+</AnchorPane>
