@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.PrincipalController">
    <children>
-      <VBox fx:id="vboxMenu" layoutX="4.0" layoutY="1.0" prefHeight="200.0" prefWidth="144.0" spacing="20.0">
+      <VBox fx:id="vboxMenu" layoutX="4.0" layoutY="1.0" prefHeight="200.0" prefWidth="144.0" spacing="15.0">
          <children>
             <Label prefHeight="24.0" prefWidth="100.0" text="Menu">
                <graphic>
@@ -24,7 +24,7 @@
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
             </Label>
-            <Label prefHeight="24.0" prefWidth="100.0" text="Parada">
+            <Label onMouseClicked="#crearParada" prefHeight="24.0" prefWidth="100.0" text="Parada">
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -35,6 +35,9 @@
                <font>
                   <Font name="SansSerif Regular" size="18.0" />
                </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
             </Label>
          </children>
          <padding>
