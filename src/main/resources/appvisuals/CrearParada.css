@@ -1,0 +1,23 @@
+#anchorPane{
+    -fx-background-image: url("../imagenes/paradas.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+#pane{
+    -fx-background-color: #F6F3EA;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 3px;
+}
+
+#cbxTipo{
+    -fx-background-color: WHITE;
+    -fx-border-color: LIGHTGRAY;
+}
+
+.button{
+    -fx-background-color: WHITE;
+    -fx-border-color: LIGHTGRAY;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+}

@@ -1,5 +1,7 @@
 package com.rutas.redtransporte.modelos;
 
+import com.rutas.redtransporte.utilidad.Visual;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +14,16 @@ import java.util.Map;
 
 public class Grafo {
     private Map<Parada, List<Ruta>> map;
+    private static Grafo grafo;
 
-
-    public Grafo() {
+    private Grafo() {
         map = new HashMap<>();
+    }
+
+    public static Grafo getInstance(){
+        if(grafo == null)
+            grafo = new Grafo();
+        return grafo;
     }
 
     public Map<Parada, List<Ruta>> getMap() {
@@ -30,6 +38,7 @@ public class Grafo {
         if (parada == null) {
             throw new IllegalArgumentException("Parada debe existir.");
         }
+
         map.putIfAbsent(parada, new ArrayList<>());
     }
 

@@ -1,47 +1,40 @@
 package com.rutas.redtransporte.controllers;
 
-import com.rutas.redtransporte.utilidad.Funciones;
+import com.rutas.redtransporte.utilidad.Visual;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class PrincipalController {
 
     @FXML
-    private AnchorPane anchorPane;
-
-    @FXML
-    private ImageView imgMenu;
-
-    @FXML
     private VBox vboxMenu;
 
     @FXML
-    private ImageView imgMenuVbox;
+    private Button btnMenuParada;
 
     @FXML
-    void showMenuBar(MouseEvent event) {
+    private Button btnMenu;
+
+    public void showMenu(ActionEvent e){
         vboxMenu.setVisible(true);
+        btnMenu.setVisible(false);
     }
 
-    @FXML
-    void hideMenuBar(MouseEvent event) {
+    public void hideMenu(ActionEvent e){
         vboxMenu.setVisible(false);
+        btnMenu.setVisible(true);
     }
 
-    @FXML
-    void crearParada(MouseEvent event) throws IOException {
-        Funciones.openWindow("/appvisuals/CrearParada.fxml");
+    public void crearParada(ActionEvent e) throws IOException {
+        Visual.openNewWindow("CrearParada.fxml","CrearParada.css");
     }
 
-    public void iniLabels(){
-
-    }
 
 }
 

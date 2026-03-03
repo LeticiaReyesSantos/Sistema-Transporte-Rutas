@@ -2,6 +2,7 @@ package com.rutas.redtransporte.modelos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /* Clase: Parada
    Proposito: Modelar los componentes de las paradas
@@ -42,6 +43,22 @@ public class Parada {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Parada)) return false;
+
+        Parada parada = (Parada) o;
+        String nombre = parada.getNombreParada().toLowerCase();
+
+        return nombreParada.toLowerCase().equals(nombre) && tipo.equals(((Parada) o).getTipo());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombreParada.toLowerCase());
     }
 
     public List<Ruta> getRutasDisponibles() {
