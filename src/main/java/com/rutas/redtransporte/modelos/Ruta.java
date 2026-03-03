@@ -5,7 +5,12 @@ package com.rutas.redtransporte.modelos;
    Metodos:///
  */
 
+
 public class Ruta {
+    public enum Peso{
+        TRANSBORDO, COSTO, TIEMPO, DISTANCIA;
+    }
+
     private int idRuta;
     private String nombreRuta;
     private boolean disponibilidad;
@@ -71,6 +76,7 @@ public class Ruta {
         this.tiempo = tiempo;
     }
 
+
     public double getDistancia() {
         return distancia;
     }
@@ -111,8 +117,34 @@ public class Ruta {
         this.destino = destino;
     }
 
+    /* Nombre: obtenerCriterio
+     Funcion: Devuelve un valor numerico segun la ponderacion que le pidan
+     Retorno: double
+   */
+    public double obtenerCriterio(Peso peso){
+
+        switch (peso){
+            case COSTO -> {
+                return costo;
+            }
+            case DISTANCIA -> {
+                return distancia;
+            }
+            case TIEMPO -> {
+                return tiempo;
+            }
+            case TRANSBORDO -> {
+                return transbordos;
+            }
+            default -> {
+                throw new IllegalArgumentException("Ponderacion desconocida");
+            }
+
+        }
+    }
+
     @Override
     public String toString() {
-        return nombreRuta + "-->" + destino;
+        return nombreRuta + " --> " + destino;
     }
 }

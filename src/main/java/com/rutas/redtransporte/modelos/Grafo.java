@@ -1,7 +1,5 @@
 package com.rutas.redtransporte.modelos;
 
-import com.rutas.redtransporte.utilidad.Visual;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +14,7 @@ public class Grafo {
     private Map<Parada, List<Ruta>> map;
     private static Grafo grafo;
 
+
     private Grafo() {
         map = new HashMap<>();
     }
@@ -25,6 +24,7 @@ public class Grafo {
             grafo = new Grafo();
         return grafo;
     }
+
 
     public Map<Parada, List<Ruta>> getMap() {
         return map;
@@ -38,14 +38,13 @@ public class Grafo {
         if (parada == null) {
             throw new IllegalArgumentException("Parada debe existir.");
         }
-
         map.putIfAbsent(parada, new ArrayList<>());
     }
 
     /* Nombre: addRoute
-      Funcion: crea una arista que une los nodos (origen/destino) y agrega la ruta a la lista de rutas disp para esa parada
-      Retorno: Ruta creada
-    */
+     Funcion: crea una arista que une los nodos (origen/destino) y agrega la ruta a la lista de rutas disp para esa parada
+     Retorno: Ruta creada
+   */
     public Ruta addRoute(Parada origen, Parada destino, String nombre, double tiempo, double costo, double distancia) {
         if (origen == null || destino == null) {
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
@@ -56,10 +55,12 @@ public class Grafo {
         Ruta newRoute = new Ruta(nombre, costo, tiempo, distancia, origen, destino);
 
         map.get(origen).add(newRoute);
-        origen.addRoute(newRoute);
+        origen.addRutaSalida(newRoute);
+        destino.addRutaEntrada(newRoute);
 
         return newRoute;
     }
+
 
     /* Nombre: deleteRoute
       Funcion: Eliminar la ruta tomando el origen y el destino de esta y verificando si se encuentra en el map, en caso de encontrarla
@@ -76,9 +77,11 @@ public class Grafo {
         if (map.containsKey(origen)) {
             map.get(origen).remove(routeToDel);
         }
-        origen.removeRoute(routeToDel);
-        destino.removeRoute(routeToDel);
+        origen.removeRutaSalida(routeToDel);
+        destino.removeRutaEntrada(routeToDel);
     }
+
+
 
     /* Nombre: deleteParade
       Funcion: Se encarga de eliminar una parada, eliminando sus conexiones (las rutas que llevan a esta) y luego eliminandola del map para no dejar conexion
@@ -89,15 +92,14 @@ public class Grafo {
             throw new IllegalArgumentException("La parada proporcionada es nula");
         }
 
-        while(!parada.getRutasDisponibles().isEmpty()){
-            deleteRoute(parada.getRutasDisponibles().getFirst()); //por la logica de queue, la lista reduce su tam, por lo que la pos 0 va cambiando
+        while(!parada.getRutasDeEntrada().isEmpty()){
+            deleteRoute(parada.getRutasDeEntrada().getFirst()); //por la logica de queue, la lista reduce su tam, por lo que la pos 0 va cambiando
         }
 
-        if(map.containsKey(parada)){
-            while(!map.get(parada).isEmpty()){
-                deleteRoute(map.get(parada).getFirst());
-            }
+        while(!parada.getRutasDeSalida().isEmpty()){
+            deleteRoute(parada.getRutasDeSalida().getFirst()); //por la logica de queue, la lista reduce su tam, por lo que la pos 0 va cambiando
         }
+
         map.remove(parada);
     }
 
@@ -135,13 +137,14 @@ public class Grafo {
             map.get(route.getOrigen()).remove(route); //Borro la ruta actual
             route.setOrigen(nuevoOrigen);//cambio a la parada nueva
             map.get(nuevoOrigen).add(route); //vuelvo a unir la ruta
+            nuevoOrigen.addRutaSalida(route);
         }
 
         if(nuevoDestino != null && !nuevoDestino.equals(route.getDestino())){
             map.putIfAbsent(nuevoDestino, new ArrayList<>());
-            route.getDestino().removeRoute(route); //borro las rutas de entrada de la parada antigua
+            route.getDestino().removeRutaEntrada(route); //borro las rutas de entrada de la parada antigua
             route.setDestino(nuevoDestino); //cambio a la parada nueva
-            nuevoDestino.addRoute(route); //uno el destino a la ruta actual a partir del listado de rutas que entran a la parada nueva
+            nuevoDestino.addRutaEntrada(route); //uno el destino a la ruta actual a partir del listado de rutas que entran a la parada nueva
         }
 
         route.setDisponibilidad(true);
