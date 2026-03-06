@@ -17,13 +17,13 @@ public class Ruta {
     private Parada origen;
     private Parada destino;
 
-    public Ruta(String nombreRuta, double costo, double tiempo, double distancia, Parada origen, Parada destino) {
+    public Ruta(String nombreRuta, Parada origen, Parada destino, double costo, double tiempo, double distancia) {
         this.nombreRuta = nombreRuta;
+        this.origen = origen;
+        this.destino = destino;
         this.costo = costo;
         this.tiempo = tiempo;
         this.distancia = distancia;
-        this.origen = origen;
-        this.destino = destino;
 
         //Valores iniciales al crear una nueva ruta
         this.transbordos = 0;

@@ -46,6 +46,21 @@ public class Grafo {
       Funcion: crea una arista que une los nodos (origen/destino) y agrega la ruta a la lista de rutas disp para esa parada
       Retorno: Ruta creada
     */
+    public Ruta addRoute(Ruta ruta) {
+        if (ruta.getOrigen() == null || ruta.getDestino() == null) {
+            throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
+        }
+
+        map.putIfAbsent(ruta.getOrigen(), new ArrayList<>());
+        map.putIfAbsent(ruta.getDestino(), new ArrayList<>());
+
+        map.get(ruta.getOrigen()).add(ruta);
+        ruta.getOrigen().addRoute(ruta);
+
+        return ruta;
+    }
+
+    /*
     public Ruta addRoute(Parada origen, Parada destino, String nombre, double tiempo, double costo, double distancia) {
         if (origen == null || destino == null) {
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
@@ -60,6 +75,7 @@ public class Grafo {
 
         return newRoute;
     }
+     */
 
     /* Nombre: deleteRoute
       Funcion: Eliminar la ruta tomando el origen y el destino de esta y verificando si se encuentra en el map, en caso de encontrarla

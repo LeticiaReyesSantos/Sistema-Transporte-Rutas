@@ -13,9 +13,10 @@ public class Main {
         Grafo.getInstance().addParada(SuperMercado);
         Grafo.getInstance().addParada(Hospital);
 
-        Ruta first = Grafo.getInstance().addRoute(Pucmm, SuperMercado, "Estrella Sadhala", 10.0, 50.0, 100.0);
-        Ruta second = Grafo.getInstance().addRoute(Hospital, SuperMercado, "Juan Pablo Duarte", 15.0, 80.0, 200.0);
-        Ruta third = Grafo.getInstance().addRoute(Pucmm, Hospital, "Piky Lora", 20.0, 100.0, 300.0);
+        Ruta first = Grafo.getInstance().addRoute(new Ruta("Estrella Sadhala",Pucmm, SuperMercado,50.0,10.0,100.0));
+        Ruta second = Grafo.getInstance().addRoute(new Ruta("Juan Pablo Duarte",Hospital, SuperMercado,15.0, 80.0, 200.0));
+        Ruta third = Grafo.getInstance().addRoute(new Ruta("Piky Lora",Pucmm, Hospital,20.0, 100.0, 300.0));
+
 
         System.out.println("First try");
         Grafo.getInstance().show();
