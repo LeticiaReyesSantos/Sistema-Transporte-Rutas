@@ -1,9 +1,6 @@
 package com.rutas.redtransporte.modelos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /* Clase: Grafo
    Proposito: Modelar grafos dirigidos utilizando HashMaps
@@ -169,6 +166,14 @@ public class Grafo {
         return paradasVecinas;
     }
 
+    /* Nombre: buscarRutasSalida
+     Funcion: Devolver un menu de rutas que puedes tomar estando en una parada especifica
+     Retorno: Lista de rutas
+   */
+    public List<Ruta> buscarRutasSalida(Parada parade){
+        return map.get(parade);
+    }
+
     /* Nombre: hasEdge
     Funcion: Verifica la existencia de una arista siempre y cuando exista el origen de su parada y que esta lleve al destino que buscamos
     Retorno: boolean, true or false
@@ -186,6 +191,15 @@ public class Grafo {
         }
 
         return false;
+    }
+
+    /* Nombre: eventSimulator
+       Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
+       Retorno: void
+     */
+    public void eventSimulator(){
+        Random random = new Random();
+
     }
 
     //for debugging only

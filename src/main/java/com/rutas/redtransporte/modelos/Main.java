@@ -1,39 +1,49 @@
 package com.rutas.redtransporte.modelos;
 //Clase Main para hacer test
 
+import com.rutas.redtransporte.algoritmos.Dijkstra;
+
+import javax.swing.text.Keymap;
+
 public class Main {
     public static void main(String[] args) {
 
-        Parada Pucmm = new Parada("PUCMM", "Bus");
-        Parada SuperMercado = new Parada("El nacional", "Bus");
-        Parada Hospital = new Parada("HOMS", "Bus");
+        Parada p1 = new Parada("A", "Bus");
+        Parada p2 = new Parada("B", "Bus");
+        Parada p3 = new Parada("C", "Bus");
+        Parada p4 = new Parada("D", "Bus");
+        Parada p5 = new Parada("E", "Bus");
+        Parada p6 = new Parada("F", "Bus");
 
         Grafo g = Grafo.getInstance();
-        g.addParada(Pucmm);
-        g.addParada(SuperMercado);
-        g.addParada(Hospital);
+        g.addParada(p1);
+        g.addParada(p2);
+        g.addParada(p3);
+        g.addParada(p4);
+        g.addParada(p5);
+        g.addParada(p6);
 
-        Ruta first = g.addRoute(Pucmm, SuperMercado, "Estrella Sadhala", 10.0, 50.0, 100.0);
-        Ruta second = g.addRoute(Hospital, SuperMercado, "Juan Pablo Duarte", 15.0, 80.0, 200.0);
-        Ruta third = g.addRoute(Pucmm, Hospital, "Piky Lora", 20.0, 100.0, 300.0);
+        Ruta first = g.addRoute(p1,p2,"first", 10, 100, 4);
+        Ruta second = g.addRoute(p1,p5,"second", 20, 150, 8);
+        Ruta third = g.addRoute(p3,p5,"third", 15, 120, 2);
+        Ruta fourth = g.addRoute(p3,p2,"fourth", 5, 50, 4);
+        Ruta fifth = g.addRoute(p4,p6,"fifth", 12, 105, 5.5);
+        Ruta sixth = g.addRoute(p3,p4,"sixth", 11, 103, 5);
 
-        System.out.println("First try");
-        g.show();
-        //System.out.println("Eliminar");
-        //g.deleteParade(Pucmm);
-        //g.show();
+        Dijkstra buscador = new Dijkstra();
+        System.out.println("Calculando ruta mas optima desde p1 a p5");
+        ShortestPath trip = buscador.bestRoute(g,p1,p5,Ruta.Peso.DISTANCIA);
 
-        System.out.println("Rutas de entrada y salida: ");
-        System.out.println("Rutas Pucmm " + "Salida: "+ Pucmm.getRutasDeSalida() + "Entrada: " + Pucmm.getRutasDeEntrada());
-        System.out.println("Rutas SuperMercado " + "Salida: " + SuperMercado.getRutasDeSalida()  + "Entrada: " + SuperMercado.getRutasDeEntrada());
-        System.out.println("Rutas Hospital " + "Salida: " + Hospital.getRutasDeSalida() + "Entrada: " + Hospital.getRutasDeEntrada());
+        if(trip != null){
+            System.out.print("Ruta encontrada\n\n");
+            System.out.print("Tiempo --> " + trip.getTotalTime());
+            System.out.print("\nCosto ---> " + trip.getTotalPrice());
+            System.out.print("\nDistancia ---> " + trip.getTotalDistance());
+            System.out.println("\nTrasbordos ---> " + trip.getTotalTranfers());
+        } else{
+            System.out.println("\nNo hay rutas disponibles");
+        }
 
-        System.out.println("Al modificar");
-        g.modifyRoute(second, null, null, "Reposteria", 30.0,5.0, 100.0);
-        g.show();
-        System.out.println("Rutas Pucmm " + "Salida: "+ Pucmm.getRutasDeSalida() + "Entrada: " + Pucmm.getRutasDeEntrada());
-        System.out.println("Rutas SuperMercado " + "Salida: " + SuperMercado.getRutasDeSalida()  + "Entrada: " + SuperMercado.getRutasDeEntrada());
-        System.out.println("Rutas Hospital " + "Salida: " + Hospital.getRutasDeSalida() + "Entrada: " + Hospital.getRutasDeEntrada());
 
     }
 }
