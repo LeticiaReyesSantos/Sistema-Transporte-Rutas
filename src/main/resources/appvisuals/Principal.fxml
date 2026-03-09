@@ -39,7 +39,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="88.0" text="Ruta">
+            <Button mnemonicParsing="false" onAction="#crearRuta" prefHeight="30.0" prefWidth="88.0" text="Ruta">
                <font>
                   <Font name="SansSerif Regular" size="14.0" />
                </font>

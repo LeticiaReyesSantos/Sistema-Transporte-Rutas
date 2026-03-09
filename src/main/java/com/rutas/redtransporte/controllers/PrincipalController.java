@@ -1,5 +1,6 @@
 package com.rutas.redtransporte.controllers;
 
+import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +22,10 @@ public class PrincipalController {
     @FXML
     private Button btnMenu;
 
+    public void initialize(){
+        Logico.crearDatos();
+    }
+
     public void showMenu(ActionEvent e){
         vboxMenu.setVisible(true);
         btnMenu.setVisible(false);
@@ -31,8 +36,20 @@ public class PrincipalController {
         btnMenu.setVisible(true);
     }
 
+    /* Nombre: crearParada
+        Funcion: Abrir ventana para crear parada.
+        Retorno: void.
+    */
     public void crearParada(ActionEvent e) throws IOException {
         Visual.openNewWindow("CrearParada.fxml","CrearParada.css");
+    }
+
+    /* Nombre: crearRuta
+        Funcion: Abrir ventana para crear ruta.
+        Retorno: void.
+    */
+    public void crearRuta(ActionEvent e) throws IOException {
+        Visual.openNewWindow("CrearRuta.fxml","CrearParada.css");
     }
 
 

@@ -40,6 +40,8 @@ public class CrearParadaController {
     @FXML
     private Button btnCancelar;
 
+    private Map<Parada, List<Ruta>> map = Grafo.getInstance().getMap();
+
     public void initialize(){
         cbxTipo.getItems().addAll("Carro","Bus","Monorriel");
     }
@@ -50,22 +52,21 @@ public class CrearParadaController {
         Retorno: void.
     */
     public void guardarParada(ActionEvent event) {
-
-        Map<Parada, List<Ruta>> map = Grafo.getInstance().getMap();
-
-        int ind = 0;
-
-        Parada parada = new Parada(Visual.checkText(txtNombre),cbxTipo.getValue());
-        boolean existance = Grafo.getInstance().getMap().containsKey(parada);
-
-        if(existance){
-            String mensaje = "Existe una parada en \""+parada.getNombreParada()+"\" en "+parada.getTipo().toLowerCase();
-            Visual.defaultMessages(OpcionMensaje.EXISTING,mensaje);
+        if(Visual.emptyFields(txtNombre,cbxTipo)){
+            Visual.defaultMessages(OpcionMensaje.EMPTY,"");
             return;
         }
-        Grafo.getInstance().addParada(parada);
-        Visual.defaultMessages(OpcionMensaje.SAVED,parada.getNombreParada());
 
+        System.out.println("Inside guardarParada");
+
+        Parada parada = new Parada(Visual.checkText(txtNombre),cbxTipo.getValue());
+
+        if(!Grafo.getInstance().addParada(parada)){
+            Visual.defaultMessages(OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
+            return;
+        }
+
+        Visual.defaultMessages(OpcionMensaje.SAVED,parada.getNombreParada());
         Visual.cleanFields(txtNombre,cbxTipo);
     }
 

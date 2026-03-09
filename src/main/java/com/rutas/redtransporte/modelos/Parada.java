@@ -53,7 +53,7 @@ public class Parada {
         Parada parada = (Parada) o;
         String nombre = parada.getNombreParada().toLowerCase();
 
-        return nombreParada.toLowerCase().equals(nombre) && tipo.equals(((Parada) o).getTipo());
+        return nombreParada.toLowerCase().equals(nombre);
     }
 
     @Override

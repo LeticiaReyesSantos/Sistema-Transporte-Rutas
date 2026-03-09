@@ -2,6 +2,9 @@ package com.rutas.redtransporte.utilidad;
 
 import com.rutas.redtransporte.application.Principal;
 import com.rutas.redtransporte.modelos.Parada;
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -12,9 +15,9 @@ import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Visual {
 
@@ -77,7 +80,7 @@ public class Visual {
       */
    public static void defaultMessages(OpcionMensaje error, String text){
        switch (error){
-           case OpcionMensaje.EMPTY -> showMessage(Alert.AlertType.ERROR,"Error","Campos vacíos.","Debe completar la información.");
+           case OpcionMensaje.EMPTY -> showMessage(Alert.AlertType.ERROR,"Error","Campos vacíos.","Debe completar todos los datos.");
            case OpcionMensaje.EXISTING -> showMessage(Alert.AlertType.ERROR,"Error",text,"");//"Dato existente."
            case OpcionMensaje.SAVED -> showMessage(Alert.AlertType.INFORMATION,"Registro","","Registro existoso.");
            case OpcionMensaje.MODIFIED -> showMessage(Alert.AlertType.INFORMATION,"Modificación","","Modificación existosa.");
@@ -97,6 +100,38 @@ public class Visual {
         return txt;
     }
 
+    public static double checkNumeric(String value){
+
+        double number = 0;
+
+        try{
+            number = Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","Escriba un valor númerico.");
+        }
+
+        return number;
+    }
+
+    public static boolean emptyFields(Node... components){
+        for (Node component : components) {
+            if(component instanceof TextInputControl txt){
+                if(txt.getText().isEmpty())
+                    return true;
+
+            }else if (component instanceof ComboBox<?> cbx) {
+                if(cbx.getValue() == null)
+                    return true;
+
+            }else if (component instanceof CheckBox checkBox) {
+                if(!checkBox.isSelected()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /* Nombre: cleanFields
            Funcion: Permite limipiar un número variable de campos.
            Retorno: void.
@@ -114,6 +149,22 @@ public class Visual {
                 checkBox.setSelected(false);
             }
         }
+    }
+
+    /* Nombre: getAttributes
+        Funcion: Crear una ObservableList para mostrar las opciones en comboBox.
+
+                 Utiliza un stream que recorre la estructura de datos enviada, conviertiendo
+                 cada elemento según indica la  función mapper.
+
+        Retorno: ObservableList.
+    */
+    public static <T> ObservableList<String> getAttributes(Collection<T> data, Function<T,String> mapper){
+        List<String> list = data.stream()
+                                .map(mapper)
+                                .collect(Collectors.toList());
+
+        return FXCollections.observableArrayList(list);
     }
 
 }

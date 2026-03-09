@@ -1,10 +1,10 @@
-#anchorPane{
+.root{
     -fx-background-image: url("../imagenes/paradas.jpg");
     -fx-background-size: cover;
     -fx-background-position: center;
 }
 
-#pane{
+.pane{
     -fx-background-color: #F6F3EA;
     -fx-border-color: LIGHTGRAY;
     -fx-border-width: 3px;

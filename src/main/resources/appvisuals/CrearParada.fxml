@@ -10,7 +10,7 @@
 
 <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="400.0" stylesheets="@CrearParada.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.CrearParadaController">
    <children>
-      <Pane fx:id="pane" layoutX="65.0" layoutY="58.0" prefHeight="283.0" prefWidth="270.0">
+      <Pane styleClass="pane" layoutX="65.0" layoutY="58.0" prefHeight="283.0" prefWidth="270.0">
          <children>
             <Label layoutX="85.0" layoutY="7.0" text="Parada">
                <font>

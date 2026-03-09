@@ -34,12 +34,17 @@ public class Grafo {
        Funcion: agrega un nodo (parada) al grafo
        Retorno: void
      */
-    public void addParada(Parada parada) {
+    public boolean addParada(Parada parada) {
         if (parada == null) {
             throw new IllegalArgumentException("Parada debe existir.");
         }
 
-        map.putIfAbsent(parada, new ArrayList<>());
+        if(map.containsKey(parada))
+            return false;
+        else
+            map.put(parada, new ArrayList<>());
+
+        return true;
     }
 
     /* Nombre: addRoute
@@ -51,31 +56,40 @@ public class Grafo {
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
         }
 
+        /*
         map.putIfAbsent(ruta.getOrigen(), new ArrayList<>());
         map.putIfAbsent(ruta.getDestino(), new ArrayList<>());
+        */
 
-        map.get(ruta.getOrigen()).add(ruta);
-        ruta.getOrigen().addRoute(ruta);
+        if(routeExists(ruta)){
+            return null;
+        }else{
+            map.get(ruta.getOrigen()).add(ruta);
+            ruta.getOrigen().addRoute(ruta);
+
+        }
+
 
         return ruta;
     }
 
-    /*
-    public Ruta addRoute(Parada origen, Parada destino, String nombre, double tiempo, double costo, double distancia) {
-        if (origen == null || destino == null) {
-            throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
+    /* Nombre: routeExists
+      Funcion: Verifica que una ruta exista para la parada de origen.
+      Retorno: boolean.
+    */
+    public boolean routeExists(Ruta ruta){
+        boolean exists = false;
+
+        List<Ruta> rutas = ruta.getOrigen().getRutasDisponibles();
+
+        for (int i = 0; i < rutas.size(); i++){
+            if(rutas.get(i).equals(ruta))
+                return true;
+
         }
 
-        map.putIfAbsent(origen, new ArrayList<>());
-        map.putIfAbsent(destino, new ArrayList<>());
-        Ruta newRoute = new Ruta(nombre, costo, tiempo, distancia, origen, destino);
-
-        map.get(origen).add(newRoute);
-        origen.addRoute(newRoute);
-
-        return newRoute;
+        return exists;
     }
-     */
 
     /* Nombre: deleteRoute
       Funcion: Eliminar la ruta tomando el origen y el destino de esta y verificando si se encuentra en el map, en caso de encontrarla

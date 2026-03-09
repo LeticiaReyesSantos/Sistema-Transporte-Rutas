@@ -5,6 +5,8 @@ package com.rutas.redtransporte.modelos;
    Metodos:///
  */
 
+import java.util.Objects;
+
 public class Ruta {
     private int idRuta;
     private String nombreRuta;
@@ -114,5 +116,26 @@ public class Ruta {
     @Override
     public String toString() {
         return nombreRuta + "-->" + destino;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Ruta)) return false;
+
+        return equalsDatos((Ruta)o);
+    }
+
+    private boolean equalsDatos(Ruta comparar){
+        boolean nombre = nombreRuta.toLowerCase().equals(comparar.nombreRuta.toLowerCase());
+        boolean origen = this.origen.equals(comparar.getOrigen());
+        boolean destino = this.destino.equals(comparar.getDestino());
+
+        return nombre || (origen && destino);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombreRuta.toLowerCase());
     }
 }
