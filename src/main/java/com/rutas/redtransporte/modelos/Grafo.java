@@ -2,10 +2,7 @@ package com.rutas.redtransporte.modelos;
 
 import com.rutas.redtransporte.utilidad.Visual;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /* Clase: Grafo
    Proposito: Modelar grafos dirigidos utilizando HashMaps
@@ -65,8 +62,8 @@ public class Grafo {
             return null;
         }else{
             map.get(ruta.getOrigen()).add(ruta);
-            ruta.getOrigen().addRoute(ruta);
-
+            ruta.getOrigen().addRutaSalida(ruta);
+            ruta.getDestino().addRutaEntrada(ruta);
         }
 
 
@@ -80,7 +77,7 @@ public class Grafo {
     public boolean routeExists(Ruta ruta){
         boolean exists = false;
 
-        List<Ruta> rutas = ruta.getOrigen().getRutasDisponibles();
+        List<Ruta> rutas = ruta.getOrigen().getRutasDeSalida();
 
         for (int i = 0; i < rutas.size(); i++){
             if(rutas.get(i).equals(ruta))
@@ -106,29 +103,8 @@ public class Grafo {
         if (map.containsKey(origen)) {
             map.get(origen).remove(routeToDel);
         }
-        origen.removeRoute(routeToDel);
-        destino.removeRoute(routeToDel);
-    }
-
-    /* Nombre: deleteParade
-      Funcion: Se encarga de eliminar una parada, eliminando sus conexiones (las rutas que llevan a esta) y luego eliminandola del map para no dejar conexion
-      Retorno: void
-    */
-    public void deleteParade(Parada parada){
-        if(parada == null){
-            throw new IllegalArgumentException("La parada proporcionada es nula");
-        }
-
-        while(!parada.getRutasDisponibles().isEmpty()){
-            deleteRoute(parada.getRutasDisponibles().getFirst()); //por la logica de queue, la lista reduce su tam, por lo que la pos 0 va cambiando
-        }
-
-        if(map.containsKey(parada)){
-            while(!map.get(parada).isEmpty()){
-                deleteRoute(map.get(parada).getFirst());
-            }
-        }
-        map.remove(parada);
+        origen.removeRutaSalida(routeToDel);
+        destino.removeRutaEntrada(routeToDel);
     }
 
     /* Nombre: modifyParade
@@ -169,9 +145,9 @@ public class Grafo {
 
         if(nuevoDestino != null && !nuevoDestino.equals(route.getDestino())){
             map.putIfAbsent(nuevoDestino, new ArrayList<>());
-            route.getDestino().removeRoute(route); //borro las rutas de entrada de la parada antigua
+            route.getDestino().removeRutaSalida(route); //borro las rutas de entrada de la parada antigua
             route.setDestino(nuevoDestino); //cambio a la parada nueva
-            nuevoDestino.addRoute(route); //uno el destino a la ruta actual a partir del listado de rutas que entran a la parada nueva
+            nuevoDestino.addRutaEntrada(route); //uno el destino a la ruta actual a partir del listado de rutas que entran a la parada nueva
         }
 
         route.setDisponibilidad(true);
@@ -196,6 +172,14 @@ public class Grafo {
         return paradasVecinas;
     }
 
+    /* Nombre: buscarRutasSalida
+    Funcion: Devolver un menu de rutas que puedes tomar estando en una parada especifica
+    Retorno: Lista de rutas
+  */
+    public List<Ruta> buscarRutasSalida(Parada parade){
+        return map.get(parade);
+    }
+
     /* Nombre: hasEdge
     Funcion: Verifica la existencia de una arista siempre y cuando exista el origen de su parada y que esta lleve al destino que buscamos
     Retorno: boolean, true or false
@@ -213,6 +197,15 @@ public class Grafo {
         }
 
         return false;
+    }
+
+    /* Nombre: eventSimulator
+       Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
+       Retorno: void
+     */
+    public void eventSimulator(){
+        Random random = new Random();
+
     }
 
     //for debugging only

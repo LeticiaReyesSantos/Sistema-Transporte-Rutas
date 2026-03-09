@@ -13,12 +13,14 @@ public class Parada {
     private int idParada;
     private String nombreParada;
     private String tipo;
-    private List<Ruta> rutasDisponibles;
+    private List<Ruta> rutasDeEntrada;
+    private List<Ruta> rutasDeSalida;
 
     public Parada(String nombreParada, String tipo) {
         this.nombreParada = nombreParada;
         this.tipo = tipo;
-        this.rutasDisponibles = new ArrayList<>();
+        this.rutasDeSalida = new ArrayList<>();
+        this.rutasDeEntrada = new ArrayList<>();
     }
 
     public int getIdParada() {
@@ -61,26 +63,48 @@ public class Parada {
         return Objects.hash(nombreParada.toLowerCase());
     }
 
-    public List<Ruta> getRutasDisponibles() {
-        return rutasDisponibles;
+    public List<Ruta> getRutasDeEntrada() {
+        return rutasDeEntrada;
     }
 
-    /* Nombre: addRoute
-       Funcion: Agrega una ruta disponible para esta parada nodo/arista
-       Retorno: void
-     */
-    public void addRoute(Ruta route){
+    public List<Ruta> getRutasDeSalida() {
+        return rutasDeSalida;
+    }
+
+    /* Nombre: addRutaSalida
+           Funcion: Agrega una ruta disponible que sale de esta parada, es decir del origen al destino
+           Retorno: void
+         */
+    public void addRutaSalida(Ruta route){
         if(route != null){
-            rutasDisponibles.add(route);
+            rutasDeSalida.add(route);
         }
     }
 
-    /* Nombre: removeRoute
+    /* Nombre: removeRutaSalida
       Funcion: Eliminar la ruta como disponible para esta parada
       Retorno: void
     */
-    public void removeRoute(Ruta route){
-        rutasDisponibles.remove(route);
+    public void removeRutaSalida(Ruta route){
+        rutasDeSalida.remove(route);
+    }
+
+    /* Nombre: addRutaEntrada
+          Funcion: Agrega una ruta que entra al destino
+          Retorno: void
+        */
+    public void addRutaEntrada(Ruta route){
+        if(route != null){
+            rutasDeEntrada.add(route);
+        }
+    }
+
+    /* Nombre: removeRutaEntrada
+      Funcion: Eliminar la ruta como entrada para este destino
+      Retorno: void
+    */
+    public void removeRutaEntrada(Ruta route){
+        rutasDeEntrada.remove(route);
     }
 
     @Override
