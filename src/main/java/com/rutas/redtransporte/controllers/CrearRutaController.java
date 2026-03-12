@@ -78,6 +78,10 @@ public class CrearRutaController {
             return;
         }
 
+        if (MainController.instance != null) {
+            MainController.instance.actualizarMapa();
+        }
+
         Visual.defaultMessages(OpcionMensaje.SAVED,ruta.getNombreRuta());
         Visual.cleanFields(txtNombre,cbxOrigen,cbxDestino,txtDistancia,txtTiempo,txtCosto);
 
@@ -94,7 +98,7 @@ public class CrearRutaController {
         if(Visual.emptyFields(txtNombre,cbxOrigen,cbxDestino,txtDistancia,txtTiempo,txtCosto)){
             Visual.defaultMessages(OpcionMensaje.EMPTY,"");
             return null;
-        }else if(cbxOrigen.equals(cbxDestino)){
+        } else if (cbxOrigen.getValue() != null && cbxOrigen.getValue().equals(cbxDestino.getValue())) {
             Visual.showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","El destino no puede ser el origen.");
             return null;
         }

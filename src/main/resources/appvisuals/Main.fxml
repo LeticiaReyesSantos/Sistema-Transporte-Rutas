@@ -17,7 +17,7 @@
          <children>
             <ImageView fx:id="menuManager" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../imagenes/menuBorder.png" />
+                  <Image url="@../imagenes/menu.png" />
                </image>
             </ImageView>
          </children>
@@ -27,7 +27,7 @@
          <children>
             <ImageView fx:id="menuManagerInside" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../imagenes/menuBorder.png" />
+                  <Image url="@../imagenes/menu.png" />
                </image>
                <VBox.margin>
                   <Insets left="10.0" top="10.0" />

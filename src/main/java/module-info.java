@@ -2,6 +2,7 @@ module com.rutas.redtransporte {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
+    requires com.brunomnsilva.smartgraph;
 
 
     opens com.rutas.redtransporte.controllers to javafx.fxml;

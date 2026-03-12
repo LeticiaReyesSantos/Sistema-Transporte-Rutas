@@ -66,6 +66,10 @@ public class CrearParadaController {
             return;
         }
 
+        if (MainController.instance != null) {
+            MainController.instance.actualizarMapa();
+        }
+
         Visual.defaultMessages(OpcionMensaje.SAVED,parada.getNombreParada());
         Visual.cleanFields(txtNombre,cbxTipo);
     }

@@ -205,6 +205,10 @@ public class Grafo {
 
     /* Nombre: eventSimulator
        Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
+       Valores -> 0 -> trafico standard, atributos standard
+       1 -> trafico -> atributos * 1.5
+       2-> accidente -> atributos se duplican
+       3-> lluvias fuertes ->
        Retorno: void
      */
     public void eventSimulator(){

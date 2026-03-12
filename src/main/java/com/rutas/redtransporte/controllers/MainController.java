@@ -1,14 +1,17 @@
 package com.rutas.redtransporte.controllers;
 
+import com.rutas.redtransporte.modelos.Parada;
+import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Visual;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import com.brunomnsilva.smartgraph.graph.Digraph;
+import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
+
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -30,10 +33,49 @@ public class MainController {
     @FXML
     private VBox mainMenu;
 
+    public static MainController instance;
+
     private boolean isMenuOpen = false;
+
+    private SmartGraphPanel<Parada, Ruta> panelMapa;
+
     public void initialize() {
+        instance = this;
         Logico.crearDatos();
         setMenu();
+        iniciarMapa();
+    }
+
+    private void iniciarMapa() {
+        Digraph<Parada, Ruta> grafoVisual = new DigraphEdgeList<>();
+
+        var mapaBackend = com.rutas.redtransporte.modelos.Grafo.getInstance().getMap();
+
+        for (Parada parada : mapaBackend.keySet()) {
+            grafoVisual.insertVertex(parada);
+        }
+
+        for (Parada origen : mapaBackend.keySet()) {
+            for (Ruta ruta : mapaBackend.get(origen)) {
+                Parada destino = ruta.getDestino();
+                grafoVisual.insertEdge(origen, destino, ruta);
+            }
+        }
+
+        panelMapa = new SmartGraphPanel<>(grafoVisual);
+
+        AnchorPane.setTopAnchor(panelMapa, 0.0);
+        AnchorPane.setBottomAnchor(panelMapa, 0.0);
+        AnchorPane.setLeftAnchor(panelMapa, 0.0);
+        AnchorPane.setRightAnchor(panelMapa, 0.0);
+
+        slider.getChildren().add(panelMapa);
+
+        panelMapa.toBack();
+
+        Platform.runLater(() -> {
+            panelMapa.init();
+        });
     }
 
     public void setMenu(){
@@ -57,6 +99,7 @@ public class MainController {
 
         slide.play();
     }
+
     public void crearParada(ActionEvent e) throws IOException {
         Visual.openNewWindow("CrearParada.fxml","Estilo.css",true);
     }
@@ -66,10 +109,15 @@ public class MainController {
     }
 
     public void crearRuta(ActionEvent e) throws IOException {
-        //Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
+        Visual.openNewWindow("CrearRuta.fxml","Estilo.css", true);
     }
 
     public void mostrarRuta(ActionEvent e) throws IOException {
-        //Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
+        Visual.openNewWindow("ShowRuta.fxml","Estilo.css", true);
+    }
+
+    public void actualizarMapa() {
+        slider.getChildren().remove(panelMapa);
+        iniciarMapa();
     }
 }
