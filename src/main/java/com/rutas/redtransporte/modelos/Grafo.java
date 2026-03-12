@@ -12,9 +12,11 @@ import java.util.*;
 public class Grafo {
     private Map<Parada, List<Ruta>> map;
     private static Grafo grafo;
+    private List<Ruta> allRutas;
 
     private Grafo() {
         map = new HashMap<>();
+        allRutas = new ArrayList<>();
     }
 
     public static Grafo getInstance(){
@@ -26,6 +28,12 @@ public class Grafo {
     public Map<Parada, List<Ruta>> getMap() {
         return map;
     }
+
+    public List<Parada> getListParadas(){
+        return map.keySet().stream().toList();
+    }
+
+    public List<Ruta> getListRutas(){return allRutas;}
 
     /* Nombre: addParada
        Funcion: agrega un nodo (parada) al grafo
@@ -53,17 +61,13 @@ public class Grafo {
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
         }
 
-        /*
-        map.putIfAbsent(ruta.getOrigen(), new ArrayList<>());
-        map.putIfAbsent(ruta.getDestino(), new ArrayList<>());
-        */
-
         if(routeExists(ruta)){
             return null;
         }else{
             map.get(ruta.getOrigen()).add(ruta);
             ruta.getOrigen().addRutaSalida(ruta);
             ruta.getDestino().addRutaEntrada(ruta);
+            allRutas.add(ruta);
         }
 
 

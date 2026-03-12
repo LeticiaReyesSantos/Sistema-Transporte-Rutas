@@ -41,7 +41,7 @@ public class PrincipalController {
         Retorno: void.
     */
     public void crearParada(ActionEvent e) throws IOException {
-        Visual.openNewWindow("CrearParada.fxml","CrearParada.css");
+        //Visual.openNewWindow("CrearParada.fxml","Estilo.css");
     }
 
     /* Nombre: crearRuta
@@ -49,7 +49,7 @@ public class PrincipalController {
         Retorno: void.
     */
     public void crearRuta(ActionEvent e) throws IOException {
-        Visual.openNewWindow("CrearRuta.fxml","CrearParada.css");
+        //Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
     }
 
 

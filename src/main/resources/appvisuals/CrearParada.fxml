@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="400.0" stylesheets="@CrearParada.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.CrearParadaController">
+<AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="400.0" styleClass="windowBG" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.CrearParadaController">
    <children>
-      <Pane styleClass="pane" layoutX="65.0" layoutY="58.0" prefHeight="283.0" prefWidth="270.0">
+      <Pane layoutX="65.0" layoutY="58.0" prefHeight="283.0" prefWidth="270.0" styleClass="windowPane">
          <children>
             <Label layoutX="85.0" layoutY="7.0" text="Parada">
                <font>
@@ -22,15 +22,22 @@
                   <Font name="SansSerif Bold" size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="txtNombre" layoutX="110.0" layoutY="80.0" prefHeight="25.0" prefWidth="144.0" />
+            <TextField fx:id="txtNombre" layoutX="110.0" layoutY="80.0" prefHeight="25.0" prefWidth="144.0" styleClass="windowField" />
             <Label layoutX="22.0" layoutY="150.0" text="Tipo:">
                <font>
                   <Font name="SansSerif Bold" size="18.0" />
                </font>
             </Label>
-            <ComboBox fx:id="cbxTipo" layoutX="110.0" layoutY="150.0" prefWidth="144.0" promptText="Seleccionar" />
-            <Button fx:id="btnAceptar" layoutX="59.0" layoutY="227.0" mnemonicParsing="false" onAction="#guardarParada" prefWidth="75.0" text="Aceptar" />
-            <Button fx:id="btnCancelar" layoutX="156.0" layoutY="227.0" mnemonicParsing="false" onAction="#volver" prefWidth="75.0" text="Cancelar" />
+            <ComboBox fx:id="cbxTipo" layoutX="110.0" layoutY="150.0" prefWidth="144.0" promptText="Seleccionar" styleClass="windowButton" />
+            <Button fx:id="btnAceptar" layoutX="54.0" layoutY="227.0" mnemonicParsing="false" onAction="#guardarParada" prefWidth="75.0" styleClass="windowButton" text="Aceptar">
+               <font>
+                  <Font name="SansSerif Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="btnCancelar" layoutX="158.0" layoutY="227.0" mnemonicParsing="false" onAction="#volver" prefWidth="75.0" styleClass="windowButton" text="Cancelar">
+               <font>
+                  <Font name="SansSerif Bold" size="12.0" />
+               </font>
+            </Button>
          </children>
       </Pane>
    </children>

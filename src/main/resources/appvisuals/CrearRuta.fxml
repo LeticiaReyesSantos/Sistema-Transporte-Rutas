@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="497.0" prefWidth="501.0" stylesheets="@CrearParada.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.CrearRutaController">
+<AnchorPane prefHeight="497.0" prefWidth="501.0" styleClass="windowBG" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.CrearRutaController">
    <children>
       <Pane layoutX="66.0" layoutY="41.0" prefHeight="415.0" prefWidth="370.0" styleClass="pane">
          <children>
@@ -48,8 +48,8 @@
                </font>
             </Label>
             <TextField fx:id="txtNombre" layoutX="25.0" layoutY="109.0" prefHeight="25.0" prefWidth="326.0" />
-            <Button fx:id="btnAceptar" layoutX="92.0" layoutY="356.0" mnemonicParsing="false" onAction="#guardarRuta" prefWidth="75.0" text="Aceptar" />
-            <Button fx:id="btnAceptar1" layoutX="209.0" layoutY="357.0" mnemonicParsing="false" onAction="#volver" prefWidth="75.0" text="Cancelar" />
+            <Button fx:id="btnAceptar" layoutX="92.0" layoutY="356.0" mnemonicParsing="false" onAction="#guardarRuta" prefWidth="75.0" styleClass="windowButton" text="Aceptar" />
+            <Button fx:id="btnAceptar1" layoutX="209.0" layoutY="357.0" mnemonicParsing="false" onAction="#volver" prefWidth="75.0" styleClass="windowButton" text="Cancelar" />
             <Label layoutX="114.0" layoutY="291.0" text="km">
                <font>
                   <Font name="SansSerif Bold" size="14.0" />

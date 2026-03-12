@@ -1,0 +1,124 @@
+/*Ventana Principal*/
+#slider{
+    -fx-background-color: #F6F3EA;
+}
+
+#mainMenu{
+    -fx-background-color: #d5ebbb;
+}
+
+.titled-pane{
+    -fx-border-color: transparent;
+}
+
+.titled-pane > .title{
+    -fx-background-color: #d5ebbb;
+    -fx-padding: 10 10 10 10;
+    -fx-graphic-text-gap: 5;
+}
+
+/*> direct child*/
+.titled-pane > .title > .arrow-button{
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
+}
+
+.vboxMenuOpc{
+    -fx-background-color: #d5ebbb;
+    -fx-border-color: transparent;
+}
+
+.menuButton{
+    -fx-background-color: #d5ebbb;
+    -fx-background-radius: 0;
+    -fx-alignment: CENTER;
+    -fx-padding: 10 20 10 20;
+    -fx-graphic-text-gap: 8;
+}
+
+.menuButton:hover{
+    -fx-background-color: LIGHTBLUE;
+}
+
+/*Crear Parada y Ruta*/
+.crearBG{
+    -fx-background-image: url("../imagenes/paradas.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.pane{
+    -fx-background-color: #F6F3EA;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 3px;
+}
+
+.crearButton{
+    -fx-background-color: WHITE;
+    -fx-border-color: LIGHTGRAY;
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+}
+
+/*Mostrar Parada y Ruta*/
+.windowBG{
+    -fx-background-image: url("../imagenes/tabsMap.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+.windowPane{
+    -fx-background-color: #d5ebbb;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 3px;
+}
+
+#cbxTipo{
+    -fx-background-color: WHITE;
+    -fx-border-color: LIGHTGRAY;
+}
+
+.windowField{
+    -fx-background-color: WHITE;
+}
+
+.windowButton{
+    -fx-background-color: #C7ECF0;
+    -fx-font-weight: bold;
+    -fx-border-color: LIGHTGRAY;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+.table{
+    -fx-background-color: #F6F3EA;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header {
+    -fx-font-size: 14px;
+    -fx-background-color: #C7ECF0;
+    -fx-border-color: BLACK;
+    -fx-border-width: 0.5px;
+}
+
+/*
+.table-view .table-cell {
+    -fx-font-size: 12px;
+    -fx-background-color: #F6F3EA;
+    -fx-border-color: BLACK;
+    -fx-border-width: 0.5px;
+}*/
+
+/*
+.table-row-cell:selected {
+    -fx-background-color: #C7ECF0;
+    -fx-text-fill: BLACK;
+}
+*/
+
+.TableColumn{
+    -fx-background-color: #bfdbed;
+}
+

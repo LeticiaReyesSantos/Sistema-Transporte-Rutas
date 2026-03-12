@@ -70,6 +70,11 @@ public class CrearParadaController {
         Visual.cleanFields(txtNombre,cbxTipo);
     }
 
+    public void loadInfo(Parada parada){
+        txtNombre.setText(parada.getNombreParada());
+        cbxTipo.setValue(parada.getTipo());
+    }
+
     /* Nombre: volver
         Funcion: Volver a la ventana principal.
         Retorno: void.

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="slider" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #F6F3EA;" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.MainController">
+   <children>
+
+      <Pane prefHeight="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fx:id="menuManager" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/menuBorder.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+
+      <VBox fx:id="mainMenu" maxWidth="200.0" minWidth="152.0" prefWidth="164.0" spacing="10.0" stylesheets="@Estilo.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fx:id="menuManagerInside" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../imagenes/menuBorder.png" />
+               </image>
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin>
+            </ImageView>
+      
+            <TitledPane expanded="false" prefWidth="164.0" style="-fx-background-color: #d5ebbb;" text="Paradas">
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imagenes/parada.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="SansSerif Bold" size="18.0" />
+               </font>
+               <content>
+                  <VBox spacing="8.0" styleClass="vboxMenuOpc">
+                     <padding>
+                        <Insets bottom="8.0" top="8.0" />
+                     </padding>
+                     <Button mnemonicParsing="false" onAction="#crearParada" prefHeight="40.0" prefWidth="164.0" styleClass="menuButton" stylesheets="@Estilo.css" text="Crear" VBox.vgrow="NEVER">
+                        <font>
+                           <Font name="SansSerif Bold" size="16.0" />
+                        </font>
+                        <graphic>
+                           <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../imagenes/add.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                        <padding>
+                           <Insets left="5.0" />
+                        </padding>
+                     </Button>
+                     <Button mnemonicParsing="false" onAction="#mostrarParada" prefHeight="40.0" prefWidth="163.0" styleClass="menuButton" stylesheets="@Estilo.css" text="Mostrar">
+                        <font>
+                           <Font name="SansSerif Bold" size="16.0" />
+                        </font>
+                        <graphic>
+                           <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../imagenes/show.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                        <padding>
+                           <Insets left="5.0" />
+                        </padding>
+                     </Button>
+                  </VBox>
+               </content>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </TitledPane>
+            <TitledPane expanded="false" prefWidth="164.0" style="-fx-background-color: #d5ebbb;" text="Rutas">
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imagenes/rutas.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="SansSerif Bold" size="18.0" />
+               </font>
+               <content>
+                  <VBox spacing="8.0" styleClass="vboxMenuOpc">
+                     <padding>
+                        <Insets bottom="8.0" top="8.0" />
+                     </padding>
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#crearRuta" prefHeight="30.0" prefWidth="160.0" styleClass="menuButton" stylesheets="@Estilo.css" text="Crear" VBox.vgrow="NEVER">
+                           <font>
+                              <Font name="SansSerif Bold" size="16.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../imagenes/add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#mostrarRuta" prefHeight="25.0" prefWidth="163.0" styleClass="menuButton" stylesheets="@Estilo.css" text="Mostrar">
+                           <font>
+                              <Font name="SansSerif Bold" size="16.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../imagenes/show.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Button>
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
+
+         </children>
+      </VBox>
+
+   </children>
+</AnchorPane>
