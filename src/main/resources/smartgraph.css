@@ -1,0 +1,37 @@
+.graph { -fx-background-color: #E8F5E9; }
+
+.vertex {
+    -fx-stroke-width: 2;
+    -fx-stroke: #FFFFFF;
+    -fx-stroke-type: inside;
+    -fx-fill: #1A73E8;
+}
+.vertex:hover {
+    -fx-fill: #1557B0;
+    -fx-stroke: #34A853;
+    -fx-stroke-width: 3;
+    -fx-cursor: hand;
+}
+.vertex-label {
+    -fx-font: bold 10pt "sans-serif";
+    -fx-fill: #FFFFFF;
+}
+.edge {
+    -fx-stroke-width: 3;
+    -fx-stroke: #34A853;
+    -fx-fill: transparent;
+    -fx-stroke-line-cap: round;
+    -fx-opacity: 0.9;
+}
+.edge:hover {
+    -fx-stroke: #1E8E3E;
+    -fx-stroke-width: 4;
+}
+.edge-label {
+    -fx-font: normal 8pt "sans-serif";
+    -fx-fill: #1E8E3E;
+}
+.arrow {
+    -fx-fill: #34A853;
+    -fx-stroke: #34A853;
+}

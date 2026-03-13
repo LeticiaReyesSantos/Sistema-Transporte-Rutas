@@ -106,7 +106,7 @@ public class Grafo {
         if (map.containsKey(origen)) {
             map.get(origen).remove(routeToDel);
         }
-        origen.removeRutaSalida(routeToDel);
+        origen.removeRutaSalida(routeToDel); //quito la referencia de mis objetos parada
         destino.removeRutaEntrada(routeToDel);
     }
 

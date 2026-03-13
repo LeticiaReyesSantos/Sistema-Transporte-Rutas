@@ -28,7 +28,7 @@ public class Principal extends Application {
         //FXMLLoader fxmlLoader = new FXMLLoader(Principal.class.getResource("/appvisuals/Principal.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(getClass().getResource("/appvisuals/Estilo.css").toExternalForm());
-        stage.setTitle("Hello!");
+        stage.setTitle("Red de Transporte");
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();

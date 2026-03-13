@@ -1,12 +1,15 @@
 package com.rutas.redtransporte.controllers;
 
+import com.brunomnsilva.smartgraph.graphview.*;
+import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Visual;
 import com.brunomnsilva.smartgraph.graph.Digraph;
 import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
+
+import java.net.URI;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -18,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class MainController {
 
@@ -38,6 +42,7 @@ public class MainController {
     private boolean isMenuOpen = false;
 
     private SmartGraphPanel<Parada, Ruta> panelMapa;
+    Digraph<Parada, Ruta> grafoVisual = new DigraphEdgeList<>();
 
     public void initialize() {
         instance = this;
@@ -47,22 +52,24 @@ public class MainController {
     }
 
     private void iniciarMapa() {
-        Digraph<Parada, Ruta> grafoVisual = new DigraphEdgeList<>();
+        grafoVisual = new DigraphEdgeList<>();
+        sincronizarGrafo();
 
-        var mapaBackend = com.rutas.redtransporte.modelos.Grafo.getInstance().getMap();
+        SmartGraphProperties properties = new SmartGraphProperties(
+                getClass().getResourceAsStream("/smartgraph.properties")
+        );
 
-        for (Parada parada : mapaBackend.keySet()) {
-            grafoVisual.insertVertex(parada);
+        URI cssURI = null;
+        try {
+            cssURI = Objects.requireNonNull(
+                    getClass().getResource("/smartgraph.css")
+            ).toURI();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        for (Parada origen : mapaBackend.keySet()) {
-            for (Ruta ruta : mapaBackend.get(origen)) {
-                Parada destino = ruta.getDestino();
-                grafoVisual.insertEdge(origen, destino, ruta);
-            }
-        }
-
-        panelMapa = new SmartGraphPanel<>(grafoVisual);
+        SmartPlacementStrategy placement = new SmartRandomPlacementStrategy();
+        panelMapa = new SmartGraphPanel<>(grafoVisual, properties, placement, cssURI);
 
         AnchorPane.setTopAnchor(panelMapa, 0.0);
         AnchorPane.setBottomAnchor(panelMapa, 0.0);
@@ -70,16 +77,17 @@ public class MainController {
         AnchorPane.setRightAnchor(panelMapa, 0.0);
 
         slider.getChildren().add(panelMapa);
-
         panelMapa.toBack();
 
         Platform.runLater(() -> {
-            panelMapa.init();
+                panelMapa.init();
+                panelMapa.setAutomaticLayout(true);
         });
     }
 
     public void setMenu(){
-        mainMenu.setTranslateX(-mainMenu.getPrefWidth());
+        mainMenu.setTranslateX(-(mainMenu.getPrefWidth() + 12));
+        menuManager.setVisible(true);
         menuManager.setOnMouseClicked(event -> showMenu());
         menuManagerInside.setOnMouseClicked(event -> showMenu());
     }
@@ -90,11 +98,13 @@ public class MainController {
         slide.setNode(mainMenu);
 
         if (isMenuOpen) {
-            slide.setToX(-mainMenu.getPrefWidth());
+            slide.setToX(-(mainMenu.getPrefWidth() + 12));
             isMenuOpen = false;
+            menuManager.setVisible(true);
         } else {
             slide.setToX(0);
             isMenuOpen = true;
+            menuManager.setVisible(false);
         }
 
         slide.play();
@@ -117,7 +127,21 @@ public class MainController {
     }
 
     public void actualizarMapa() {
-        slider.getChildren().remove(panelMapa);
-        iniciarMapa();
+        sincronizarGrafo();
+        panelMapa.update();
+        panelMapa.setAutomaticLayout(true);
+    }
+
+    private void sincronizarGrafo() {
+        var mapaBackend = Grafo.getInstance().getMap();
+
+        for (Parada p : mapaBackend.keySet()) {
+            try { grafoVisual.insertVertex(p); } catch (Exception ignored) {}
+        }
+        for (Parada origen : mapaBackend.keySet()) {
+            for (Ruta r : mapaBackend.get(origen)) {
+                try { grafoVisual.insertEdge(origen, r.getDestino(), r); } catch (Exception ignored) {}
+            }
+        }
     }
 }
