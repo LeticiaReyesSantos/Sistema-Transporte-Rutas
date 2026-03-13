@@ -57,11 +57,9 @@ public class CrearParadaController {
             return;
         }
 
-        System.out.println("Inside guardarParada");
-
         Parada parada = new Parada(Visual.checkText(txtNombre),cbxTipo.getValue());
 
-        if(!Grafo.getInstance().addParada(parada)){
+        if(Grafo.getInstance().addParada(parada) != null){
             Visual.defaultMessages(OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
             return;
         }

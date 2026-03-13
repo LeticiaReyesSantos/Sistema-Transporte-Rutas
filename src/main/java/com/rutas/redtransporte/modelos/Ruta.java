@@ -13,6 +13,10 @@ public class Ruta {
         TRANSBORDO, COSTO, TIEMPO, DISTANCIA;
     }
 
+    public enum evento{
+        TRAFICO, ACCIDENTE, LLUVIA;
+    }
+
     private int idRuta;
     private String nombreRuta;
     private boolean disponibilidad;

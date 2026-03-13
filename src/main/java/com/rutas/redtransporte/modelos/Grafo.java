@@ -30,7 +30,7 @@ public class Grafo {
     }
 
     public List<Parada> getListParadas(){
-        return map.keySet().stream().toList();
+        return new ArrayList<Parada>(map.keySet());
     }
 
     public List<Ruta> getListRutas(){return allRutas;}
@@ -39,17 +39,12 @@ public class Grafo {
        Funcion: agrega un nodo (parada) al grafo
        Retorno: void
      */
-    public boolean addParada(Parada parada) {
+    public Object addParada(Parada parada) {
         if (parada == null) {
             throw new IllegalArgumentException("Parada debe existir.");
         }
 
-        if(map.containsKey(parada))
-            return false;
-        else
-            map.put(parada, new ArrayList<>());
-
-        return true;
+        return map.putIfAbsent(parada, new ArrayList<>());
     }
 
     /* Nombre: addRoute
@@ -57,7 +52,11 @@ public class Grafo {
       Retorno: Ruta creada
     */
     public Ruta addRoute(Ruta ruta) {
-        if (ruta.getOrigen() == null || ruta.getDestino() == null) {
+        if (ruta == null) {
+            throw new IllegalArgumentException("La ruta debe existir.");
+        }
+
+        if (ruta.getOrigen() == null || ruta.getDestino() == null) { //validar si ruta == null, validar el object primero siempre
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
         }
 
@@ -83,7 +82,7 @@ public class Grafo {
 
         List<Ruta> rutas = ruta.getOrigen().getRutasDeSalida();
 
-        for (int i = 0; i < rutas.size(); i++){
+        for (int i = 0; i < rutas.size(); i++){//stream
             if(rutas.get(i).equals(ruta))
                 return true;
 
@@ -109,16 +108,6 @@ public class Grafo {
         }
         origen.removeRutaSalida(routeToDel);
         destino.removeRutaEntrada(routeToDel);
-    }
-
-    /* Nombre: modifyParade
-      Funcion: Modificar el nombre de una parada
-      Retorno: void
-    */
-    public void modifyParade(Parada paradaMod, String nuevoNombre){
-        if(paradaMod != null){
-            paradaMod.setNombreParada(nuevoNombre);
-        }
     }
 
     /* Nombre: modifyRoute
@@ -149,7 +138,7 @@ public class Grafo {
 
         if(nuevoDestino != null && !nuevoDestino.equals(route.getDestino())){
             map.putIfAbsent(nuevoDestino, new ArrayList<>());
-            route.getDestino().removeRutaSalida(route); //borro las rutas de entrada de la parada antigua
+            route.getDestino().removeRutaEntrada(route); //borro las rutas de entrada de la parada antigua
             route.setDestino(nuevoDestino); //cambio a la parada nueva
             nuevoDestino.addRutaEntrada(route); //uno el destino a la ruta actual a partir del listado de rutas que entran a la parada nueva
         }
@@ -158,23 +147,6 @@ public class Grafo {
         route.setActividad("Trafico usual");
     }
 
-    /* Nombre: directNeighbours
-      Funcion: identifica los vecinos directos mediante las paradas destino que puede tener la parada origen, son agregadas a una lista de vecinos
-      Retorno: Lista de vecinos directos
-    */
-    public List<Parada> directNeighbours(Parada origen){
-        List<Parada> paradasVecinas = new ArrayList<>();
-        if(map.containsKey(origen)){
-            List<Ruta> rutasDeSalida = map.get(origen);
-            for (Ruta route: rutasDeSalida) {
-                Parada destino = route.getDestino();
-                if(!paradasVecinas.contains(destino)){ //reviso si el destino es agregado como vecino directo de la parada
-                    paradasVecinas.add(destino);
-                }
-            }
-        }
-        return paradasVecinas;
-    }
 
     /* Nombre: buscarRutasSalida
     Funcion: Devolver un menu de rutas que puedes tomar estando en una parada especifica
@@ -184,24 +156,6 @@ public class Grafo {
         return map.get(parade);
     }
 
-    /* Nombre: hasEdge
-    Funcion: Verifica la existencia de una arista siempre y cuando exista el origen de su parada y que esta lleve al destino que buscamos
-    Retorno: boolean, true or false
-  */
-    public boolean hasEdge(Parada origen, Parada destino){
-        if(!map.containsKey(origen)){
-            return false;
-        }
-
-        List<Ruta> rutasDeSalida = map.get(origen); //obtengo la lista de todas las rutas que salen de este origen
-        for (Ruta routes: rutasDeSalida){
-            if(routes.getDestino().equals(destino)){
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     /* Nombre: eventSimulator
        Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico

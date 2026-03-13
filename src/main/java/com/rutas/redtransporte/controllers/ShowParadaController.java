@@ -41,7 +41,6 @@ public class ShowParadaController {
         paradas = FXCollections.observableArrayList(grafo.getListParadas());
 
         table.setItems(paradas);
-        //table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     public void verDetalles() throws Exception{
