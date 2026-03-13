@@ -6,7 +6,7 @@ import java.util.*;
 
 /* Clase: Grafo
    Proposito: Modelar grafos dirigidos utilizando HashMaps
-   Metodos:///
+   Metodos://///
  */
 
 public class Grafo {
