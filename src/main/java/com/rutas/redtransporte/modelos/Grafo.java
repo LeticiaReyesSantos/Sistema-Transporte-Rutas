@@ -170,6 +170,41 @@ public class Grafo {
 
     }
 
+
+    /* Nombre: deleteParade
+      Funcion: Se encarga de eliminar una parada, eliminando sus conexiones (las rutas que llevan a esta) y luego eliminandola del map para no dejar conexion
+      Retorno: void
+    */
+    public void deleteParade(Parada parada){
+        if(parada == null){
+            throw new IllegalArgumentException("La parada proporcionada es nula");
+        }
+
+        while(!parada.getRutasDeSalida().isEmpty()){
+            deleteRoute(parada.getRutasDeSalida().getFirst()); //por la logica de queue, la lista reduce su tam, por lo que la pos 0 va cambiando
+        }
+        while (!parada.getRutasDeEntrada().isEmpty()) {
+            deleteRoute(parada.getRutasDeEntrada().getFirst());
+        }
+
+        if(map.containsKey(parada)){
+            while(!map.get(parada).isEmpty()){
+                deleteRoute(map.get(parada).getFirst());
+            }
+        }
+        map.remove(parada);
+    }
+
+    /* Nombre: modifyParade
+      Funcion: Modificar el nombre de una parada
+      Retorno: void
+    */
+    public void modifyParade(Parada paradaMod, String nuevoNombre){
+        if(paradaMod != null){
+            paradaMod.setNombreParada(nuevoNombre);
+        }
+    }
+
     //for debugging only
     public void show(){
         for(Parada parade : map.keySet()){
