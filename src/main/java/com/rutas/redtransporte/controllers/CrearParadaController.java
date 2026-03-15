@@ -2,23 +2,16 @@ package com.rutas.redtransporte.controllers;
 
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
-import com.rutas.redtransporte.modelos.Ruta;
-import com.rutas.redtransporte.utilidad.OpcionMensaje;
+import com.rutas.redtransporte.utilidad.Logico;
+import com.rutas.redtransporte.utilidad.Mensaje;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class CrearParadaController {
 
@@ -40,7 +33,11 @@ public class CrearParadaController {
     @FXML
     private Button btnCancelar;
 
-    private Map<Parada, List<Ruta>> map = Grafo.getInstance().getMap();
+    @FXML
+    private Button btnEliminar;
+
+    private Grafo grafo = Grafo.getInstance();
+    private Parada paradaSelect = null;
 
     public void initialize(){
         cbxTipo.getItems().addAll("Carro","Bus","Monorriel");
@@ -52,15 +49,11 @@ public class CrearParadaController {
         Retorno: void.
     */
     public void guardarParada(ActionEvent event) {
-        if(Visual.emptyFields(txtNombre,cbxTipo)){
-            Visual.defaultMessages(OpcionMensaje.EMPTY,"");
-            return;
-        }
 
-        Parada parada = new Parada(Visual.checkText(txtNombre),cbxTipo.getValue());
+        Parada parada = createParada();
 
-        if(Grafo.getInstance().addParada(parada) != null){
-            Visual.defaultMessages(OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
+        if(grafo.addParada(parada) != null){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
             return;
         }
 
@@ -68,13 +61,37 @@ public class CrearParadaController {
             MainController.instance.actualizarMapa();
         }
 
-        Visual.defaultMessages(OpcionMensaje.SAVED,parada.getNombreParada());
-        Visual.cleanFields(txtNombre,cbxTipo);
+        Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,parada.getNombreParada());
+        Logico.cleanFields(txtNombre,cbxTipo);
     }
 
-    public void loadInfo(Parada parada){
+    public Parada createParada(){
+        if(Logico.emptyFields(txtNombre,cbxTipo)){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
+            return null;
+        }
+
+        return new Parada(Logico.checkText(txtNombre),cbxTipo.getValue());
+    }
+
+    public void eliminarParada(Parada parada) {
+        Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Si elimina esta parada, todas las rutas relacionadas serán eliminadas.");
+        grafo.deleteParade(paradaSelect);
+    }
+
+    public void setScene(Parada parada){
+
+        btnAceptar.setLayoutX(111);
+        btnAceptar.setText("Modificar");
+
+        btnCancelar.setLayoutX(195);
+
+        btnEliminar.setVisible(true);
+
         txtNombre.setText(parada.getNombreParada());
         cbxTipo.setValue(parada.getTipo());
+
+        paradaSelect = parada;
     }
 
     /* Nombre: volver

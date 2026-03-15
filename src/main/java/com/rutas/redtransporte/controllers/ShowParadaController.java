@@ -2,23 +2,18 @@ package com.rutas.redtransporte.controllers;
 
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
-import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.utilidad.Visual;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class ShowParadaController {
 
@@ -38,7 +33,7 @@ public class ShowParadaController {
         colNombre.setCellValueFactory(new PropertyValueFactory<Parada,String>("nombreParada"));
         colTransporte.setCellValueFactory(new PropertyValueFactory<Parada,String>("tipo"));
 
-        paradas = FXCollections.observableArrayList(grafo.getListParadas());
+        paradas = FXCollections.observableArrayList(new ArrayList<>(grafo.getSetParadas()));
 
         table.setItems(paradas);
     }
@@ -47,10 +42,13 @@ public class ShowParadaController {
         Parada selected = table.getSelectionModel().getSelectedItem();
 
         System.out.println(selected.getNombreParada());
-        FXMLLoader loader = Visual.openNewWindow("CrearParada.fxml","Estilo.css",false);
+        FXMLLoader loader = Visual.openNewWindow("CrearParada.fxml","Estilo.css");
         CrearParadaController controller = loader.getController();
 
-        controller.loadInfo(selected);
+        controller.setScene(selected);
+
+        Visual.closeWindow(table);
+
     }
 
 }

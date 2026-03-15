@@ -46,7 +46,7 @@ public class MainController {
 
     public void initialize() {
         instance = this;
-        Logico.crearDatos();
+        Logico.crearDatosGrafo();
         setMenu();
         iniciarMapa();
     }
@@ -111,19 +111,19 @@ public class MainController {
     }
 
     public void crearParada(ActionEvent e) throws IOException {
-        Visual.openNewWindow("CrearParada.fxml","Estilo.css",true);
+        Visual.openNewWindow("CrearParada.fxml","Estilo.css");
     }
 
     public void mostrarParada(ActionEvent e) throws IOException {
-        Visual.openNewWindow("ShowParada.fxml","Estilo.css",true);
+        Visual.openNewWindow("ShowParada.fxml","Estilo.css");
     }
 
     public void crearRuta(ActionEvent e) throws IOException {
-        Visual.openNewWindow("CrearRuta.fxml","Estilo.css", true);
+        Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
     }
 
     public void mostrarRuta(ActionEvent e) throws IOException {
-        Visual.openNewWindow("ShowRuta.fxml","Estilo.css", true);
+        Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
     }
 
     public void actualizarMapa() {

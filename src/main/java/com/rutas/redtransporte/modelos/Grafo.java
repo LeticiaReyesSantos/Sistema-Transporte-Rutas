@@ -1,7 +1,5 @@
 package com.rutas.redtransporte.modelos;
 
-import com.rutas.redtransporte.utilidad.Visual;
-
 import java.util.*;
 
 /* Clase: Grafo
@@ -25,12 +23,13 @@ public class Grafo {
         return grafo;
     }
 
+
     public Map<Parada, List<Ruta>> getMap() {
         return map;
     }
 
-    public List<Parada> getListParadas(){
-        return new ArrayList<Parada>(map.keySet());
+    public Set<Parada> getSetParadas(){
+        return map.keySet();
     }
 
     public List<Ruta> getListRutas(){return allRutas;}
@@ -45,6 +44,48 @@ public class Grafo {
         }
 
         return map.putIfAbsent(parada, new ArrayList<>());
+    }
+
+    /* Nombre: getParada
+        Funcion: Buscar parada a partir de su nombre.
+        Retorno: Parada.
+    */
+    public Parada getParada(String nombreParada){
+        List<Parada> paradas = new ArrayList<>(grafo.getSetParadas());
+
+        return paradas.stream()
+                .filter(parada -> parada.getNombreParada().equals(nombreParada))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /* Nombre: deleteParade
+    Funcion: Se encarga de eliminar una parada, eliminando sus conexiones (las rutas que llevan a esta) y luego eliminandola del map para no dejar conexion
+    Retorno: void
+  */
+    public void deleteParade(Parada parada){
+        if(parada == null){
+            throw new IllegalArgumentException("La parada proporcionada es nula");
+        }
+
+        List<Ruta> rutas = new ArrayList<>(parada.getRutasDeSalida());
+        rutas.addAll(parada.getRutasDeEntrada());
+
+        for (Ruta ruta : rutas) {
+            deleteRoute(ruta);
+        }
+
+        map.remove(parada);
+    }
+
+    /* Nombre: modifyParade
+      Funcion: Modificar el nombre de una parada
+      Retorno: void
+    */
+    public void modifyParade(Parada paradaMod, String nuevoNombre){
+        if(paradaMod != null){
+            paradaMod.setNombreParada(nuevoNombre);
+        }
     }
 
     /* Nombre: addRoute
@@ -77,18 +118,11 @@ public class Grafo {
       Funcion: Verifica que una ruta exista para la parada de origen.
       Retorno: boolean.
     */
-    public boolean routeExists(Ruta ruta){
-        boolean exists = false;
+    public boolean routeExists(Ruta newRuta){
 
-        List<Ruta> rutas = ruta.getOrigen().getRutasDeSalida();
+        List<Ruta> rutas = newRuta.getOrigen().getRutasDeSalida();
 
-        for (int i = 0; i < rutas.size(); i++){//stream
-            if(rutas.get(i).equals(ruta))
-                return true;
-
-        }
-
-        return exists;
+        return rutas.stream().anyMatch(ruta -> ruta.equals(newRuta));
     }
 
     /* Nombre: deleteRoute
@@ -168,41 +202,6 @@ public class Grafo {
     public void eventSimulator(){
         Random random = new Random();
 
-    }
-
-
-    /* Nombre: deleteParade
-      Funcion: Se encarga de eliminar una parada, eliminando sus conexiones (las rutas que llevan a esta) y luego eliminandola del map para no dejar conexion
-      Retorno: void
-    */
-    public void deleteParade(Parada parada){
-        if(parada == null){
-            throw new IllegalArgumentException("La parada proporcionada es nula");
-        }
-
-        while(!parada.getRutasDeSalida().isEmpty()){
-            deleteRoute(parada.getRutasDeSalida().getFirst()); //por la logica de queue, la lista reduce su tam, por lo que la pos 0 va cambiando
-        }
-        while (!parada.getRutasDeEntrada().isEmpty()) {
-            deleteRoute(parada.getRutasDeEntrada().getFirst());
-        }
-
-        if(map.containsKey(parada)){
-            while(!map.get(parada).isEmpty()){
-                deleteRoute(map.get(parada).getFirst());
-            }
-        }
-        map.remove(parada);
-    }
-
-    /* Nombre: modifyParade
-      Funcion: Modificar el nombre de una parada
-      Retorno: void
-    */
-    public void modifyParade(Parada paradaMod, String nuevoNombre){
-        if(paradaMod != null){
-            paradaMod.setNombreParada(nuevoNombre);
-        }
     }
 
     //for debugging only

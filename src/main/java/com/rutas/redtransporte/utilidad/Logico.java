@@ -3,36 +3,167 @@ package com.rutas.redtransporte.utilidad;
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 
-import javax.swing.text.rtf.RTFEditorKit;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Logico {
 
-    public static void crearDatos(){
-        Grafo g = Grafo.getInstance();
+    /* Nombre: crearDatosGrafo
+             Funcion: Crear datos iniciales para generar Grafo.
+             Retorno: void.
+         */
+    public static void crearDatosGrafo(){
 
-        Parada p1 = new Parada("A", "Bus");
-        Parada p2 = new Parada("B", "Bus");
-        Parada p3 = new Parada("C", "Bus");
-        Parada p4 = new Parada("D", "Bus");
-        Parada p5 = new Parada("E", "Bus");
-        Parada p6 = new Parada("F", "Bus");
-        Parada p7 = new Parada("G", "Carro");
+        Grafo grafo = Grafo.getInstance();
+        Random random = new Random();
 
-        g.addParada(p1);
-        g.addParada(p2);
-        g.addParada(p3);
-        g.addParada(p4);
-        g.addParada(p5);
-        g.addParada(p6);
-        g.addParada(p7);
+        List<Parada> paradas = crearParadas(grafo, random);
+        crearRutas(grafo, random, paradas);
 
-        Ruta first = g.addRoute(new Ruta("first",p1,p2, 10, 100, 4));
-        Ruta second = g.addRoute(new Ruta("second",p1,p5, 20, 150, 8));
-        Ruta third = g.addRoute(new Ruta("third",p3,p5, 15, 120, 2));
-        Ruta fourth = g.addRoute(new Ruta("fourth",p3,p2, 5, 50, 4));
-        Ruta fifth = g.addRoute(new Ruta("fifth",p4,p6, 12, 105, 5.5));
-        Ruta sixth = g.addRoute(new Ruta("sixth",p3,p4, 11, 103, 5));
-        Ruta seventh = g.addRoute(new Ruta("seventh", p1, p7, 30, 2, 4));
+    }
+
+    /* Nombre: crearParadas
+             Funcion: Crear paradas iniciales.
+             Retorno: void.
+         */
+    private static List<Parada> crearParadas(Grafo grafo, Random random){
+
+        List<Parada> paradas = new ArrayList<>();
+
+        String[] transporte = {"Carro", "Bus", "Monorriel"};
+
+        for (char c = 'A'; c <= 'G'; c++) {
+            String nombre = String.valueOf(c);
+            String tipo = transporte[random.nextInt(transporte.length)];
+
+            Parada parada = new Parada(nombre, tipo);
+            grafo.addParada(parada);
+            paradas.add(parada);
+        }
+
+        return paradas;
+    }
+
+    /* Nombre: crearRutas
+             Funcion: Crear rutas iniciales.
+             Retorno: void.
+         */
+    private static void crearRutas(Grafo grafo, Random random, List<Parada> paradas){
+        String[] nombreRutas = {
+                "first", "second", "third", "fourth",
+                "fifth", "sixth", "seventh"
+        };
+
+        for (String nombre : nombreRutas) {
+
+            Parada origen = paradas.get(random.nextInt(paradas.size()));
+            Parada destino = paradas.get(random.nextInt(paradas.size()));
+
+            while (origen == destino) {
+                destino = paradas.get(random.nextInt(paradas.size()));
+            }
+
+            int distancia = random.nextInt(30) + 1; // 1–30
+            int pasajeros = random.nextInt(200) + 1; // 1–200
+            double tiempo = 2 + random.nextDouble() * 8; // 2–10
+
+            grafo.addRoute(new Ruta(nombre, origen, destino, distancia, pasajeros, tiempo));
+        }
+    }
+
+    /* Nombre: checkText
+          Funcion: Revisar si el texto está vacío.
+          Retorno: String (El texto obtenido del textField).
+      */
+    public static String checkText(TextField txtField){
+        String txt = txtField.getText().trim();
+
+        if(txt.isEmpty())
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
+        return txt;
+    }
+
+    /* Nombre: checkNumeric
+              Funcion: Revisar que string recibido sea un número.
+              Retorno: double (Número obtenido).
+          */
+    public static double checkNumeric(String value){
+
+        double number = 0;
+
+        try{
+            number = Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            Mensaje.showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","Escriba un valor númerico.");
+        }
+
+        return number;
+    }
+
+    /* Nombre: emptyFields
+              Funcion: Revisar que un número variable de campos no estén vacíos.
+              Retorno: boolean(true si los campos están vacíos).
+          */
+    public static boolean emptyFields(Node... components){
+        for (Node component : components) {
+            if(component instanceof TextInputControl txt){
+                if(txt.getText().isEmpty())
+                    return true;
+
+            }else if (component instanceof ComboBox<?> cbx) {
+                if(cbx.getValue() == null)
+                    return true;
+
+            }else if (component instanceof CheckBox checkBox) {
+                if(!checkBox.isSelected()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /* Nombre: cleanFields
+           Funcion: Permite limipiar un número variable de campos.
+           Retorno: void.
+       */
+    public static void cleanFields(Node... components){
+        for (Node component : components) {
+            if(component instanceof TextInputControl txt){
+                txt.clear();
+
+            }else if (component instanceof ComboBox<?> cbx) {
+                cbx.getSelectionModel().clearSelection();
+                cbx.setValue(null);
+
+            }else if (component instanceof CheckBox checkBox) {
+                checkBox.setSelected(false);
+            }
+        }
+    }
+
+    /* Nombre: getAttributes
+        Funcion: Crear una ObservableList para mostrar las opciones en comboBox.
+
+                 Utiliza un stream que recorre la estructura de datos enviada, conviertiendo
+                 cada elemento según indica la  función mapper.
+
+        Retorno: ObservableList.
+    */
+    public static <T> ObservableList<String> getAttributes(Collection<T> data, Function<T,String> mapper){
+        List<String> list = data.stream()
+                .map(mapper)
+                .collect(Collectors.toList());
+
+        return FXCollections.observableArrayList(list);
     }
 }
