@@ -2,11 +2,6 @@ package com.rutas.redtransporte.modelos;
 
 import java.util.*;
 
-/* Clase: Grafo
-   Proposito: Modelar grafos dirigidos utilizando HashMaps
-   Metodos://///
- */
-
 public class Grafo {
     private Map<Parada, List<Ruta>> map;
     private static Grafo grafo;
@@ -34,10 +29,6 @@ public class Grafo {
 
     public List<Ruta> getListRutas(){return allRutas;}
 
-    /* Nombre: addParada
-       Funcion: agrega un nodo (parada) al grafo
-       Retorno: void
-     */
     public Object addParada(Parada parada) {
         if (parada == null) {
             throw new IllegalArgumentException("Parada debe existir.");
@@ -46,10 +37,6 @@ public class Grafo {
         return map.putIfAbsent(parada, new ArrayList<>());
     }
 
-    /* Nombre: getParada
-        Funcion: Buscar parada a partir de su nombre.
-        Retorno: Parada.
-    */
     public Parada getParada(String nombreParada){
         List<Parada> paradas = new ArrayList<>(grafo.getSetParadas());
 
@@ -59,11 +46,7 @@ public class Grafo {
                 .orElse(null);
     }
 
-    /* Nombre: deleteParade
-    Funcion: Se encarga de eliminar una parada, eliminando sus conexiones (las rutas que llevan a esta) y luego eliminandola del map para no dejar conexion
-    Retorno: void
-  */
-    public void deleteParade(Parada parada){
+    public void deleteParada(Parada parada){
         if(parada == null){
             throw new IllegalArgumentException("La parada proporcionada es nula");
         }
@@ -78,20 +61,12 @@ public class Grafo {
         map.remove(parada);
     }
 
-    /* Nombre: modifyParade
-      Funcion: Modificar el nombre de una parada
-      Retorno: void
-    */
     public void modifyParade(Parada paradaMod, String nuevoNombre){
         if(paradaMod != null){
             paradaMod.setNombreParada(nuevoNombre);
         }
     }
 
-    /* Nombre: addRoute
-      Funcion: crea una arista que une los nodos (origen/destino) y agrega la ruta a la lista de rutas disp para esa parada
-      Retorno: Ruta creada
-    */
     public Ruta addRoute(Ruta ruta) {
         if (ruta == null) {
             throw new IllegalArgumentException("La ruta debe existir.");
@@ -114,10 +89,6 @@ public class Grafo {
         return ruta;
     }
 
-    /* Nombre: routeExists
-      Funcion: Verifica que una ruta exista para la parada de origen.
-      Retorno: boolean.
-    */
     public boolean routeExists(Ruta newRuta){
 
         List<Ruta> rutas = newRuta.getOrigen().getRutasDeSalida();
@@ -125,10 +96,6 @@ public class Grafo {
         return rutas.stream().anyMatch(ruta -> ruta.equals(newRuta));
     }
 
-    /* Nombre: deleteRoute
-      Funcion: Eliminar la ruta tomando el origen y el destino de esta y verificando si se encuentra en el map, en caso de encontrarla
-      Retorno: void
-    */
     public void deleteRoute(Ruta routeToDel) {
         if (routeToDel == null) {
             throw new IllegalArgumentException("La ruta proporcionada es nula.");
@@ -144,11 +111,6 @@ public class Grafo {
         destino.removeRutaEntrada(routeToDel);
     }
 
-    /* Nombre: modifyRoute
-      Funcion: Modificar los datos de una ruta tales como el nombre, el precio, la distancia(ponderacion) y el tiempo. Asi como tambien modificar su parada
-      origen y destino, eliminando sus conexiones y volviendo a generarlas con nuestras nuevas paradas
-      Retorno: void
-    */
     public void modifyRoute(Ruta route, Parada nuevoOrigen, Parada nuevoDestino, String nuevoNombre, Double nuevoPrecio, Double nuevoTiempo, Double nuevaDistancia){
         if(route == null){
             throw new IllegalArgumentException("La ruta proporcionada es nula.");
@@ -160,7 +122,7 @@ public class Grafo {
             route.setCosto(nuevoPrecio);
         if(nuevaDistancia != null && nuevaDistancia >= 0)
             route.setDistancia(nuevaDistancia);
-        if(nuevoTiempo != null && nuevoTiempo != 0)
+        if(nuevoTiempo != null && nuevoTiempo > 0)
             route.setTiempo(nuevoTiempo);
 
         if(nuevoOrigen != null && !nuevoOrigen.equals(route.getOrigen())){
@@ -178,14 +140,10 @@ public class Grafo {
         }
 
         route.setDisponibilidad(true);
-        route.setActividad("Trafico usual");
+        route.setEventoTrafico(Ruta.Evento.STANDARD);
     }
 
 
-    /* Nombre: buscarRutasSalida
-    Funcion: Devolver un menu de rutas que puedes tomar estando en una parada especifica
-    Retorno: Lista de rutas
-  */
     public List<Ruta> buscarRutasSalida(Parada parade){
         return map.get(parade);
     }
@@ -193,15 +151,53 @@ public class Grafo {
 
     /* Nombre: eventSimulator
        Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
-       Valores -> 0 -> trafico standard, atributos standard
-       1 -> trafico -> atributos * 1.5
-       2-> accidente -> atributos se duplican
-       3-> lluvias fuertes ->
+       Valores -> 0 -> trafico standard, atributos standard, probabilidad 70%
+       1 -> trafico -> atributos aumentan 1.5, probabilidad 10%
+       2-> accidente -> se marca la ruta como no diponible, probabilidad 5%
+       3-> lluvias fuertes -> atributos aumentan 1.25, probabilidad 5%
        Retorno: void
      */
     public void eventSimulator(){
-        Random random = new Random();
+        for(Ruta route: allRutas){
+            Ruta.Evento eventoActual = calcularProbabilidadEvento();
+            aplicarEvento(route, eventoActual);
+        }
+    }
 
+    public Ruta.Evento calcularProbabilidadEvento(){
+        double probabilidad = Math.random();
+        if(probabilidad <= 0.10) //10% de probabilidad
+            return Ruta.Evento.ACCIDENTE;
+        if(probabilidad <= 0.15) //5% de probabilidad de 10 a 15
+            return Ruta.Evento.LLUVIA;
+        if(probabilidad <= 0.30) //15% de probabilidad de 15 a 30
+            return Ruta.Evento.TRAFICO;
+
+        return Ruta.Evento.STANDARD; //70% de probabilidad
+    }
+
+    public void aplicarEvento(Ruta route, Ruta.Evento evento){
+        route.setEventoTrafico(evento);
+        switch (evento){
+            case STANDARD -> {
+                route.setDisponibilidad(true);
+                route.setTiempo(route.getTiempoBase());
+                route.setCosto(route.getCostoBase());
+            }
+            case TRAFICO -> {
+                route.setDisponibilidad(true);
+                route.setTiempo(route.getTiempoBase() * 1.5);
+                route.setCosto(route.getCostoBase() * 1.5);
+            }
+            case LLUVIA -> {
+                route.setDisponibilidad(true);
+                route.setTiempo(route.getTiempoBase() * 1.25);
+                route.setCosto(route.getCostoBase() * 1.25);
+            }
+            case ACCIDENTE -> {
+                route.setDisponibilidad(false);
+            }
+        }
     }
 
     //for debugging only

@@ -76,7 +76,7 @@ public class CrearParadaController {
 
     public void eliminarParada(Parada parada) {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Si elimina esta parada, todas las rutas relacionadas serán eliminadas.");
-        grafo.deleteParade(paradaSelect);
+        grafo.deleteParada(paradaSelect);
     }
 
     public void setScene(Parada parada){

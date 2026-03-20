@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/* Clase: Parada
-   Proposito: Modelar los componentes de las paradas
-   Metodos: addRoute, removeRoute
- */
-
 public class Parada {
     private int idParada;
     private String nombreParada;
@@ -71,38 +66,22 @@ public class Parada {
         return rutasDeSalida;
     }
 
-    /* Nombre: addRutaSalida
-           Funcion: Agrega una ruta disponible que sale de esta parada, es decir del origen al destino
-           Retorno: void
-         */
     public void addRutaSalida(Ruta route){
         if(route != null){
             rutasDeSalida.add(route);
         }
     }
 
-    /* Nombre: removeRutaSalida
-      Funcion: Eliminar la ruta como disponible para esta parada
-      Retorno: void
-    */
     public void removeRutaSalida(Ruta route){
         rutasDeSalida.remove(route);
     }
 
-    /* Nombre: addRutaEntrada
-          Funcion: Agrega una ruta que entra al destino
-          Retorno: void
-        */
     public void addRutaEntrada(Ruta route){
         if(route != null){
             rutasDeEntrada.add(route);
         }
     }
 
-    /* Nombre: removeRutaEntrada
-      Funcion: Eliminar la ruta como entrada para este destino
-      Retorno: void
-    */
     public void removeRutaEntrada(Ruta route){
         rutasDeEntrada.remove(route);
     }

@@ -13,8 +13,8 @@ public class Ruta {
         TRANSBORDO, COSTO, TIEMPO, DISTANCIA;
     }
 
-    public enum evento{
-        TRAFICO, ACCIDENTE, LLUVIA;
+    public enum Evento{
+        TRAFICO, ACCIDENTE, LLUVIA, STANDARD;
     }
 
     private int idRuta;
@@ -22,9 +22,11 @@ public class Ruta {
     private boolean disponibilidad;
     private double tiempo;
     private double costo;
+    private double tiempoBase;
+    private double costoBase;
     private double distancia;
     private int transbordos;
-    private String actividad; //podria ser una clase, describe si hay trafico, si no ha pasado nada, si hay mucha lluvia o si hubo un accidente
+    private Evento eventoTrafico;
     private Parada origen;
     private Parada destino;
 
@@ -35,11 +37,13 @@ public class Ruta {
         this.costo = costo;
         this.tiempo = tiempo;
         this.distancia = distancia;
+        this.costoBase = costo;
+        this.tiempoBase = tiempo;
 
         //Valores iniciales al crear una nueva ruta
         this.transbordos = 0;
         this.disponibilidad = true;
-        this.actividad = "Standard";
+        this.eventoTrafico = Evento.STANDARD;
     }
 
     public int getIdRuta() {
@@ -82,6 +86,10 @@ public class Ruta {
         this.tiempo = tiempo;
     }
 
+    public double getTiempoBase() { return tiempoBase;}
+
+    public double getCostoBase() { return costoBase;}
+
     public double getDistancia() {
         return distancia;
     }
@@ -98,13 +106,9 @@ public class Ruta {
         this.transbordos = transbordos;
     }
 
-    public String getActividad() {
-        return actividad;
-    }
+    public Evento getEventoTrafico() { return eventoTrafico;}
 
-    public void setActividad(String actividad) {
-        this.actividad = actividad;
-    }
+    public void setEventoTrafico(Evento eventoTrafico) { this.eventoTrafico = eventoTrafico;}
 
     public Parada getOrigen() {
         return origen;
@@ -122,10 +126,27 @@ public class Ruta {
         this.destino = destino;
     }
 
-    /* Nombre: obtenerCriterio
-     Funcion: Devuelve un valor numerico segun la ponderacion que le pidan
-     Retorno: double
-   */
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Ruta)) return false;
+
+        return equalsDatos((Ruta)o);
+    }
+
+    private boolean equalsDatos(Ruta comparar){
+        boolean nombre = nombreRuta.toLowerCase().equals(comparar.nombreRuta.toLowerCase());
+        boolean origen = this.origen.equals(comparar.getOrigen());
+        boolean destino = this.destino.equals(comparar.getDestino());
+
+        return nombre || (origen && destino);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombreRuta.toLowerCase());
+    }
+
     public double obtenerCriterio(Peso peso){
 
         switch (peso){
@@ -151,26 +172,5 @@ public class Ruta {
     @Override
     public String toString() {
         return nombreRuta + "-->" + destino;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof Ruta)) return false;
-
-        return equalsDatos((Ruta)o);
-    }
-
-    private boolean equalsDatos(Ruta comparar){
-        boolean nombre = nombreRuta.toLowerCase().equals(comparar.nombreRuta.toLowerCase());
-        boolean origen = this.origen.equals(comparar.getOrigen());
-        boolean destino = this.destino.equals(comparar.getDestino());
-
-        return nombre || (origen && destino);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nombreRuta.toLowerCase());
     }
 }

@@ -21,38 +21,36 @@ public class Dijkstra {
         cola.add(new Node(origen, 0.0)); //se agrega la primera parada como 0, como en el video, no ha recorrido nada, lo mismo con la distancia
 
         while(!cola.isEmpty()){
-            Node node = cola.poll(); //obtengo el primero
-            Parada currentParade = node.getParada(); //obtengo la parada de ese nodo
+            Node node = cola.poll();
+            Parada currentParade = node.getParada();
 
-            if(visited.contains(currentParade)){ //si ya esta en la lista de visitadas debo ignorarlo
+            if(visited.contains(currentParade)){
                 continue;
             }
-            visited.add(currentParade); // si no, lo agrego
+            visited.add(currentParade);
 
-            //Aplicamos early return si la parada que obtuve es la misma a la que quiero llegar, no hay recorrido por hacer
             if(currentParade == destino){
                 break;
             }
-            //Iteramos las rutas que salen de esta parada
             for(Ruta route: graph.buscarRutasSalida(currentParade)){
-               if(!route.isDisponibilidad()){ //si la ruta esta cerrada, la ignoramos
+               if(!route.isDisponibilidad()){
                     continue;
                 }
 
-                Parada neighbour = route.getDestino(); //Parada a la que quiero ir
+                Parada neighbour = route.getDestino();
                 double routesWeight = route.obtenerCriterio(criterio);
-                double nuevoPeso = node.getTotalWeight() + routesWeight; //Peso necesario para llegar al destino
+                double nuevoPeso = node.getTotalWeight() + routesWeight;
 
-                if(nuevoPeso < distance.getOrDefault(neighbour, infinito)){ //si no encuentra el vecino en la lista, se asigna infinito, sino me devuelve su peso, si este es mayor que el que calculamos, no es optimo
-                    distance.put(neighbour, nuevoPeso); //agrego la parada y su distancia
-                    anterior.put(neighbour, route); //guardo la ruta anterior a esa parada
-                    cola.add(new Node(neighbour, nuevoPeso)); //guardo la optimizacion en el queue
+                if(nuevoPeso < distance.getOrDefault(neighbour, infinito)){
+                    distance.put(neighbour, nuevoPeso);
+                    anterior.put(neighbour, route);
+                    cola.add(new Node(neighbour, nuevoPeso));
                 }
             }
         }
 
         Double totalDist = distance.get(destino);
-        if(totalDist == null || totalDist.isInfinite()){ //si la distancia total es null o se quedo con infinito, significa que no hay ruta para llegar
+        if(totalDist == null || totalDist.isInfinite()){
             return null;
         }
 

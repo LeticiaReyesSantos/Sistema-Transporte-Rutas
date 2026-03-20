@@ -30,9 +30,6 @@ public class ShortestPath {
         this.pesoTotal = pesoTotal;
     }
 
-    //solo getters, ya que no tiene sentido modificar la ruta ganadora
-
-
     public double getTotalPrice() {
         return totalPrice;
     }
