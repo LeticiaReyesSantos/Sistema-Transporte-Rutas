@@ -19,15 +19,26 @@ public class ShortestPath {
     private Ruta.Peso criterioEvaluado; //
     private double pesoTotal;
 
-    public ShortestPath(double totalPrice, double totalTime, double totalDistance, int totalTranfers,
-                        List<Ruta> rutasRecorridas, Ruta.Peso criterioEvaluado, double pesoTotal) {
-        this.totalPrice = totalPrice;
-        this.totalTime = totalTime;
-        this.totalDistance = totalDistance;
-        this.totalTranfers = totalTranfers;
+    //cambie el constructor porque se utiliza este calculo en todos los algoritmos
+    public ShortestPath(List<Ruta> rutasRecorridas, Ruta.Peso criterioEvaluado, double pesoTotal) {
         this.rutasRecorridas = rutasRecorridas;
         this.criterioEvaluado = criterioEvaluado;
         this.pesoTotal = pesoTotal;
+
+        this.totalPrice = 0;
+        this.totalTime = 0;
+        this.totalDistance = 0;
+
+        if (rutasRecorridas != null && !rutasRecorridas.isEmpty()) {
+            for (Ruta r : rutasRecorridas) {
+                this.totalPrice += r.getCosto();
+                this.totalTime += r.getTiempo();
+                this.totalDistance += r.getDistancia();
+            }
+            this.totalTranfers = Math.max(0, rutasRecorridas.size() - 1);
+        } else {
+            this.totalTranfers = 0;
+        }
     }
 
     public double getTotalPrice() {
@@ -57,6 +68,7 @@ public class ShortestPath {
     public double getPesoTotal() {
         return pesoTotal;
     }
+
 
     public String toString(){
         return "Criterio Evaluado: " + criterioEvaluado + "\n"
