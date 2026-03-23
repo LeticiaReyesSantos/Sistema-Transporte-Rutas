@@ -1,9 +1,6 @@
 package com.rutas.redtransporte.modelos;
 
-import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
-import com.brunomnsilva.smartgraph.graph.Edge;
-import com.brunomnsilva.smartgraph.graph.Graph;
-import com.brunomnsilva.smartgraph.graph.Vertex;
+import com.brunomnsilva.smartgraph.graph.*;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
 import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
@@ -14,11 +11,12 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URI;
 import java.util.Objects;
 
-public class GrafoPanel{
+public class GrafoVisual {
 
     private SmartGraphPanel<Parada, Ruta> panelMapa;
+    Digraph<Parada, Ruta> grafoVisual = new DigraphEdgeList<>();
 
-    private void iniciarMapa() {
+    public void iniciarMapa(AnchorPane panelPrincipal) {
         grafoVisual = new DigraphEdgeList<>();
         sincronizarGrafo();
 
@@ -43,7 +41,7 @@ public class GrafoPanel{
         AnchorPane.setLeftAnchor(panelMapa, 0.0);
         AnchorPane.setRightAnchor(panelMapa, 0.0);
 
-        slider.getChildren().add(panelMapa);
+        panelPrincipal.getChildren().add(panelMapa);
         panelMapa.toBack();
 
         Platform.runLater(() -> {
@@ -52,7 +50,46 @@ public class GrafoPanel{
         });
     }
 
-    private Vertex<Parada> getVertex(Parada parada){
+    public void crearParada(Parada parada){
+        grafoVisual.insertVertex(parada);
+        panelMapa.update();
+    }
+
+    public void eliminarParada(Parada parada){
+        grafoVisual.removeVertex(getVertex(parada));
+        panelMapa.update();
+    }
+
+    public void crearRuta(Ruta ruta){
+        insertEdge(ruta);
+        panelMapa.update();
+    }
+
+    public void modificarRuta(Ruta oldRuta, Ruta newRuta){
+        grafoVisual.removeEdge(getEdge(oldRuta));
+        insertEdge(newRuta);
+        panelMapa.update();
+
+    }
+
+    public void eliminarRuta(Ruta ruta){
+        grafoVisual.removeEdge(getRuta(ruta));
+        panelMapa.update();
+    }
+
+    public void insertEdge(Ruta ruta){
+        grafoVisual.insertEdge(ruta.getOrigen(),ruta.getDestino(),ruta);
+    }
+
+    private Edge<Ruta,Parada> getRuta(Ruta ruta){
+        return grafoVisual.edges()
+                .stream()
+                .filter(edge -> edge.element().equals(ruta))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Vertex<Parada> getVertex(Parada parada){
         return grafoVisual.vertices()
                 .stream()
                 .filter(vertex -> vertex.element().equals(parada))
@@ -61,11 +98,35 @@ public class GrafoPanel{
 
     }
 
-    private Edge<Ruta,Parada> getEdge(Ruta ruta){
+    public Edge<Ruta,Parada> getEdge(Ruta ruta){
         return grafoVisual.edges()
                 .stream()
                 .filter(edge -> edge.element().equals(ruta))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void sincronizarGrafo() {
+        var mapaBackend = Grafo.getInstance().getMap();
+
+        for (Parada p : mapaBackend.keySet()) {
+            try { grafoVisual.insertVertex(p); } catch (Exception ignored) {}
+        }
+        for (Parada origen : mapaBackend.keySet()) {
+            for (Ruta r : mapaBackend.get(origen)) {
+
+                try {
+                    grafoVisual.insertEdge(origen, r.getDestino(), r);
+                    System.out.println("Entra try rutas");
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
+
+    public void actualizarMapa() {
+        sincronizarGrafo();
+        panelMapa.update();
+        panelMapa.setAutomaticLayout(true);
     }
 }

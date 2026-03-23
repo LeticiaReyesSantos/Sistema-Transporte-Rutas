@@ -10,6 +10,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
@@ -36,8 +37,21 @@ public class CrearRutaController {
     @FXML
     private TextField txtCosto;
 
+    @FXML
+    private Button btnAceptar;
 
-    private Grafo grafo = Grafo.getInstance();
+    @FXML
+    private Button btnCancelar;
+
+    @FXML
+    private Button btnModificar;
+
+    @FXML
+    private Button btnEliminar;
+
+    private final Grafo grafo = Grafo.getInstance();
+    private MainController mainController = null;
+    private Ruta rutaSelected = null;
 
     /* Nombre: initialize
         Funcion: Inicializar elementos.
@@ -74,43 +88,123 @@ public class CrearRutaController {
             return;
         }
 
-        if (MainController.instance != null) {
-            MainController.instance.actualizarMapa();
-        }
-
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,ruta.getNombreRuta());
         Logico.cleanFields(txtNombre,cbxOrigen,cbxDestino,txtDistancia,txtTiempo,txtCosto);
 
+        mainController.getGrafoVisual().crearRuta(ruta);
     }
 
     /* Nombre: createRuta
-        Funcion: Crear una ruta a partir de los datos ingresados por el usuario.
-        Retorno: Ruta: ruta creada.
+    Funcion: Crear una ruta a partir de los datos ingresados por el usuario.
+    Retorno: (Ruta) ruta creada.
     */
     public Ruta createRuta(){
 
-        if(Logico.emptyFields(txtNombre,cbxOrigen,cbxDestino,txtDistancia,txtTiempo,txtCosto)){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
-            return null;
-        } else if (cbxOrigen.getValue() != null && cbxOrigen.getValue().equals(cbxDestino.getValue())) {
-            Mensaje.showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","El destino no puede ser el origen.");
-            return null;
-        }
+        if(verificarRuta())
+            return new Ruta(txtNombre.getText(),
+                    grafo.getParada(cbxOrigen.getValue()),
+                    grafo.getParada(cbxDestino.getValue()),
+                    Double.parseDouble(txtDistancia.getText()),
+                    Double.parseDouble(txtTiempo.getText()),
+                    Double.parseDouble(txtCosto.getText()));
 
-        Double distancia = Logico.checkNumeric(txtDistancia.getText());
-        Double tiempo = Logico.checkNumeric(txtTiempo.getText());
-        Double costo = Logico.checkNumeric(txtCosto.getText());
-
-        if(distancia < 0 || tiempo < 0 || costo == 0)
-            return null;
-
-        return new Ruta(txtNombre.getText(),
-                        grafo.getParada(cbxOrigen.getValue()),
-                        grafo.getParada(cbxDestino.getValue()),
-                        costo,tiempo,distancia);
+        return null;
     }
 
+    /* Nombre: verificarRuta
+    Funcion: Verifica los datos ingresados por el usuario.
+    Retorno: (boolean) -true- si son válidos.
+    */
+    public boolean verificarRuta(){
 
+        if(Logico.emptyFields(txtNombre,cbxOrigen,cbxDestino,txtDistancia,txtTiempo,txtCosto)){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
+            return false;
+
+        } else if (cbxOrigen.getValue() != null && cbxOrigen.getValue().equals(cbxDestino.getValue())) {
+            Mensaje.showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","El destino no puede ser el origen.");
+            return false;
+
+        }else return Logico.inputIsNumeric(txtDistancia.getText(), txtTiempo.getText(), txtCosto.getText());
+
+    }
+
+    /* Nombre: setScene
+    Funcion: Organiza la ventana para mostrar el elemento seleccionado.
+    Retorno: void.
+    */
+    public void setScene(Ruta ruta){
+
+        btnEliminar.setVisible(true);
+        btnModificar.setVisible(true);
+        btnAceptar.setVisible(false);
+        btnCancelar.setLayoutX(244);
+
+        rutaSelected = ruta;
+        loadRutaInfo(ruta);
+    }
+
+    /* Nombre: modificar
+    Funcion: Modificar una ruta.
+    Retorno: void.
+    */
+    public void modificar(){
+        Ruta oldRuta = new Ruta(rutaSelected);
+
+        if(verificarRuta()){
+            rutaSelected.setNombreRuta(txtNombre.getText());
+            rutaSelected.setOrigen(grafo.getParada(cbxOrigen.getValue()));
+            rutaSelected.setDestino(grafo.getParada(cbxDestino.getValue()));
+            rutaSelected.setDistancia(Double.parseDouble(txtDistancia.getText()));
+            rutaSelected.setTiempo(Double.parseDouble(txtTiempo.getText()));
+            rutaSelected.setCosto(Double.parseDouble(txtCosto.getText()));
+        }
+
+        grafo.modifyRoute(oldRuta,rutaSelected);
+
+        System.out.println(grafo.getRuta(rutaSelected).getDestino().getNombreParada());
+
+        Mensaje.defaultMessages(Mensaje.OpcionMensaje.MODIFIED,null);
+        mainController.getGrafoVisual().modificarRuta(oldRuta,rutaSelected);
+        //mainController.actualizarMapa();
+
+        Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
+        Visual.closeWindow(btnModificar);
+    }
+
+    /* Nombre: eliminarRuta
+        Funcion: Elimina la ruta seleccionada.
+        Retorno: void.
+    */
+    public void eliminarRuta() {
+        Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Las paradas de esta ruta se desconectarán.");
+        grafo.deleteRoute(rutaSelected);
+
+        mainController.getGrafoVisual().eliminarRuta(rutaSelected);
+    }
+
+    /* Nombre: loadRutaInfo
+       Funcion: Carga la información del elemento seleccionado.
+       Retorno: void.
+   */
+    public void loadRutaInfo(Ruta ruta){
+        txtNombre.setText(ruta.getNombreRuta());
+
+        cbxOrigen.setValue(ruta.getOrigen().getNombreParada());
+        cbxDestino.setValue(ruta.getDestino().getNombreParada());
+
+        txtDistancia.setText(String.valueOf(ruta.getDistancia()));
+        txtTiempo.setText(String.valueOf(ruta.getTiempo()));
+        txtCosto.setText(String.valueOf(ruta.getCosto()));
+    }
+
+    /* Nombre: setMainController
+       Funcion: Asigna la instancia de mainController.
+       Retorno: void.
+   */
+    public void setMainController(MainController mainController){
+        this.mainController = mainController;
+    }
 
     /* Nombre: volver
         Funcion: Volver a la ventana principal.

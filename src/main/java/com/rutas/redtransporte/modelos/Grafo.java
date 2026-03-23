@@ -27,7 +27,24 @@ public class Grafo {
         return map.keySet();
     }
 
+    public Parada getParada(String nombreParada){
+
+        return map.keySet().stream()
+                .filter(parada -> parada.getNombreParada().equals(nombreParada))
+                .findFirst()
+                .orElse(null);
+
+    }
+
     public List<Ruta> getListRutas(){return allRutas;}
+
+    public Ruta getRuta(Ruta ruta){
+
+        return map.get(ruta.getOrigen()).stream()
+                .filter(rutaEncontrada -> rutaEncontrada.getNombreRuta().equals(ruta.getNombreRuta()))
+                .findFirst()
+                .orElse(null);
+    }
 
     public Object addParada(Parada parada) {
         if (parada == null) {
@@ -35,15 +52,6 @@ public class Grafo {
         }
 
         return map.putIfAbsent(parada, new ArrayList<>());
-    }
-
-    public Parada getParada(String nombreParada){
-        List<Parada> paradas = new ArrayList<>(grafo.getSetParadas());
-
-        return paradas.stream()
-                .filter(parada -> parada.getNombreParada().equals(nombreParada))
-                .findFirst()
-                .orElse(null);
     }
 
     public void deleteParada(Parada parada){
@@ -72,7 +80,7 @@ public class Grafo {
             throw new IllegalArgumentException("La ruta debe existir.");
         }
 
-        if (ruta.getOrigen() == null || ruta.getDestino() == null) { //validar si ruta == null, validar el object primero siempre
+        if (ruta.getOrigen() == null || ruta.getDestino() == null) {
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
         }
 
@@ -88,6 +96,7 @@ public class Grafo {
 
         return ruta;
     }
+
 
     public boolean routeExists(Ruta newRuta){
 
@@ -111,38 +120,25 @@ public class Grafo {
         destino.removeRutaEntrada(routeToDel);
     }
 
-    public void modifyRoute(Ruta route, Parada nuevoOrigen, Parada nuevoDestino, String nuevoNombre, Double nuevoPrecio, Double nuevoTiempo, Double nuevaDistancia){
-        if(route == null){
+    public void modifyRoute(Ruta oldRuta, Ruta newRuta){
+        if(newRuta == null){
             throw new IllegalArgumentException("La ruta proporcionada es nula.");
         }
 
-        if(nuevoNombre!= null && !nuevoNombre.isBlank())
-            route.setNombreRuta(nuevoNombre);
-        if(nuevoPrecio != null && nuevoPrecio >=0)
-            route.setCosto(nuevoPrecio);
-        if(nuevaDistancia != null && nuevaDistancia >= 0)
-            route.setDistancia(nuevaDistancia);
-        if(nuevoTiempo != null && nuevoTiempo > 0)
-            route.setTiempo(nuevoTiempo);
-
-        if(nuevoOrigen != null && !nuevoOrigen.equals(route.getOrigen())){
-            map.putIfAbsent(nuevoOrigen, new ArrayList<>());
-            map.get(route.getOrigen()).remove(route); //Borro la ruta actual
-            route.setOrigen(nuevoOrigen);//cambio a la parada nueva
-            map.get(nuevoOrigen).add(route); //vuelvo a unir la ruta
+        if(newRuta.getOrigen() != null && !newRuta.getOrigen().equals(oldRuta.getOrigen())){
+            map.get(oldRuta.getOrigen()).remove(newRuta);
+            map.get(newRuta.getOrigen()).add(newRuta);
+            newRuta.getOrigen().addRutaEntrada(newRuta);
         }
 
-        if(nuevoDestino != null && !nuevoDestino.equals(route.getDestino())){
-            map.putIfAbsent(nuevoDestino, new ArrayList<>());
-            route.getDestino().removeRutaEntrada(route); //borro las rutas de entrada de la parada antigua
-            route.setDestino(nuevoDestino); //cambio a la parada nueva
-            nuevoDestino.addRutaEntrada(route); //uno el destino a la ruta actual a partir del listado de rutas que entran a la parada nueva
+        if(newRuta.getDestino() != null && !newRuta.getDestino().equals(oldRuta.getDestino())){
+            oldRuta.getDestino().removeRutaEntrada(newRuta);
+            newRuta.getDestino().addRutaEntrada(newRuta);
         }
 
-        route.setDisponibilidad(true);
-        route.setEventoTrafico(Ruta.Evento.STANDARD);
+        newRuta.setDisponibilidad(true);
+        newRuta.setEventoTrafico(Ruta.Evento.STANDARD);
     }
-
 
     public List<Ruta> buscarRutasSalida(Parada parade){
         return map.get(parade);

@@ -72,12 +72,16 @@ public class Logico {
                 destino = paradas.get(random.nextInt(paradas.size()));
             }
 
-            int distancia = random.nextInt(30) + 1; // 1–30
-            int pasajeros = random.nextInt(200) + 1; // 1–200
-            double tiempo = 2 + random.nextDouble() * 8; // 2–10
+            double distancia = limitarDecimales(1 + random.nextDouble() * (200 - 1));
+            double costo = limitarDecimales(1 + random.nextDouble() * (500 - 1)); // 1–200
+            double tiempo = limitarDecimales(1 + random.nextDouble() * (30 - 1));
 
-            grafo.addRoute(new Ruta(nombre, origen, destino, distancia, pasajeros, tiempo));
+            grafo.addRoute(new Ruta(nombre, origen, destino, costo, tiempo, distancia));
         }
+    }
+
+    public static double limitarDecimales(double numero){
+        return Math.round(numero * 100.0) / 100.0;
     }
 
     /* Nombre: checkText
@@ -92,21 +96,25 @@ public class Logico {
         return txt;
     }
 
-    /* Nombre: checkNumeric
-              Funcion: Revisar que string recibido sea un número.
+    /* Nombre: inputIsNumeric
+              Funcion: Revisar que los strings recibido sea un número.
               Retorno: double (Número obtenido).
           */
-    public static double checkNumeric(String value){
+    public static boolean inputIsNumeric(String... values){
+        double numero = 0;
 
-        double number = 0;
+        for (String value : values) {
+            try{
+                numero = Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                Mensaje.showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","Escriba un valor númerico.");
+            }
 
-        try{
-            number = Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            Mensaje.showMessage(Alert.AlertType.ERROR,"Error","Dato inválido.","Escriba un valor númerico.");
+            if(numero < 1)
+                return false;
         }
 
-        return number;
+        return true;
     }
 
     /* Nombre: emptyFields

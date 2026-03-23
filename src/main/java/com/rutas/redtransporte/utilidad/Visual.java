@@ -16,22 +16,29 @@ public class Visual {
        Funcion: Abrir una ventana sobre la ventana principal.
        Retorno: void
     */
-   public static FXMLLoader openNewWindow(String fxml, String css) throws IOException{
-       Stage stage = new Stage();
+   public static FXMLLoader openNewWindow(String fxml, String css){
 
-       stage.initOwner(Principal.mainStage);
-       stage.initModality(Modality.APPLICATION_MODAL);
+       try{
+           Stage stage = new Stage();
 
-       FXMLLoader fxmlLoader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));
-       Scene scene = new Scene(fxmlLoader.load());
+           stage.initOwner(Principal.mainStage);
+           stage.initModality(Modality.APPLICATION_MODAL);
 
-       if(css != null)
-           scene.getStylesheets().add(Visual.class.getResource("/appvisuals/"+css).toExternalForm());
+           FXMLLoader fxmlLoader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));
+           Scene scene = new Scene(fxmlLoader.load());
 
-       stage.setScene(scene);
-       stage.show();
+           if(css != null)
+               scene.getStylesheets().add(Visual.class.getResource("/appvisuals/"+css).toExternalForm());
 
-       return fxmlLoader;
+           stage.setScene(scene);
+           stage.show();
+
+           return fxmlLoader;
+
+       }catch (IOException e) {
+           return null;
+       }
+
    }
 
     /* Nombre: closeWindow

@@ -10,16 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 
 public class CrearParadaController {
-
-    @FXML
-    private AnchorPane anchorPane;
-
-    @FXML
-    private Pane pane;
 
     @FXML
     private ComboBox<String> cbxTipo;
@@ -36,8 +28,9 @@ public class CrearParadaController {
     @FXML
     private Button btnEliminar;
 
-    private Grafo grafo = Grafo.getInstance();
-    private Parada paradaSelect = null;
+    private final Grafo grafo = Grafo.getInstance();
+    private MainController mainController = null;
+    private Parada paradaSelected = null;
 
     public void initialize(){
         cbxTipo.getItems().addAll("Carro","Bus","Monorriel");
@@ -45,27 +38,30 @@ public class CrearParadaController {
 
     /* Nombre: guardarParada
         Funcion: Guardar una parada creada.
-                 *Verifica que el nombre no esté vacío y que la parada no exista.
+                 *Verifica que la parada no exista.
         Retorno: void.
     */
-    public void guardarParada(ActionEvent event) {
+    public void guardarParada(){
 
-        Parada parada = createParada();
+        Parada parada = crearParada();
 
         if(grafo.addParada(parada) != null){
             Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
             return;
         }
 
-        if (MainController.instance != null) {
-            MainController.instance.actualizarMapa();
-        }
+        mainController.getGrafoVisual().crearParada(parada);
 
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,parada.getNombreParada());
         Logico.cleanFields(txtNombre,cbxTipo);
     }
 
-    public Parada createParada(){
+    /* Nombre: createParada
+        Funcion: Crea una parada con los datos ingresados por el usuario.
+                 *Verifica que no haya campos vacíos.
+        Retorno: (Parada) creada.
+    */
+    public Parada crearParada(){
         if(Logico.emptyFields(txtNombre,cbxTipo)){
             Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
             return null;
@@ -74,11 +70,21 @@ public class CrearParadaController {
         return new Parada(Logico.checkText(txtNombre),cbxTipo.getValue());
     }
 
-    public void eliminarParada(Parada parada) {
+    /* Nombre: eliminarParada
+        Funcion: Elimina una parada de manera lógica y visual.
+        Retorno: void.
+    */
+    public void eliminarParada() {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Si elimina esta parada, todas las rutas relacionadas serán eliminadas.");
-        grafo.deleteParada(paradaSelect);
+        grafo.deleteParada(paradaSelected);
+
+        mainController.getGrafoVisual().eliminarParada(paradaSelected);
     }
 
+    /* Nombre: setScene
+       Funcion: Organiza la ventana para mostrar el elemento seleccionado.
+       Retorno: void.
+   */
     public void setScene(Parada parada){
 
         btnAceptar.setLayoutX(111);
@@ -91,8 +97,17 @@ public class CrearParadaController {
         txtNombre.setText(parada.getNombreParada());
         cbxTipo.setValue(parada.getTipo());
 
-        paradaSelect = parada;
+        paradaSelected = parada;
     }
+
+    /* Nombre: setMainController
+        Funcion: Asigna la instancia de mainController.
+        Retorno: void.
+    */
+    public void setMainController(MainController mainController){
+        this.mainController = mainController;
+    }
+
 
     /* Nombre: volver
         Funcion: Volver a la ventana principal.

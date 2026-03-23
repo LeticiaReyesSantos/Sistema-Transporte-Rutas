@@ -1,32 +1,26 @@
 package com.rutas.redtransporte.controllers;
 
 import com.brunomnsilva.smartgraph.graphview.*;
-import com.rutas.redtransporte.modelos.Grafo;
-import com.rutas.redtransporte.modelos.Parada;
-import com.rutas.redtransporte.modelos.Ruta;
+import com.rutas.redtransporte.modelos.GrafoVisual;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Visual;
-import com.brunomnsilva.smartgraph.graph.Digraph;
-import com.brunomnsilva.smartgraph.graph.DigraphEdgeList;
-
-import java.net.URI;
 
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class MainController {
 
     @FXML
-    private AnchorPane slider;
+    private AnchorPane panelPrincipal;
 
     @FXML
     private ImageView menuManager;
@@ -37,54 +31,24 @@ public class MainController {
     @FXML
     private VBox mainMenu;
 
-    public static MainController instance;
-
     private boolean isMenuOpen = false;
 
-    private SmartGraphPanel<Parada, Ruta> panelMapa;
-    Digraph<Parada, Ruta> grafoVisual = new DigraphEdgeList<>();
+    private final GrafoVisual grafoVisual = new GrafoVisual();
 
     public void initialize() {
-        instance = this;
         Logico.crearDatosGrafo();
         setMenu();
-        iniciarMapa();
+        grafoVisual.iniciarMapa(panelPrincipal);
     }
 
-    private void iniciarMapa() {
-        grafoVisual = new DigraphEdgeList<>();
-        sincronizarGrafo();
-
-        SmartGraphProperties properties = new SmartGraphProperties(
-                getClass().getResourceAsStream("/smartgraph.properties")
-        );
-
-        URI cssURI = null;
-        try {
-            cssURI = Objects.requireNonNull(
-                    getClass().getResource("/smartgraph.css")
-            ).toURI();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        SmartPlacementStrategy placement = new SmartRandomPlacementStrategy();
-        panelMapa = new SmartGraphPanel<>(grafoVisual, properties, placement, cssURI);
-
-        AnchorPane.setTopAnchor(panelMapa, 0.0);
-        AnchorPane.setBottomAnchor(panelMapa, 0.0);
-        AnchorPane.setLeftAnchor(panelMapa, 0.0);
-        AnchorPane.setRightAnchor(panelMapa, 0.0);
-
-        slider.getChildren().add(panelMapa);
-        panelMapa.toBack();
-
-        Platform.runLater(() -> {
-                panelMapa.init();
-                panelMapa.setAutomaticLayout(true);
-        });
+    public GrafoVisual getGrafoVisual(){
+        return grafoVisual;
     }
 
+    /* Nombre: setMenu
+        Funcion: Configuraciones iniciales para el menu.
+        Retorno: void.
+    */
     public void setMenu(){
         mainMenu.setTranslateX(-(mainMenu.getPrefWidth() + 12));
         menuManager.setVisible(true);
@@ -92,6 +56,10 @@ public class MainController {
         menuManagerInside.setOnMouseClicked(event -> showMenu());
     }
 
+    /* Nombre: showMenu
+        Funcion: Mostrar y ocultar el menu.
+        Retorno: void.
+    */
     private void showMenu() {
         TranslateTransition slide = new TranslateTransition();
         slide.setDuration(Duration.seconds(0.4));
@@ -110,38 +78,41 @@ public class MainController {
         slide.play();
     }
 
-    public void crearParada(ActionEvent e) throws IOException {
-        Visual.openNewWindow("CrearParada.fxml","Estilo.css");
-    }
+    /* Nombre: menuActions
+       Funcion: Maneja las acciones del menu.
+       Retorno: void.
+   */
+    public void menuActions(ActionEvent e){
+        String id = ((Button) e.getSource()).getId();
 
-    public void mostrarParada(ActionEvent e) throws IOException {
-        Visual.openNewWindow("ShowParada.fxml","Estilo.css");
-    }
-
-    public void crearRuta(ActionEvent e) throws IOException {
-        Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
-    }
-
-    public void mostrarRuta(ActionEvent e) throws IOException {
-        Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
-    }
-
-    public void actualizarMapa() {
-        sincronizarGrafo();
-        panelMapa.update();
-        panelMapa.setAutomaticLayout(true);
-    }
-
-    private void sincronizarGrafo() {
-        var mapaBackend = Grafo.getInstance().getMap();
-
-        for (Parada p : mapaBackend.keySet()) {
-            try { grafoVisual.insertVertex(p); } catch (Exception ignored) {}
-        }
-        for (Parada origen : mapaBackend.keySet()) {
-            for (Ruta r : mapaBackend.get(origen)) {
-                try { grafoVisual.insertEdge(origen, r.getDestino(), r); } catch (Exception ignored) {}
-            }
+        switch (id){
+            case "crearParada" -> openWindow("CrearParada.fxml","Estilo.css");
+            case "mostrarParada" -> openWindow("ShowParada.fxml","Estilo.css");
+            case "crearRuta" -> openWindow("CrearRuta.fxml","Estilo.css");
+            case "mostrarRuta" -> openWindow("ShowRuta.fxml","Estilo.css");
         }
     }
+
+    /* Nombre: openWindow
+       Funcion: Se encarga de abrir las ventanas y asginar la instancia de MainController.
+       Retorno: void.
+   */
+    private void openWindow(String fxml, String style){
+        FXMLLoader loader = Visual.openNewWindow(fxml, style);
+
+        Object controller = (Objects.requireNonNull(loader).getController());
+
+        if(controller instanceof CrearParadaController)
+            ((CrearParadaController) controller).setMainController(this);
+
+        else if(controller instanceof ShowParadaController)
+            ((ShowParadaController) controller).setMainController(this);
+
+        else if(controller instanceof CrearRutaController)
+            ((CrearRutaController) controller).setMainController(this);
+
+        else if(controller instanceof ShowRutaController)
+            ((ShowRutaController) controller).setMainController(this);
+    }
+
 }

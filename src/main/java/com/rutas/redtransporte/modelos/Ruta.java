@@ -46,6 +46,22 @@ public class Ruta {
         this.eventoTrafico = Evento.STANDARD;
     }
 
+    public Ruta(Ruta ruta) {
+        this.nombreRuta = ruta.getNombreRuta();
+        this.origen = ruta.getOrigen();
+        this.destino = ruta.getDestino();
+        this.costo = ruta.getCosto();
+        this.tiempo = ruta.getTiempo();
+        this.distancia = ruta.getDistancia();
+        this.costoBase = ruta.getCostoBase();
+        this.tiempoBase = ruta.getTiempoBase();
+
+        //Valores iniciales al crear una nueva ruta
+        this.transbordos = ruta.getTransbordos();
+        this.disponibilidad = true;
+        this.eventoTrafico = Evento.STANDARD;
+    }
+
     public int getIdRuta() {
         return idRuta;
     }

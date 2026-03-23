@@ -28,7 +28,7 @@
                   <Font name="SansSerif Bold" size="12.0" />
                </font>
             </Button>
-            <Button layoutX="281.0" layoutY="286.0" mnemonicParsing="false" prefWidth="100.0" styleClass="windowButton" text="Volver">
+            <Button layoutX="281.0" layoutY="286.0" mnemonicParsing="false" onAction="#volver" prefWidth="100.0" styleClass="windowButton" text="Volver">
                <font>
                   <Font name="SansSerif Bold" size="12.0" />
                </font>

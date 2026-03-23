@@ -38,7 +38,7 @@
                   <Font name="SansSerif Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnEliminar" layoutX="26.0" layoutY="245.0" mnemonicParsing="false" prefWidth="75.0" styleClass="windowButton" text="Eliminar" visible="false">
+            <Button fx:id="btnEliminar" layoutX="26.0" layoutY="245.0" mnemonicParsing="false" onAction="#eliminarParada" prefWidth="75.0" styleClass="windowButton" text="Eliminar" visible="false">
                <font>
                   <Font name="SansSerif Bold" size="12.0" />
                </font>
