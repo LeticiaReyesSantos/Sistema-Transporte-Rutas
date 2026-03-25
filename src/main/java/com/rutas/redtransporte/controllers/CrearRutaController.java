@@ -144,11 +144,11 @@ public class CrearRutaController {
         loadRutaInfo(ruta);
     }
 
-    /* Nombre: modificar
+    /* Nombre: modificarRuta
     Funcion: Modificar una ruta.
     Retorno: void.
     */
-    public void modificar(){
+    public void modificarRuta(){
         Ruta oldRuta = new Ruta(rutaSelected);
 
         if(verificarRuta()){
@@ -162,11 +162,8 @@ public class CrearRutaController {
 
         grafo.modifyRoute(oldRuta,rutaSelected);
 
-        System.out.println(grafo.getRuta(rutaSelected).getDestino().getNombreParada());
-
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.MODIFIED,null);
         mainController.getGrafoVisual().modificarRuta(oldRuta,rutaSelected);
-        //mainController.actualizarMapa();
 
         Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
         Visual.closeWindow(btnModificar);

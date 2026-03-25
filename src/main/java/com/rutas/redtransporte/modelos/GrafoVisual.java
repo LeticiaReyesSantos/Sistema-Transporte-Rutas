@@ -55,6 +55,19 @@ public class GrafoVisual {
         panelMapa.update();
     }
 
+    public void modificarParada(Parada oldParada, Parada newParada){
+        Vertex<Parada> vertex = getVertex(oldParada);
+
+        vertex = new Vertex<Parada>() {
+            @Override
+            public Parada element() {
+                return newParada;
+            }
+        };
+
+        panelMapa.update();
+    }
+
     public void eliminarParada(Parada parada){
         grafoVisual.removeVertex(getVertex(parada));
         panelMapa.update();
@@ -73,7 +86,7 @@ public class GrafoVisual {
     }
 
     public void eliminarRuta(Ruta ruta){
-        grafoVisual.removeEdge(getRuta(ruta));
+        grafoVisual.removeEdge(getEdge(ruta));
         panelMapa.update();
     }
 
@@ -81,10 +94,10 @@ public class GrafoVisual {
         grafoVisual.insertEdge(ruta.getOrigen(),ruta.getDestino(),ruta);
     }
 
-    private Edge<Ruta,Parada> getRuta(Ruta ruta){
+    private Edge<Ruta,Parada> getEdge(Ruta rutaBuscada){
         return grafoVisual.edges()
                 .stream()
-                .filter(edge -> edge.element().equals(ruta))
+                .filter(edge -> edge.element().equals(rutaBuscada))
                 .findFirst()
                 .orElse(null);
     }
@@ -98,14 +111,6 @@ public class GrafoVisual {
 
     }
 
-    public Edge<Ruta,Parada> getEdge(Ruta ruta){
-        return grafoVisual.edges()
-                .stream()
-                .filter(edge -> edge.element().equals(ruta))
-                .findFirst()
-                .orElse(null);
-    }
-
     public void sincronizarGrafo() {
         var mapaBackend = Grafo.getInstance().getMap();
 
@@ -117,7 +122,6 @@ public class GrafoVisual {
 
                 try {
                     grafoVisual.insertEdge(origen, r.getDestino(), r);
-                    System.out.println("Entra try rutas");
                 } catch (Exception ignored) {
                 }
             }

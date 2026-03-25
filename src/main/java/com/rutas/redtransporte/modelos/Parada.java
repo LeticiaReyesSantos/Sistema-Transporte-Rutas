@@ -10,20 +10,28 @@ public class Parada {
     private String tipo;
     private List<Ruta> rutasDeEntrada;
     private List<Ruta> rutasDeSalida;
+    private static int genID =  0;
 
     public Parada(String nombreParada, String tipo) {
+        setIdParada();
         this.nombreParada = nombreParada;
         this.tipo = tipo;
         this.rutasDeSalida = new ArrayList<>();
         this.rutasDeEntrada = new ArrayList<>();
     }
 
+    public Parada(Parada parada){
+        this.idParada = parada.getIdParada();
+        this.nombreParada = parada.nombreParada;
+        this.tipo = parada.getTipo();
+    }
+
     public int getIdParada() {
         return idParada;
     }
 
-    public void setIdParada(int idParada) {
-        this.idParada = idParada;
+    private void setIdParada() {
+        idParada = ++Parada.genID;
     }
 
     public String getNombreParada() {
@@ -55,7 +63,8 @@ public class Parada {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombreParada.toLowerCase());
+        Parada.genID++;
+        return Objects.hash(idParada);
     }
 
     public List<Ruta> getRutasDeEntrada() {

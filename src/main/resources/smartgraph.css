@@ -1,4 +1,6 @@
-.graph { -fx-background-color: #E8F5E9; }
+.graph {
+    -fx-background-color: #E8F5E9;
+}
 
 .vertex {
     -fx-stroke-width: 2;

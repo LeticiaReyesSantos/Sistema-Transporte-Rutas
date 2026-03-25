@@ -1,5 +1,5 @@
 /*Ventana Principal*/
-#slider{
+#panelPrincipal{
     -fx-background-color: #F6F3EA;
 }
 
@@ -102,21 +102,6 @@
     -fx-border-color: BLACK;
     -fx-border-width: 0.5px;
 }
-
-/*
-.table-view .table-cell {
-    -fx-font-size: 12px;
-    -fx-background-color: #F6F3EA;
-    -fx-border-color: BLACK;
-    -fx-border-width: 0.5px;
-}*/
-
-/*
-.table-row-cell:selected {
-    -fx-background-color: #C7ECF0;
-    -fx-text-fill: BLACK;
-}
-*/
 
 .TableColumn{
     -fx-background-color: #bfdbed;

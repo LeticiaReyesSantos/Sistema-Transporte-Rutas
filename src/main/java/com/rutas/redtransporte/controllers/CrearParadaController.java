@@ -26,6 +26,9 @@ public class CrearParadaController {
     private Button btnCancelar;
 
     @FXML
+    private Button btnModificar;
+
+    @FXML
     private Button btnEliminar;
 
     private final Grafo grafo = Grafo.getInstance();
@@ -70,34 +73,52 @@ public class CrearParadaController {
         return new Parada(Logico.checkText(txtNombre),cbxTipo.getValue());
     }
 
+    /* Nombre: setScene
+       Funcion: Organiza la ventana para mostrar el elemento seleccionado.
+       Retorno: void.
+   */
+    public void setScene(Parada parada){
+        btnEliminar.setVisible(true);
+        btnModificar.setVisible(true);
+        btnAceptar.setVisible(false);
+        btnCancelar.setLayoutX(201);
+
+        txtNombre.setText(parada.getNombreParada());
+        cbxTipo.setValue(parada.getTipo());
+
+        paradaSelected = parada;
+    }
+
+    /* Nombre: modificarParada
+    Funcion: Modifica una parada de manera lógica y visual.
+    Retorno: void.
+    */
+    public void modificarParada(){
+        Parada oldParada = new Parada(paradaSelected);
+
+        if(Logico.emptyFields(txtNombre,cbxTipo)){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
+            return;
+        }
+
+        paradaSelected.setNombreParada(txtNombre.getText());
+        paradaSelected.setTipo(cbxTipo.getValue());
+
+        mainController.getGrafoVisual().modificarParada(oldParada,paradaSelected);
+
+        Visual.openNewWindow("ShowParada.fxml","Estilo.css");
+        Visual.closeWindow(btnModificar);
+    }
+
     /* Nombre: eliminarParada
-        Funcion: Elimina una parada de manera lógica y visual.
-        Retorno: void.
+    Funcion: Elimina una parada de manera lógica y visual.
+    Retorno: void.
     */
     public void eliminarParada() {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Si elimina esta parada, todas las rutas relacionadas serán eliminadas.");
         grafo.deleteParada(paradaSelected);
 
         mainController.getGrafoVisual().eliminarParada(paradaSelected);
-    }
-
-    /* Nombre: setScene
-       Funcion: Organiza la ventana para mostrar el elemento seleccionado.
-       Retorno: void.
-   */
-    public void setScene(Parada parada){
-
-        btnAceptar.setLayoutX(111);
-        btnAceptar.setText("Modificar");
-
-        btnCancelar.setLayoutX(195);
-
-        btnEliminar.setVisible(true);
-
-        txtNombre.setText(parada.getNombreParada());
-        cbxTipo.setValue(parada.getTipo());
-
-        paradaSelected = parada;
     }
 
     /* Nombre: setMainController
