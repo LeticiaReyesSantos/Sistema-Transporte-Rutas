@@ -3,7 +3,7 @@ import com.rutas.redtransporte.modelos.*;
 
 import java.util.*;
 
-public class Dijkstra{
+public class Dijkstra implements EstrategiaDeRuta{
 
     public final double infinito = Double.POSITIVE_INFINITY; //Peso inicial de todos los nodos exceptuando el primero
 
@@ -56,21 +56,4 @@ public class Dijkstra{
 
         return rebuildRoute(origen, destino, criterio, peso, anterior);
     }
-
-    private ShortestPath rebuildRoute(Parada origen, Parada destino, Ruta.Peso criterio, Map<Parada, Double> distance, Map<Parada, Ruta> anterior){
-        List<Ruta> path = new LinkedList<>(); //linked list por su facilidad para agregar elementos
-        Parada current = destino; //me posiciono en el destino
-
-        while (current != null && !current.equals(origen)){ //retrocede hasta que llegue al origen o hasta que sea null
-            Ruta route = anterior.get(current); //obtengo la ruta que use para llegar
-            if(route == null){
-                break;
-            }
-            path.addFirst(route); //es importante usar addfirst porque estamos recorriendo al reves, si usara add normal quedara la lista invertida
-            current = route.getOrigen(); //obtengo de donde salio la ruta, y la guardo en current, se repite el ciclo
-        }
-        return new ShortestPath(path, criterio, distance.get(destino));
-    }
-
-
 }

@@ -14,13 +14,14 @@ public class FloydWarshall {
             throw new IllegalArgumentException("Ninguno de los parametros puede ser nulo");
         }
 
-        List<Parada> paradasList =  new ArrayList<>(graph.getMap().keySet()); //arreglar con un getListParadas
-        int n = paradasList.size();
+        Set<Parada> paradasSet = graph.getSetParadas();
+        int n = paradasSet.size();
 
         //Baja la complejidad de armar la matriz a O(V + E), el hecho de usar un hace que se tarde un tiempo de O(1) para obtener los indices de las paradas
         Map<Parada, Integer> indexMap = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            indexMap.put(paradasList.get(i), i);
+        int index = 0;
+        for (Parada parada : paradasSet) {
+            indexMap.put(parada, index++);
         }
 
         double [][] peso  = new double[n][n];
@@ -32,7 +33,7 @@ public class FloydWarshall {
             peso[i][i] = 0.0;
         }
 
-        for(Parada parada: paradasList){
+        for(Parada parada: paradasSet){
             int p = indexMap.get(parada);
             for(Ruta route: graph.buscarRutasSalida(parada)){
                 if(!route.isDisponibilidad()) continue;

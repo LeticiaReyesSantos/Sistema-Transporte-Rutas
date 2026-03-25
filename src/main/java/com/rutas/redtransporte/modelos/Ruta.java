@@ -10,11 +10,11 @@ import java.util.Objects;
 public class Ruta {
 
     public enum Peso{
-        TRANSBORDO, COSTO, TIEMPO, DISTANCIA;
+        TRANSBORDO, COSTO, TIEMPO, DISTANCIA
     }
 
     public enum Evento{
-        TRAFICO, ACCIDENTE, LLUVIA, STANDARD;
+        TRAFICO, ACCIDENTE, LLUVIA, STANDARD, DESCUENTO
     }
 
     private int idRuta;

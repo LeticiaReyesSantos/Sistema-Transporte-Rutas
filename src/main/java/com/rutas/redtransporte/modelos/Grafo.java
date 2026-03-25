@@ -147,11 +147,6 @@ public class Grafo {
 
     /* Nombre: eventSimulator
        Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
-       Valores -> 0 -> trafico standard, atributos standard, probabilidad 70%
-       1 -> trafico -> atributos aumentan 1.5, probabilidad 10%
-       2-> accidente -> se marca la ruta como no diponible, probabilidad 5%
-       3-> lluvias fuertes -> atributos aumentan 1.25, probabilidad 5%
-       Retorno: void
      */
     public void eventSimulator(){
         for(Ruta route: allRutas){
@@ -162,14 +157,15 @@ public class Grafo {
 
     public Ruta.Evento calcularProbabilidadEvento(){
         double probabilidad = Math.random();
-        if(probabilidad <= 0.10) //10% de probabilidad
+        if(probabilidad <= 0.05) //5% de probabilidad
             return Ruta.Evento.ACCIDENTE;
-        if(probabilidad <= 0.15) //5% de probabilidad de 10 a 15
+        if(probabilidad <= 0.10) //5% de probabilidad
             return Ruta.Evento.LLUVIA;
-        if(probabilidad <= 0.30) //15% de probabilidad de 15 a 30
+        if(probabilidad <= 0.25) //15% de probabilidad
             return Ruta.Evento.TRAFICO;
-
-        return Ruta.Evento.STANDARD; //70% de probabilidad
+        if(probabilidad <= 0.35) //10% de probabilidad
+            return Ruta.Evento.DESCUENTO;
+        return Ruta.Evento.STANDARD; //65% de probabilidad
     }
 
     public void aplicarEvento(Ruta route, Ruta.Evento evento){
@@ -190,8 +186,11 @@ public class Grafo {
                 route.setTiempo(route.getTiempoBase() * 1.25);
                 route.setCosto(route.getCostoBase() * 1.25);
             }
-            case ACCIDENTE -> {
-                route.setDisponibilidad(false);
+            case ACCIDENTE -> route.setDisponibilidad(false);
+            case DESCUENTO -> {
+                route.setDisponibilidad(true);
+                route.setTiempo(route.getTiempoBase());
+                route.setCosto(route.getCostoBase() * -0.5); //Rebajamos el costo a la mitad 50% off, y se le devuelve al pasajero
             }
         }
     }

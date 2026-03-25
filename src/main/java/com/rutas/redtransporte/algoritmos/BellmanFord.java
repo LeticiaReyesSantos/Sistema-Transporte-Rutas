@@ -4,7 +4,7 @@ import com.rutas.redtransporte.modelos.*;
 
 import java.util.*;
 
-public class BellmanFord {
+public class BellmanFord implements EstrategiaDeRuta{
     public final double infinito = Double.POSITIVE_INFINITY;
 
     public ShortestPath bestRoute(Grafo graph, Parada origen, Parada destino, Ruta.Peso criterio){
@@ -13,17 +13,17 @@ public class BellmanFord {
         }
         Map<Parada, Double> peso = new HashMap<>();
         Map<Parada, Ruta> anterior = new HashMap<>();
-        List<Parada> paradasList = new ArrayList<>(graph.getMap().keySet()); //cambiar cuando pueda modificar grafo a un getParadas
+        Set<Parada> paradasSet = graph.getSetParadas();
 
-        for(Parada parade: paradasList){
+        for(Parada parade: paradasSet){
             peso.put(parade, infinito);
         }
         peso.put(origen, 0.0);
 
         //Limite V-1
-        for (int i = 0; i < paradasList.size() - 1; i++) {
+        for (int i = 0; i < paradasSet.size() - 1; i++) {
             boolean changed = false; //me evito hacer iteraciones de mas si luego de la segunda vuelta la ruta mas optima no cambia
-            for(Parada p: paradasList){
+            for(Parada p: paradasSet){
                 if(peso.get(p) == infinito)//ignoro la parada si aun no se llegar a ella
                     continue;
 
@@ -46,7 +46,7 @@ public class BellmanFord {
         }
 
         //No deberiamos tener un ciclo negativo
-        for(Parada p : paradasList){
+        for(Parada p : paradasSet){
             if(peso.get(p) == infinito) continue;
             for(Ruta ruta: graph.buscarRutasSalida(p)){
                 double currentPrice = peso.get(p);
@@ -61,19 +61,5 @@ public class BellmanFord {
         }
 
         return rebuildRoute(origen, destino, criterio, peso, anterior);
-    }
-
-    private ShortestPath rebuildRoute(Parada origen, Parada destino, Ruta.Peso criterio, Map<Parada, Double> peso, Map<Parada, Ruta> anterior){
-        List<Ruta> path = new LinkedList<>(); //podemos tener esto en una clase padre para limpieza de codigo y evitar duplicar tanto la misma funcion
-        Parada current = destino;
-
-        while (current != null && !current.equals(origen)){
-            Ruta route = anterior.get(current);
-            if(route == null)break;
-            path.addFirst(route);
-            current = route.getOrigen();
-        }
-
-        return new ShortestPath(path, criterio, peso.get(destino));
     }
 }

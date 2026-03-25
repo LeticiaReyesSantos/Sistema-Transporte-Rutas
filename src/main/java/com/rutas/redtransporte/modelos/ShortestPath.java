@@ -28,16 +28,23 @@ public class ShortestPath {
         this.totalPrice = 0;
         this.totalTime = 0;
         this.totalDistance = 0;
+        this.totalTranfers = 0; //Asumo que es 0
 
         if (rutasRecorridas != null && !rutasRecorridas.isEmpty()) {
+            //Para contar transbordos
+            String pastType = rutasRecorridas.getFirst().getOrigen().getTipo();
+
             for (Ruta r : rutasRecorridas) {
                 this.totalPrice += r.getCosto();
                 this.totalTime += r.getTiempo();
                 this.totalDistance += r.getDistancia();
+
+                String currentType = r.getOrigen().getTipo();
+                if (!pastType.equals(currentType)) {
+                    this.totalTranfers++;
+                    pastType = currentType;
+                }
             }
-            this.totalTranfers = Math.max(0, rutasRecorridas.size() - 1);
-        } else {
-            this.totalTranfers = 0;
         }
     }
 
@@ -68,7 +75,6 @@ public class ShortestPath {
     public double getPesoTotal() {
         return pesoTotal;
     }
-
 
     public String toString(){
         return "Criterio Evaluado: " + criterioEvaluado + "\n"

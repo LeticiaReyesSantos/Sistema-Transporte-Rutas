@@ -1,61 +1,86 @@
 package com.rutas.redtransporte.modelos;
 //Clase Main para hacer test
 
-import com.rutas.redtransporte.algoritmos.Dijkstra;
-import com.rutas.redtransporte.utilidad.Logico;
-
-import javax.swing.text.Keymap;
-import java.util.ArrayList;
+import com.rutas.redtransporte.algoritmos.BellmanFord;
+import com.rutas.redtransporte.algoritmos.FloydWarshall;
+import com.rutas.redtransporte.algoritmos.Prim;
 
 public class Main {
-    public static void main(String[] args) {
+    static void main() {
 
         Grafo grafo = Grafo.getInstance();
 
         crearDatosStatic(grafo);
         //Logico.crearDatosGrafo();
 
-        ArrayList<Parada> paradas = new ArrayList<>(grafo.getSetParadas());
+        Parada pA = grafo.getParada("A");
+        Parada pC = grafo.getParada("C");
 
-        Dijkstra buscador = new Dijkstra();
-        System.out.println("Calculando ruta mas optima desde p1 a p5");
-        ShortestPath trip = buscador.bestRoute(grafo,paradas.get(0),paradas.get(4),Ruta.Peso.DISTANCIA);
+        BellmanFord bellman = new BellmanFord();
+        FloydWarshall floyd = new FloydWarshall();
+        Prim prim = new Prim();
 
+        System.out.println("\n--- TRAFICO STANDARD ---\n");
+        System.out.println("Bellman");
+        imprimirResultado("Bellman-Ford", bellman.bestRoute(grafo, pA, pC, Ruta.Peso.COSTO));
+        System.out.println("Floyd");
+        imprimirResultado("Floyd Warshall", floyd.bestRoute(grafo, pA, pC, Ruta.Peso.COSTO));
 
-        if(trip != null){
-            System.out.print("Ruta encontrada\n\n");
-            System.out.print("Tiempo --> " + trip.getTotalTime());
-            System.out.print("\nCosto ---> " + trip.getTotalPrice());
-            System.out.print("\nDistancia ---> " + trip.getTotalDistance());
-            System.out.println("\nTrasbordos ---> " + trip.getTotalTranfers());
-        } else{
-            System.out.println("\nNo hay rutas disponibles");
+        System.out.println("\n--- Simulador de eventos ---\n");
+        grafo.eventSimulator();
+        System.out.println("Eventos aleatorios aplicados al mapa.");
+
+        Ruta rutaDescuento = null;
+        for (Ruta r : grafo.getListRutas()) {
+            if (r.getNombreRuta().equals("third (B->C)")) {
+                rutaDescuento = r;
+                break;
+            }
+        }
+
+        //Forzo el descuento para probar ponderacion negativa
+        if (rutaDescuento != null) {
+            System.out.println("Se ha aplicado un descuento la ruta B->C.");
+            grafo.aplicarEvento(rutaDescuento, Ruta.Evento.DESCUENTO);
+            System.out.println("Nuevo costo de la ruta B->C: RD$ " + rutaDescuento.getCosto());
         }
 
 
+        System.out.println("\n--- Recalculando luego de eventos ---");
+        System.out.println("\nBellman:");
+        imprimirResultado("Bellman-Ford", bellman.bestRoute(grafo, pA, pC, Ruta.Peso.COSTO));
+
+        System.out.println("\nFloyd:");
+        imprimirResultado("Floyd-Warshall", floyd.bestRoute(grafo, pA, pC, Ruta.Peso.COSTO));
+
+        //Reconstruyendo la ruta con prim puedo verificar si es conexo, en este caso lo evaluamos en base a costo
+        System.out.print("\nConectividad del grafo\n");
+        if(prim.construirRed(grafo, Ruta.Peso.COSTO) != null)
+            System.out.print("Es conexo");
+
     }
 
+    private static void imprimirResultado(String buscador, ShortestPath trip) {
+        if (trip != null) {
+            System.out.println("  Ruta elegida  : " + trip.getRutasRecorridas());
+            System.out.println("  Costo total   : RD$ " + trip.getTotalPrice());
+            System.out.println("  Transbordos   : " + trip.getTotalTranfers());
+        } else {
+            System.out.println("  [" + buscador + "] No hay rutas disponibles.");
+        }
+    }
     private static void crearDatosStatic(Grafo grafo){
         Parada p1 = new Parada("A", "Bus");
         Parada p2 = new Parada("B", "Bus");
         Parada p3 = new Parada("C", "Bus");
-        Parada p4 = new Parada("D", "Bus");
-        Parada p5 = new Parada("E", "Bus");
-        Parada p6 = new Parada("F", "Bus");
 
 
         grafo.addParada(p1);
         grafo.addParada(p2);
         grafo.addParada(p3);
-        grafo.addParada(p4);
-        grafo.addParada(p5);
-        grafo.addParada(p6);
 
-        Ruta first = grafo.addRoute(new Ruta("first",p1,p2, 10, 100, 4));
-        Ruta second = grafo.addRoute(new Ruta("second",p1,p5, 20, 150, 8));
-        Ruta third = grafo.addRoute(new Ruta("third",p3,p5, 15, 120, 2));
-        Ruta fourth = grafo.addRoute(new Ruta("fourth",p3,p2, 5, 50, 4));
-        Ruta fifth = grafo.addRoute(new Ruta("fifth",p4,p6, 12, 105, 5.5));
-        Ruta sixth = grafo.addRoute(new Ruta("sixth",p3,p4, 11, 103, 5));
+        Ruta first = grafo.addRoute(new Ruta("first (A->C)",p1,p3, 50, 20, 10));
+        Ruta second = grafo.addRoute(new Ruta("second (A-> B)",p1,p2, 30, 10, 5));
+        Ruta rutaDescuento = grafo.addRoute(new Ruta("third (B->C)",p2,p3, 40, 10, 5));
     }
 }
