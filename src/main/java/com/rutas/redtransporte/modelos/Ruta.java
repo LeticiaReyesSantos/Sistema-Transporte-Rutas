@@ -29,10 +29,8 @@ public class Ruta {
     private Evento eventoTrafico;
     private Parada origen;
     private Parada destino;
-    private static int genID =  0;
 
     public Ruta(String nombreRuta, Parada origen, Parada destino, double costo, double tiempo, double distancia) {
-        setIdRuta();
         this.nombreRuta = nombreRuta;
         this.origen = origen;
         this.destino = destino;
@@ -58,19 +56,17 @@ public class Ruta {
         this.distancia = ruta.getDistancia();
         this.costoBase = ruta.getCostoBase();
         this.tiempoBase = ruta.getTiempoBase();
-
-        //Valores iniciales al crear una nueva ruta
         this.transbordos = ruta.getTransbordos();
-        this.disponibilidad = true;
-        this.eventoTrafico = Evento.STANDARD;
+        this.disponibilidad = ruta.isDisponibilidad();
+        this.eventoTrafico = ruta.getEventoTrafico();
     }
 
     public int getIdRuta() {
         return idRuta;
     }
 
-    private void setIdRuta() {
-        idRuta = ++Ruta.genID;
+    public void setIdRuta(int idRuta) {
+        this.idRuta = idRuta;
     }
 
     public String getNombreRuta() {
@@ -154,7 +150,7 @@ public class Ruta {
     }
 
     private boolean equalsDatos(Ruta comparar){
-        boolean nombre = nombreRuta.toLowerCase().equals(comparar.nombreRuta.toLowerCase());
+        boolean nombre = nombreRuta.equalsIgnoreCase(comparar.nombreRuta);
         boolean origen = this.origen.equals(comparar.getOrigen());
         boolean destino = this.destino.equals(comparar.getDestino());
 
@@ -163,7 +159,7 @@ public class Ruta {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idRuta);
+        return Objects.hash(idRuta, nombreRuta.toLowerCase());
     }
 
     public double obtenerCriterio(Peso peso){
@@ -181,9 +177,7 @@ public class Ruta {
             case TRANSBORDO -> {
                 return transbordos;
             }
-            default -> {
-                throw new IllegalArgumentException("Ponderacion desconocida");
-            }
+            default -> throw new IllegalArgumentException("Ponderacion desconocida");
 
         }
     }

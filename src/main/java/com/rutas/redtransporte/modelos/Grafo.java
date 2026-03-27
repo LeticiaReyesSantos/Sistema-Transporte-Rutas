@@ -1,5 +1,8 @@
 package com.rutas.redtransporte.modelos;
 
+import com.rutas.redtransporte.db.ParadaDAO;
+import com.rutas.redtransporte.db.RutaDAO;
+
 import java.util.*;
 
 public class Grafo {
@@ -67,6 +70,7 @@ public class Grafo {
         }
 
         map.remove(parada);
+        ParadaDAO.getInstance().eliminarParada(parada.getIdParada());
     }
 
     public void modifyParade(Parada paradaMod, String nuevoNombre){
@@ -118,6 +122,7 @@ public class Grafo {
         }
         origen.removeRutaSalida(routeToDel); //quito la referencia de mis objetos parada
         destino.removeRutaEntrada(routeToDel);
+        allRutas.remove(routeToDel);
     }
 
     public void modifyRoute(Ruta oldRuta, Ruta newRuta){
@@ -191,6 +196,26 @@ public class Grafo {
                 route.setDisponibilidad(true);
                 route.setTiempo(route.getTiempoBase());
                 route.setCosto(route.getCostoBase() * -0.5); //Rebajamos el costo a la mitad 50% off, y se le devuelve al pasajero
+            }
+        }
+    }
+
+    public void cargarDesdeDB() {
+
+        ParadaDAO paradaDAO = ParadaDAO.getInstance();
+        HashMap<Integer, Parada> paradasDB = paradaDAO.obtenerParadas();
+        for (Parada p : paradasDB.values()) {
+            addParada(p);
+        }
+
+        RutaDAO rutaDAO = RutaDAO.getInstance();
+        HashMap<Integer, Ruta> rutasDB = rutaDAO.obtenerTodas(paradasDB);
+
+        for (Ruta r : rutasDB.values()) {
+            try {
+                addRoute(r);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Ruta omitida: " + e.getMessage());
             }
         }
     }

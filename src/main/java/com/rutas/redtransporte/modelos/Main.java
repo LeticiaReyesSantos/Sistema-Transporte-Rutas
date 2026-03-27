@@ -4,13 +4,16 @@ package com.rutas.redtransporte.modelos;
 import com.rutas.redtransporte.algoritmos.BellmanFord;
 import com.rutas.redtransporte.algoritmos.FloydWarshall;
 import com.rutas.redtransporte.algoritmos.Prim;
+import com.rutas.redtransporte.db.ParadaDAO;
+import com.rutas.redtransporte.db.RutaDAO;
 
 public class Main {
     static void main() {
 
+        fillDataBase();//luego de correr el main una vez comentar para no repetir datos en la bdd
         Grafo grafo = Grafo.getInstance();
+        grafo.cargarDesdeDB();
 
-        crearDatosStatic(grafo);
         //Logico.crearDatosGrafo();
 
         Parada pA = grafo.getParada("A");
@@ -69,18 +72,25 @@ public class Main {
             System.out.println("  [" + buscador + "] No hay rutas disponibles.");
         }
     }
-    private static void crearDatosStatic(Grafo grafo){
+    private static void fillDataBase(){
+        System.out.println("Insertando datos iniciales en PostgreSQL...");
+
         Parada p1 = new Parada("A", "Bus");
-        Parada p2 = new Parada("B", "Bus");
-        Parada p3 = new Parada("C", "Bus");
+        Parada p2 = new Parada("B", "Carro");
+        Parada p3 = new Parada("C", "Monoriel");
 
+        ParadaDAO.getInstance().guardarParada(p1);
+        ParadaDAO.getInstance().guardarParada(p2);
+        ParadaDAO.getInstance().guardarParada(p3);
 
-        grafo.addParada(p1);
-        grafo.addParada(p2);
-        grafo.addParada(p3);
+        Ruta first = new Ruta("first (A->C)", p1, p3, 50, 20, 10);
+        Ruta second = new Ruta("second (A-> B)", p1, p2, 30, 10, 5);
+        Ruta third = new Ruta("third (B->C)", p2, p3, 40, 10, 5);
 
-        Ruta first = grafo.addRoute(new Ruta("first (A->C)",p1,p3, 50, 20, 10));
-        Ruta second = grafo.addRoute(new Ruta("second (A-> B)",p1,p2, 30, 10, 5));
-        Ruta rutaDescuento = grafo.addRoute(new Ruta("third (B->C)",p2,p3, 40, 10, 5));
+        RutaDAO.getInstance().guardarRuta(first);
+        RutaDAO.getInstance().guardarRuta(second);
+        RutaDAO.getInstance().guardarRuta(third);
+
+        System.out.println("Datos insertados");
     }
 }

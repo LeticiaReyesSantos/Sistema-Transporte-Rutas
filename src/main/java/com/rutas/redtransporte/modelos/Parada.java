@@ -10,10 +10,8 @@ public class Parada {
     private String tipo;
     private List<Ruta> rutasDeEntrada;
     private List<Ruta> rutasDeSalida;
-    private static int genID =  0;
 
     public Parada(String nombreParada, String tipo) {
-        setIdParada();
         this.nombreParada = nombreParada;
         this.tipo = tipo;
         this.rutasDeSalida = new ArrayList<>();
@@ -24,14 +22,17 @@ public class Parada {
         this.idParada = parada.getIdParada();
         this.nombreParada = parada.nombreParada;
         this.tipo = parada.getTipo();
+        this.rutasDeSalida = new ArrayList<>(parada.getRutasDeSalida());
+        this.rutasDeEntrada = new ArrayList<>(parada.getRutasDeEntrada());
     }
 
     public int getIdParada() {
         return idParada;
     }
 
-    private void setIdParada() {
-        idParada = ++Parada.genID;
+    //Lo cambie para que obtenga el mismo de la base de datos
+    public void setIdParada(int idParada) {
+        this.idParada = idParada;
     }
 
     public String getNombreParada() {
@@ -53,18 +54,18 @@ public class Parada {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Parada)) return false;
+        if (!(o instanceof Parada parada)) return false;
 
-        Parada parada = (Parada) o;
-        String nombre = parada.getNombreParada().toLowerCase();
+        if (this.idParada != 0 && parada.getIdParada() != 0) {
+            return this.idParada == parada.getIdParada();
+        }
 
-        return nombreParada.toLowerCase().equals(nombre);
+        return nombreParada.equalsIgnoreCase(parada.getNombreParada());
     }
 
     @Override
     public int hashCode() {
-        Parada.genID++;
-        return Objects.hash(idParada);
+        return Objects.hash(idParada, nombreParada.toLowerCase());
     }
 
     public List<Ruta> getRutasDeEntrada() {
