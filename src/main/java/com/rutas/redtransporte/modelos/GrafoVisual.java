@@ -128,6 +128,32 @@ public class GrafoVisual {
         }
     }
 
+    /* Nombre: resaltarRutas
+       Objetivo: Cambia las clases CSS de las aristas en el SmartGraph
+                para colorear el camino encontrado
+    */
+    public void colorearRutas(ShortestPath principal, ShortestPath alternativa){
+        for (Edge<Ruta, Parada> edge : grafoVisual.edges()) {
+            panelMapa.getStylableEdge(edge).setStyleClass("edge-default");
+        }
+
+        if (alternativa != null && alternativa.getRutasRecorridas() != null) {
+            for (Ruta r : alternativa.getRutasRecorridas()) {
+                Edge<Ruta, Parada> edgeGrafico = getEdge(r);
+                if (edgeGrafico != null) {
+                    panelMapa.getStylableEdge(edgeGrafico).setStyleClass("edge-alternativa");
+                }
+            }
+        }
+        if (principal != null && principal.getRutasRecorridas() != null) {
+            for (Ruta r : principal.getRutasRecorridas()) {
+                Edge<Ruta, Parada> edgeGrafico = getEdge(r);
+                if (edgeGrafico != null) {
+                    panelMapa.getStylableEdge(edgeGrafico).setStyleClass("edge-principal");
+                }
+            }
+        }
+    }
     public void actualizarMapa() {
         sincronizarGrafo();
         panelMapa.update();

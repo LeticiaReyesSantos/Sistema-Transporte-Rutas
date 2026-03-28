@@ -44,6 +44,28 @@ public class RoutingEngine {
         return floydWarshall.bestRoute(graph, origen, destino, criterio);
     }
 
+    /*
+    Segunda mejor ruta, o ruta alternativa, lo que hace es inhabilitar la mejor ruta
+    para que tenga que recalcular, de manera que se reciclan los algoritmos en vez de crear
+    uno nuevo
+     */
+
+    public ShortestPath alternativePath(Parada origen, Parada destino, Ruta.Peso criterio){
+        ShortestPath bestRoute = optimizedPath(origen, destino, criterio);
+        //si no hay ruta principal no deberia haber alternativa
+        if(bestRoute == null || bestRoute.getRutasRecorridas() == null || bestRoute.getRutasRecorridas().isEmpty())
+            return null;
+
+        Ruta disabledRoute = bestRoute.getRutasRecorridas().getFirst();
+        boolean originalState = disabledRoute.isDisponibilidad();
+        disabledRoute.setDisponibilidad(false); //inhabilitamos la mejor ruta
+
+        ShortestPath alternative = optimizedPath(origen, destino, criterio);
+        disabledRoute.setDisponibilidad(originalState); //restauramos la calle
+
+        return alternative;
+    }
+
     private boolean hasNegativePricing(){
         for(Ruta route: graph.getListRutas()){
             if(route.getCosto() < 0) return  true;

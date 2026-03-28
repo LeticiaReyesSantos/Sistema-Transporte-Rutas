@@ -24,60 +24,8 @@ public class Logico {
     public static void crearDatosGrafo(){
 
         Grafo grafo = Grafo.getInstance();
-        Random random = new Random();
+        grafo.cargarDesdeDB();
 
-        List<Parada> paradas = crearParadas(grafo, random);
-        crearRutas(grafo, random, paradas);
-
-    }
-
-    /* Nombre: crearParadas
-             Funcion: Crear paradas iniciales.
-             Retorno: void.
-         */
-    private static List<Parada> crearParadas(Grafo grafo, Random random){
-
-        List<Parada> paradas = new ArrayList<>();
-
-        String[] transporte = {"Carro", "Bus", "Monorriel"};
-
-        for (char c = 'A'; c <= 'G'; c++) {
-            String nombre = String.valueOf(c);
-            String tipo = transporte[random.nextInt(transporte.length)];
-
-            Parada parada = new Parada(nombre, tipo);
-            grafo.addParada(parada);
-            paradas.add(parada);
-        }
-
-        return paradas;
-    }
-
-    /* Nombre: crearRutas
-             Funcion: Crear rutas iniciales.
-             Retorno: void.
-         */
-    private static void crearRutas(Grafo grafo, Random random, List<Parada> paradas){
-        String[] nombreRutas = {
-                "first", "second", "third", "fourth",
-                "fifth", "sixth", "seventh"
-        };
-
-        for (String nombre : nombreRutas) {
-
-            Parada origen = paradas.get(random.nextInt(paradas.size()));
-            Parada destino = paradas.get(random.nextInt(paradas.size()));
-
-            while (origen == destino) {
-                destino = paradas.get(random.nextInt(paradas.size()));
-            }
-
-            double distancia = limitarDecimales(1 + random.nextDouble() * (200 - 1));
-            double costo = limitarDecimales(1 + random.nextDouble() * (500 - 1)); // 1–200
-            double tiempo = limitarDecimales(1 + random.nextDouble() * (30 - 1));
-
-            grafo.addRoute(new Ruta(nombre, origen, destino, costo, tiempo, distancia));
-        }
     }
 
     public static double limitarDecimales(double numero){
