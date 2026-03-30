@@ -7,6 +7,20 @@
     -fx-background-color: #d5ebbb;
 }
 
+.filtro{
+    -fx-background-color: CBDBAF;
+}
+
+.filtroMenuLabel{
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-text-fill: #6D6464;
+}
+
+.btnFiltro{
+    -fx-background-color: #F6F3EA;
+}
+
 .titled-pane{
     -fx-border-color: transparent;
 }

@@ -8,7 +8,7 @@ import com.rutas.redtransporte.db.ParadaDAO;
 import com.rutas.redtransporte.db.RutaDAO;
 
 public class Main {
-    static void main() {
+    public static void main(String[] args) {
 
         fillDataBase();//luego de correr el main una vez comentar para no repetir datos en la bdd
         Grafo grafo = Grafo.getInstance();

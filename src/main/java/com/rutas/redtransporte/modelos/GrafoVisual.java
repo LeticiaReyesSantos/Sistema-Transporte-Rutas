@@ -1,11 +1,12 @@
 package com.rutas.redtransporte.modelos;
 
 import com.brunomnsilva.smartgraph.graph.*;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
-import com.brunomnsilva.smartgraph.graphview.SmartGraphProperties;
-import com.brunomnsilva.smartgraph.graphview.SmartPlacementStrategy;
-import com.brunomnsilva.smartgraph.graphview.SmartRandomPlacementStrategy;
+import com.brunomnsilva.smartgraph.graphview.*;
+import com.rutas.redtransporte.servicios.RoutingEngine;
 import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URI;
@@ -14,9 +15,14 @@ import java.util.Objects;
 public class GrafoVisual {
 
     private SmartGraphPanel<Parada, Ruta> panelMapa;
-    Digraph<Parada, Ruta> grafoVisual = new DigraphEdgeList<>();
+    private Digraph<Parada, Ruta> grafoVisual;
+    private RoutingEngine routingEngine;
+
+    private SmartGraphVertex<Parada> vertexSelected = null;
+    private Ruta.Peso criterio = Ruta.Peso.DISTANCIA;
 
     public void iniciarMapa(AnchorPane panelPrincipal) {
+        routingEngine = new RoutingEngine();
         grafoVisual = new DigraphEdgeList<>();
         sincronizarGrafo();
 
@@ -47,7 +53,54 @@ public class GrafoVisual {
         Platform.runLater(() -> {
             panelMapa.init();
             panelMapa.setAutomaticLayout(true);
+            setVertexSelection();
         });
+    }
+
+    private void setVertexSelection(){
+
+        for (SmartGraphVertex<Parada> currentVertex : panelMapa.getSmartVertices()) {
+
+            Node node = (Node) currentVertex;
+
+            node.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+
+                    for (SmartGraphVertex<Parada> vertex : panelMapa.getSmartVertices()) {
+                        if(vertex.equals(vertexSelected))
+                            continue;
+
+                        vertex.setStyleClass("vertex");
+                    }
+
+                    currentVertex.setStyleClass("vertex-selected");
+
+                    if(vertexSelected ==  null){
+                        vertexSelected = currentVertex;
+                    }else{
+                        getOptimizedPath(vertexSelected,currentVertex);
+                        vertexSelected = null;
+                    }
+
+
+                    event.consume();
+                }
+            });
+        }
+    }
+
+    public void getOptimizedPath(SmartGraphVertex<Parada>  vertexOrigen, SmartGraphVertex<Parada>  vertexDestino){
+        Parada origen = vertexOrigen.getUnderlyingVertex().element();
+        Parada destino = vertexDestino.getUnderlyingVertex().element();
+
+        ShortestPath rutaPrincipal = routingEngine.optimizedPath(origen,destino,criterio);
+        ShortestPath rutaAlternativa = routingEngine.alternativePath(origen,destino,criterio);
+
+        colorearRutas(rutaPrincipal, rutaAlternativa);
+    }
+
+    public void setCriterio(Ruta.Peso criterio){
+        this.criterio = criterio;
     }
 
     public void crearParada(Parada parada){

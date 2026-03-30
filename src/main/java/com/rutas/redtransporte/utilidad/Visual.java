@@ -1,14 +1,20 @@
 package com.rutas.redtransporte.utilidad;
 
 import com.rutas.redtransporte.application.Principal;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.Axis;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Visual {
 
@@ -56,9 +62,28 @@ public class Visual {
         stage.close();
     }
 
-   public static void changePossition(Node node, double x, double y){
-       node.setLayoutX(x);
-       node.setLayoutX(y);
-   }
+    public enum Axis { X, Y };
+
+    /* Nombre: showMenu
+         Funcion: Mostrar y ocultar el menu.
+         Retorno: void.
+     */
+    public static TranslateTransition createTranslation(Region region, boolean isCurrentlyOpen, Axis axis, double sign) {
+        TranslateTransition slide = new TranslateTransition(Duration.seconds(0.4), region);
+
+        double size = (axis == Axis.X) ? region.getPrefWidth() + 20 : region.getPrefHeight() + 50;
+        double target = (isCurrentlyOpen ? (size * sign) : 0);
+
+        if (axis == Axis.X) slide.setToX(target);
+        else slide.setToY(target);
+
+        return slide;
+    }
+
+    private static void setNodesVisibility(Node[] nodes, boolean visibility){
+        for (Node node : nodes) {
+            node.setVisible(visibility);
+        }
+    }
 
 }

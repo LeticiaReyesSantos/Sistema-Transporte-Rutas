@@ -1,26 +1,39 @@
 package com.rutas.redtransporte.controllers;
 
-import com.brunomnsilva.smartgraph.graphview.*;
 import com.rutas.redtransporte.modelos.GrafoVisual;
+import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Visual;
 
-import javafx.animation.TranslateTransition;
+import javafx.animation.ParallelTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainController {
 
     @FXML
     private AnchorPane panelPrincipal;
+
+    @FXML
+    private Pane panelGrafo;
+
+    @FXML
+    private VBox mainMenu;
+
+    @FXML
+    private Pane panelFiltro;
+
+    @FXML
+    private Pane panelDatos;
 
     @FXML
     private ImageView menuManager;
@@ -29,15 +42,25 @@ public class MainController {
     private ImageView menuManagerInside;
 
     @FXML
-    private VBox mainMenu;
+    private Button btnDistancia;
 
-    private boolean isMenuOpen = false;
+    @FXML
+    private Button btnTiempo;
+
+    @FXML
+    private Button btnCosto;
+
+    @FXML
+    private Button btnTransbordo;
+
+    private AtomicBoolean isMenuOpen = new AtomicBoolean(false);
 
     private final GrafoVisual grafoVisual = new GrafoVisual();
 
     public void initialize() {
         Logico.crearDatosGrafo();
         setMenu();
+        setButtonValues();
         grafoVisual.iniciarMapa(panelPrincipal);
     }
 
@@ -50,32 +73,42 @@ public class MainController {
         Retorno: void.
     */
     public void setMenu(){
-        mainMenu.setTranslateX(-(mainMenu.getPrefWidth() + 12));
-        menuManager.setVisible(true);
-        menuManager.setOnMouseClicked(event -> showMenu());
-        menuManagerInside.setOnMouseClicked(event -> showMenu());
+
+        mainMenu.setTranslateX(-(mainMenu.getPrefWidth() + 20));
+        panelFiltro.setTranslateY(-(panelFiltro.getPrefHeight() + 50));
+        panelDatos.setTranslateY((panelDatos.getPrefHeight() + 50));
+
+        menuManager.setOnMouseClicked(event -> setMenuTranslations());
+        menuManagerInside.setOnMouseClicked(event -> setMenuTranslations());
+}
+
+    private void setMenuTranslations(){
+        ParallelTransition transitions = new ParallelTransition();
+
+        boolean opening = isMenuOpen.get();
+
+        transitions.getChildren().addAll(
+                Visual.createTranslation(mainMenu, opening, Visual.Axis.X,-1),
+                Visual.createTranslation(panelFiltro, opening, Visual.Axis.Y,-1),
+                Visual.createTranslation(panelDatos, opening, Visual.Axis.Y,1)
+        );
+
+        menuManager.setVisible(opening);
+        isMenuOpen.set(!opening);
+
+        transitions.play();
     }
 
-    /* Nombre: showMenu
-        Funcion: Mostrar y ocultar el menu.
-        Retorno: void.
-    */
-    private void showMenu() {
-        TranslateTransition slide = new TranslateTransition();
-        slide.setDuration(Duration.seconds(0.4));
-        slide.setNode(mainMenu);
+    public void setButtonValues(){
+        btnDistancia.setUserData(Ruta.Peso.DISTANCIA);
+        btnTiempo.setUserData(Ruta.Peso.TIEMPO);
+        btnCosto.setUserData(Ruta.Peso.COSTO);
+        btnTransbordo.setUserData(Ruta.Peso.TRANSBORDO);
+    }
 
-        if (isMenuOpen) {
-            slide.setToX(-(mainMenu.getPrefWidth() + 12));
-            isMenuOpen = false;
-            menuManager.setVisible(true);
-        } else {
-            slide.setToX(0);
-            isMenuOpen = true;
-            menuManager.setVisible(false);
-        }
-
-        slide.play();
+    public void seleccionCriterio(ActionEvent e){
+        Button criterioSelected = (Button)e.getSource();
+        grafoVisual.setCriterio((Ruta.Peso) criterioSelected.getUserData());
     }
 
     /* Nombre: menuActions

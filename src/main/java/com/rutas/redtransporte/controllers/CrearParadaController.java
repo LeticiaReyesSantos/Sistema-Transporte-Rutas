@@ -1,5 +1,6 @@
 package com.rutas.redtransporte.controllers;
 
+import com.rutas.redtransporte.db.ParadaDAO;
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.utilidad.Logico;
@@ -53,7 +54,9 @@ public class CrearParadaController {
             return;
         }
 
+        ParadaDAO.getInstance().guardarParada(parada);
         mainController.getGrafoVisual().crearParada(parada);
+
 
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,parada.getNombreParada());
         Logico.cleanFields(txtNombre,cbxTipo);

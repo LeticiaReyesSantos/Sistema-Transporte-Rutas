@@ -14,6 +14,11 @@
     -fx-stroke-width: 3;
     -fx-cursor: hand;
 }
+.vertex-selected {
+    -fx-fill: Orange !important;;
+    -fx-stroke: #34A853;
+    -fx-stroke-width: 3;
+}
 .vertex-label {
     -fx-font: bold 10pt "sans-serif";
     -fx-fill: BLACK;
