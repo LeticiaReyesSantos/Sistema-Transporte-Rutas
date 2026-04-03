@@ -165,7 +165,7 @@ public class CrearRutaController {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.MODIFIED,null);
         mainController.getGrafoVisual().modificarRuta(oldRuta,rutaSelected);
 
-        Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
+        Visual.openNewWindow("ShowRuta.fxml","Estilo.css",false);
         Visual.closeWindow(btnModificar);
     }
 

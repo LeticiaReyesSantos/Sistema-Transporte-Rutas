@@ -30,9 +30,8 @@ public class Parada {
         return idParada;
     }
 
-    //Lo cambie para que obtenga el mismo de la base de datos
-    public void setIdParada(int idParada) {
-        this.idParada = idParada;
+    public void setIdParada(int id){
+        idParada = id;
     }
 
     public String getNombreParada() {
@@ -56,16 +55,18 @@ public class Parada {
         if (this == o) return true;
         if (!(o instanceof Parada parada)) return false;
 
+
+        /*
         if (this.idParada != 0 && parada.getIdParada() != 0) {
             return this.idParada == parada.getIdParada();
-        }
+        }*/
 
         return nombreParada.equalsIgnoreCase(parada.getNombreParada());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idParada, nombreParada.toLowerCase());
+        return Objects.hash(idParada);
     }
 
     public List<Ruta> getRutasDeEntrada() {
@@ -94,6 +95,18 @@ public class Parada {
 
     public void removeRutaEntrada(Ruta route){
         rutasDeEntrada.remove(route);
+    }
+
+    public boolean cambiosParada(Parada parada) {
+        if (nombreParada.equals(parada.getNombreParada()) && tipo.equals(parada.getTipo()))
+            return false;
+
+        return true;
+    }
+
+    public void modificarParada(Parada parada){
+        this.nombreParada = parada.getNombreParada();
+        this.tipo = parada.getTipo();
     }
 
     @Override

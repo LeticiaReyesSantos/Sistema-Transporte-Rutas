@@ -17,6 +17,7 @@ public class Ruta {
         TRAFICO, ACCIDENTE, LLUVIA, STANDARD, DESCUENTO
     }
 
+    private static int genIDRuta = 1;
     private int idRuta;
     private String nombreRuta;
     private boolean disponibilidad;
@@ -31,6 +32,7 @@ public class Ruta {
     private Parada destino;
 
     public Ruta(String nombreRuta, Parada origen, Parada destino, double costo, double tiempo, double distancia) {
+        idRuta = genIDRuta++;
         this.nombreRuta = nombreRuta;
         this.origen = origen;
         this.destino = destino;
@@ -61,12 +63,19 @@ public class Ruta {
         this.eventoTrafico = ruta.getEventoTrafico();
     }
 
+    public static void setGenIDRuta(int lastId){
+        if(lastId == 0)
+            genIDRuta = 1;
+        else
+            genIDRuta = lastId;
+    }
+
     public int getIdRuta() {
         return idRuta;
     }
 
     public void setIdRuta(int idRuta) {
-        this.idRuta = idRuta;
+        idRuta = genIDRuta++;
     }
 
     public String getNombreRuta() {
@@ -159,7 +168,7 @@ public class Ruta {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idRuta, nombreRuta.toLowerCase());
+        return Objects.hash(idRuta);
     }
 
     public double obtenerCriterio(Peso peso){

@@ -1,20 +1,17 @@
 package com.rutas.redtransporte.utilidad;
 
-import com.rutas.redtransporte.application.Principal;
-import javafx.animation.ParallelTransition;
+import com.rutas.redtransporte.application.MainVisual;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.Axis;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Visual {
 
@@ -22,12 +19,12 @@ public class Visual {
        Funcion: Abrir una ventana sobre la ventana principal.
        Retorno: void
     */
-   public static FXMLLoader openNewWindow(String fxml, String css){
+   public static FXMLLoader openNewWindow(String fxml, String css, boolean wait){
 
        try{
            Stage stage = new Stage();
 
-           stage.initOwner(Principal.mainStage);
+           stage.initOwner(MainVisual.mainStage);
            stage.initModality(Modality.APPLICATION_MODAL);
 
            FXMLLoader fxmlLoader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));

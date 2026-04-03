@@ -2,12 +2,14 @@ package com.rutas.redtransporte.controllers;
 
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
+import com.rutas.redtransporte.utilidad.Mensaje;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,15 +23,19 @@ public class ShowParadaController {
     private TableView<Parada> table;
 
     @FXML
+    private TableColumn<Parada, Integer> colId;
+
+    @FXML
     private TableColumn<Parada, String> colNombre;
 
     @FXML
     private TableColumn<Parada, String> colTransporte;
 
     private final Grafo grafo = Grafo.getInstance();
-    private MainController mainController = null;
+    private MainController mainController;
 
     public void initialize(){
+        colId.setCellValueFactory(new PropertyValueFactory<>("idParada"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreParada"));
         colTransporte.setCellValueFactory(new PropertyValueFactory<>("tipo"));
 
@@ -43,17 +49,32 @@ public class ShowParadaController {
         Retorno: void.
     */
     public void verDetalles(){
-        Parada selected = table.getSelectionModel().getSelectedItem();
+        System.out.println("Entra verDetalles");
+        Parada paradaSelected = table.getSelectionModel().getSelectedItem();
 
-        FXMLLoader loader = Visual.openNewWindow("CrearParada.fxml","Estilo.css");
+        if(grafo.getMap().isEmpty()){
+            Mensaje.showMessage(Alert.AlertType.ERROR, "Opción inválida", "", "No hay paradas creadas.");
+            return;
 
+        }else if(paradaSelected == null) {
+            Mensaje.showMessage(Alert.AlertType.ERROR, "Opción inválida", "", "Debe elegir una parada.");
+            return;
+        }
+
+        FXMLLoader loader = Visual.openNewWindow("CrearParada.fxml","Estilo.css",true);
         CrearParadaController controller = loader.getController();
 
-
-        controller.setScene(selected);
+        controller.setScene(paradaSelected);
+        if(mainController == null)
+            System.out.println("Sorry, but I'm still null ;(");
         controller.setMainController(mainController);
+        controller.setShowController(this);
+    }
 
-        Visual.closeWindow(table);
+    public void updateTable(){
+        table.refresh();
+//        ObservableList<Parada> paradasUpdated = FXCollections.observableArrayList(new ArrayList<>(grafo.getSetParadas()));
+//        table.setItems(paradasUpdated);
     }
 
     /* Nombre: setMainController

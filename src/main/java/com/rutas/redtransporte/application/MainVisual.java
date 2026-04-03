@@ -7,14 +7,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Principal extends Application {
+public class MainVisual extends Application {
     public static Stage mainStage;
 
     @Override
     public void start(Stage stage) throws IOException {
         mainStage = stage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Principal.class.getResource("/appvisuals/Main.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainVisual.class.getResource("/appvisuals/Main.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(getClass().getResource("/appvisuals/Estilo.css").toExternalForm());
         stage.setTitle("Red de Transporte");

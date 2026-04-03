@@ -14,8 +14,9 @@
          <children>
             <TableView fx:id="table" layoutX="77.0" layoutY="66.0" prefHeight="200.0" prefWidth="346.0" styleClass="table" stylesheets="@Estilo.css">
               <columns>
-                <TableColumn fx:id="colNombre" prefWidth="181.33334350585938" text="Nombre" />
-                <TableColumn fx:id="colTransporte" prefWidth="159.33331298828125" text="Transporte" />
+                  <TableColumn fx:id="colId" prefWidth="48.0" text="ID" />
+                <TableColumn fx:id="colNombre" prefWidth="130.6666259765625" text="Nombre" />
+                <TableColumn fx:id="colTransporte" prefWidth="163.33331298828125" text="Transporte" />
               </columns>
             </TableView>
             <Label layoutX="202.0" layoutY="23.0" text="Paradas">

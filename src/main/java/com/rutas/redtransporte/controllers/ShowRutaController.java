@@ -17,6 +17,9 @@ public class ShowRutaController {
     private TableView<Ruta> table;
 
     @FXML
+    private TableColumn<Ruta, Integer> colId;
+
+    @FXML
     private TableColumn<Ruta, String> colNombre;
 
     @FXML
@@ -32,6 +35,7 @@ public class ShowRutaController {
     private MainController mainController = null;
 
     public void initialize() {
+        colId.setCellValueFactory(new PropertyValueFactory<>("idRuta"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreRuta"));
         colDistancia.setCellValueFactory(new PropertyValueFactory<>("distancia"));
         colTiempo.setCellValueFactory(new PropertyValueFactory<>("tiempo"));
@@ -48,7 +52,7 @@ public class ShowRutaController {
     public void verDetalles(){
         Ruta selected = table.getSelectionModel().getSelectedItem();
 
-        FXMLLoader loader = Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
+        FXMLLoader loader = Visual.openNewWindow("CrearRuta.fxml","Estilo.css",false);
         CrearRutaController controller = loader.getController();
 
         controller.setScene(selected);

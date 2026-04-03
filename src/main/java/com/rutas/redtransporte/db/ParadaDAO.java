@@ -1,5 +1,6 @@
 package com.rutas.redtransporte.db;
 
+import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 
 import java.sql.*;
@@ -27,9 +28,11 @@ public class ParadaDAO {
             preparedStatement.setString(2, parada.getTipo());
             preparedStatement.executeUpdate();
 
+
             try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
                 if (rs.next()) {
                     parada.setIdParada(rs.getInt(1)); // La bdd nos devuelve el id original
+                    Grafo.getInstance().addParada(parada);
                 }
             }
         } catch (SQLException e) {

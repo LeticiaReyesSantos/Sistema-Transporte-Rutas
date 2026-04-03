@@ -99,16 +99,16 @@ public class MainController {
         transitions.play();
     }
 
+    public void seleccionCriterio(ActionEvent e){
+        Button criterioSelected = (Button)e.getSource();
+        grafoVisual.setCriterio((Ruta.Peso) criterioSelected.getUserData());
+    }
+
     public void setButtonValues(){
         btnDistancia.setUserData(Ruta.Peso.DISTANCIA);
         btnTiempo.setUserData(Ruta.Peso.TIEMPO);
         btnCosto.setUserData(Ruta.Peso.COSTO);
         btnTransbordo.setUserData(Ruta.Peso.TRANSBORDO);
-    }
-
-    public void seleccionCriterio(ActionEvent e){
-        Button criterioSelected = (Button)e.getSource();
-        grafoVisual.setCriterio((Ruta.Peso) criterioSelected.getUserData());
     }
 
     /* Nombre: menuActions
@@ -131,7 +131,7 @@ public class MainController {
        Retorno: void.
    */
     private void openWindow(String fxml, String style){
-        FXMLLoader loader = Visual.openNewWindow(fxml, style);
+        FXMLLoader loader = Visual.openNewWindow(fxml, style,false);
 
         Object controller = (Objects.requireNonNull(loader).getController());
 
@@ -147,7 +147,5 @@ public class MainController {
         else if(controller instanceof ShowRutaController)
             ((ShowRutaController) controller).setMainController(this);
     }
-
-
 
 }

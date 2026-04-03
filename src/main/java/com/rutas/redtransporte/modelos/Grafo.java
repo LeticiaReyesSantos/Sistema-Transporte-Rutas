@@ -49,6 +49,10 @@ public class Grafo {
                 .orElse(null);
     }
 
+    public boolean paradaExiste(Parada nuevaParada){
+        return map.keySet().stream().anyMatch(parada -> parada.equals(nuevaParada));
+    }
+
     public Object addParada(Parada parada) {
         if (parada == null) {
             throw new IllegalArgumentException("Parada debe existir.");
@@ -218,6 +222,8 @@ public class Grafo {
                 System.out.println("Ruta omitida: " + e.getMessage());
             }
         }
+
+        Ruta.setGenIDRuta(rutasDB.size()+1);
     }
 
     //for debugging only
