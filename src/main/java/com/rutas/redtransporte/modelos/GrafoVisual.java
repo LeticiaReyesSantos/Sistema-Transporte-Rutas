@@ -2,9 +2,15 @@ package com.rutas.redtransporte.modelos;
 
 import com.brunomnsilva.smartgraph.graph.*;
 import com.brunomnsilva.smartgraph.graphview.*;
+import com.rutas.redtransporte.controllers.MainController;
+import com.rutas.redtransporte.servicios.ClaseService;
+import com.rutas.redtransporte.servicios.ParadaService;
 import com.rutas.redtransporte.servicios.RoutingEngine;
+import com.rutas.redtransporte.utilidad.Visual;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -16,12 +22,23 @@ public class GrafoVisual {
 
     private SmartGraphPanel<Parada, Ruta> panelMapa;
     private Digraph<Parada, Ruta> grafoVisual;
+    private AnchorPane panelPrincipal;
     private RoutingEngine routingEngine;
 
     private SmartGraphVertex<Parada> vertexSelected = null;
     private Ruta.Peso criterio = Ruta.Peso.DISTANCIA;
 
-    public void iniciarMapa(AnchorPane panelPrincipal) {
+    private ContextMenu menuParada;
+
+    public void inicializar(AnchorPane panelPrincipal){
+        this.panelPrincipal = panelPrincipal;
+        ClaseService.getInstance().registrarClase(GrafoVisual.class,this);
+        iniciarMapa();
+        iniciarMenu();
+        setNodeInteraction();
+    }
+
+    private void iniciarMapa() {
         routingEngine = new RoutingEngine();
         grafoVisual = new DigraphEdgeList<>();
         sincronizarGrafo();
@@ -55,6 +72,7 @@ public class GrafoVisual {
             panelMapa.setAutomaticLayout(true);
             setVertexSelection();
         });
+
     }
 
     private void setVertexSelection(){
@@ -162,6 +180,67 @@ public class GrafoVisual {
                 .findFirst()
                 .orElse(null);
 
+    }
+
+    private void iniciarMenu() {
+        menuParada = new ContextMenu();
+        menuParada.getStyleClass().add("btnParadaMenu");
+
+        MenuItem editItem = new MenuItem("Editar");
+        editItem.getStyleClass().add("btnParadaMenu");
+        editItem.setGraphic(Visual.setIcon("/imagenes/modificar.png"));
+
+        MenuItem deleteItem = new MenuItem("Eliminar");
+        deleteItem.getStyleClass().add("btnParadaMenu");
+        deleteItem.setGraphic(Visual.setIcon("/imagenes/eliminar.png"));
+
+        MenuItem reconnectItem = new MenuItem("Reconectar");
+        reconnectItem.getStyleClass().add("btnParadaMenu");
+        reconnectItem.setGraphic(Visual.setIcon("/imagenes/reconnect.png"));
+
+        editItem.setOnAction(event -> {
+            ParadaService paradaService = new ParadaService();
+            Vertex<Parada> actualVertex = (Vertex<Parada>) menuParada.getUserData();
+            paradaService.verDetalles(actualVertex.element());
+        });
+
+        deleteItem.setOnAction(event -> {
+            ParadaService paradaService = new ParadaService();
+            Vertex<Parada> actualVertex = (Vertex<Parada>) menuParada.getUserData();
+            paradaService.eliminar(actualVertex.element());
+        });
+
+        /// Método para reconectar
+//        reconnectItem.setOnAction(event -> {
+//            Vertex<Parada> actualVertex = (Vertex<Parada>) menuParada.getUserData();
+//            crearParada.eliminarParada(false);
+//        });
+
+        menuParada.getItems().addAll(editItem, deleteItem, reconnectItem);
+
+    }
+
+    private void setNodeInteraction() {
+        panelMapa.setVertexDoubleClickAction(graphVertex -> {
+            Platform.runLater(() -> {
+                try {
+                    SmartGraphVertexNode<Parada> smartVertex = (SmartGraphVertexNode<Parada>) graphVertex;
+                    Vertex<Parada> vertex = smartVertex.getUnderlyingVertex();
+                    menuParada.setUserData(vertex);
+
+                    javafx.geometry.Bounds bounds = smartVertex.localToScreen(smartVertex.getBoundsInLocal());
+
+                    if (bounds != null) {
+                        double centerX = bounds.getMinX() + (bounds.getWidth() / 2);
+                        double centerY = bounds.getMinY() + (bounds.getHeight() / 2);
+
+                        menuParada.show(smartVertex.getScene().getWindow(), centerX + 10, centerY);
+                    }
+                }catch (ClassCastException e) {
+                    System.err.println("Error: SmartGraph no devolvió un Node visual esperado.");
+                }
+            });
+        });
     }
 
     public void sincronizarGrafo() {

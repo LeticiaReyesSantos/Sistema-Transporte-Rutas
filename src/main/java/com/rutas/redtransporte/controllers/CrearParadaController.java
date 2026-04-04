@@ -1,14 +1,14 @@
 package com.rutas.redtransporte.controllers;
 
-import com.rutas.redtransporte.db.ParadaDAO;
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
+import com.rutas.redtransporte.servicios.ClaseService;
+import com.rutas.redtransporte.servicios.ParadaService;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Mensaje;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -34,53 +34,30 @@ public class CrearParadaController {
     private Button btnEliminar;
 
     private final Grafo grafo = Grafo.getInstance();
-    private MainController mainController = null;
-    private ShowParadaController showController = null;
+    private final ParadaService paradaService = new ParadaService();
     private Parada paradaSelected = null;
 
     public void initialize(){
+        ClaseService.getInstance().registrarClase(CrearParadaController.class,this);
         cbxTipo.getItems().addAll("Carro","Bus","Monorriel");
     }
 
-    /* Nombre: guardarParada
-        Funcion: Guardar una parada creada.
-                 *Verifica que la parada no exista.
-        Retorno: void.
-    */
     public void guardarParada(){
 
-        Parada parada = crearParada();
+        if(Logico.emptyFields(txtNombre,cbxTipo)){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
+            return;
+        }
 
-        if(grafo.paradaExiste(parada)){
+        Parada parada = new Parada(Logico.checkText(txtNombre),cbxTipo.getValue());
+
+        if(!paradaService.crear(parada)){
             Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
             return;
         }
 
-//        if(grafo.addParada(parada) != null){
-//            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
-//            return;
-//        }
-
-        ParadaDAO.getInstance().guardarParada(parada);
-        mainController.getGrafoVisual().crearParada(parada);
-
-
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,parada.getNombreParada());
         Logico.cleanFields(txtNombre,cbxTipo);
-    }
-
-    /* Nombre: createParada
-        Funcion: Crea una parada con los datos ingresados por el usuario.
-                 *Verifica que no haya campos vacíos.
-        Retorno: (Parada) creada.
-    */
-    public Parada crearParada(){
-        if(Logico.emptyFields(txtNombre,cbxTipo)){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
-            return null;
-        }
-
-        return new Parada(Logico.checkText(txtNombre),cbxTipo.getValue());
     }
 
     /* Nombre: setScene
@@ -99,94 +76,29 @@ public class CrearParadaController {
         paradaSelected = parada;
     }
 
-    /* Nombre: modificarParada
-    Funcion: Modifica una parada de manera lógica y visual.
-    Retorno: void.
-    */
     public void modificarParada(){
-        Parada paradaModified = new Parada(paradaSelected);
-        if(!modificarValido(paradaModified)){
+        Parada paradaModificada = new Parada(paradaSelected);
+
+        if(Logico.emptyFields(txtNombre,cbxTipo)){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
             return;
         }
 
-        mainController.getGrafoVisual().modificarParada(paradaSelected,paradaModified);
-        paradaSelected.modificarParada(paradaModified);
+        paradaModificada.setNombreParada(txtNombre.getText());
+        paradaModificada.setTipo(cbxTipo.getValue());
 
-
-        ParadaDAO.getInstance().actualizarParada(paradaModified);
-
-        //Visual.openNewWindow("ShowParada.fxml","Estilo.css");
-        Visual.closeWindow(btnModificar);
+        if(!paradaService.modificar(paradaSelected,paradaModificada)){
+            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+paradaModificada.getNombreParada()+"\" ");
+            return;
+        }
+            Visual.closeWindow(btnModificar);
     }
 
-    public boolean modificarValido(Parada paradaModified){
-        if(Logico.emptyFields(txtNombre,cbxTipo)){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
-            return false;
-        }
-
-        paradaModified.setNombreParada(txtNombre.getText());
-        paradaModified.setTipo(cbxTipo.getValue());
-
-        if(!paradaSelected.cambiosParada(paradaModified)){
-            Mensaje.showMessage(Alert.AlertType.ERROR,"Opción inválida","","No ha modificado la parada.");
-            return false;
-        }
-
-        if(grafo.paradaExiste(paradaModified)){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+paradaModified.getNombreParada()+"\" ");
-            return false;
-        }
-
-        return true;
-
-    }
-
-//    public void modificarParada(){
-//        Parada oldParada = new Parada(paradaSelected);
-//
-//        if(Logico.emptyFields(txtNombre,cbxTipo)){
-//            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EMPTY,"");
-//            return;
-//        }
-//
-//        paradaSelected.setNombreParada(txtNombre.getText());
-//        paradaSelected.setTipo(cbxTipo.getValue());
-//
-//        if(mainController == null)
-//            System.out.println("MainController is null");
-//
-//        mainController.getGrafoVisual().modificarParada(oldParada,paradaSelected);
-//        ParadaDAO.getInstance().actualizarParada(paradaSelected);
-//
-//        Visual.openNewWindow("ShowParada.fxml","Estilo.css");
-//        Visual.closeWindow(btnModificar);
-//    }
-
-    /* Nombre: eliminarParada
-    Funcion: Elimina una parada de manera lógica y visual.
-    Retorno: void.
-    */
     public void eliminarParada() {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Todas las rutas relacionadas serán eliminadas.");
+        paradaService.eliminar(paradaSelected);
 
-        grafo.deleteParada(paradaSelected);
-        mainController.getGrafoVisual().eliminarParada(paradaSelected);
-        ParadaDAO.getInstance().eliminarParada(paradaSelected.getIdParada());
-
-        //Visual.openNewWindow("ShowParada.fxml","Estilo.css");
-        showController.updateTable();
-        Visual.closeWindow(btnModificar);
     }
-
-    /* Nombre: setMainController
-        Funcion: Asigna la instancia de mainController.
-        Retorno: void.
-    */
-    public void setMainController(MainController mainController){
-        this.mainController = mainController;
-    }
-    public void setShowController(ShowParadaController showController){this.showController = showController;};
 
     /* Nombre: volver
         Funcion: Volver a la ventana principal.

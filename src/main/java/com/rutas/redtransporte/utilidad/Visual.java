@@ -1,17 +1,22 @@
 package com.rutas.redtransporte.utilidad;
 
 import com.rutas.redtransporte.application.MainVisual;
+import com.rutas.redtransporte.controllers.CrearParadaController;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.security.Principal;
 
 public class Visual {
 
@@ -19,30 +24,30 @@ public class Visual {
        Funcion: Abrir una ventana sobre la ventana principal.
        Retorno: void
     */
-   public static FXMLLoader openNewWindow(String fxml, String css, boolean wait){
+    public static FXMLLoader openNewWindow(String fxml, String css){
 
-       try{
-           Stage stage = new Stage();
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));
+            Scene scene = new Scene(fxmlLoader.load());
 
-           stage.initOwner(MainVisual.mainStage);
-           stage.initModality(Modality.APPLICATION_MODAL);
+            if(css != null)
+                scene.getStylesheets().add(Visual.class.getResource("/appvisuals/"+css).toExternalForm());
 
-           FXMLLoader fxmlLoader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));
-           Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.initOwner(MainVisual.mainStage);
+            stage.initModality(Modality.APPLICATION_MODAL);
 
-           if(css != null)
-               scene.getStylesheets().add(Visual.class.getResource("/appvisuals/"+css).toExternalForm());
+            stage.setScene(scene);
+            stage.show();
 
-           stage.setScene(scene);
-           stage.show();
+            return fxmlLoader;
 
-           return fxmlLoader;
+        }catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-       }catch (IOException e) {
-           return null;
-       }
-
-   }
+    }
 
     /* Nombre: closeWindow
          Funcion: Cerrar una ventana.
@@ -57,6 +62,11 @@ public class Visual {
     public static void closeWindow(Node node){
         Stage stage = (Stage) node.getScene().getWindow();
         stage.close();
+    }
+
+    public static FXMLLoader getLoader(String fxml){
+        FXMLLoader loader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));
+        return loader;
     }
 
     public enum Axis { X, Y };
@@ -77,10 +87,17 @@ public class Visual {
         return slide;
     }
 
-    private static void setNodesVisibility(Node[] nodes, boolean visibility){
-        for (Node node : nodes) {
-            node.setVisible(visibility);
-        }
+    public static ImageView setIcon(String path){
+        Image image = new Image(Visual.class.getResourceAsStream(path));
+
+        ImageView imageView = new ImageView(image);
+        imageView.setImage(image);
+        imageView.setPreserveRatio(true);
+
+        imageView.setFitWidth(15);
+        imageView.setFitHeight(15);
+
+        return imageView;
     }
 
 }

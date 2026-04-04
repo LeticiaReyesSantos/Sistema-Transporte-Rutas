@@ -121,3 +121,18 @@
     -fx-background-color: #bfdbed;
 }
 
+/*Menu nodo*/
+.btnParadaMenu{
+    -fx-font: SansSerif;
+    -fx-background-color: CBDBAF;
+    -fx-font-weight: bold;
+}
+
+/*Panel Datos*/
+.lblDatos{
+    -fx-text-alignment: CENTER;
+}
+
+.vboxOpcs{
+    -fx-background-color: CBDBAF;
+}

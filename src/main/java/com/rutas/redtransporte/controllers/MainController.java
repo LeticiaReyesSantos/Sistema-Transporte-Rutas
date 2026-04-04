@@ -2,6 +2,7 @@ package com.rutas.redtransporte.controllers;
 
 import com.rutas.redtransporte.modelos.GrafoVisual;
 import com.rutas.redtransporte.modelos.Ruta;
+import com.rutas.redtransporte.servicios.ClaseService;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Visual;
 
@@ -53,15 +54,20 @@ public class MainController {
     @FXML
     private Button btnTransbordo;
 
-    private AtomicBoolean isMenuOpen = new AtomicBoolean(false);
+    private AtomicBoolean isMenuOpen = new AtomicBoolean(true);
 
     private final GrafoVisual grafoVisual = new GrafoVisual();
 
     public void initialize() {
+        ClaseService.getInstance().registrarClase(MainController.class,this);
         Logico.crearDatosGrafo();
         setMenu();
         setButtonValues();
-        grafoVisual.iniciarMapa(panelPrincipal);
+        grafoVisual.inicializar(panelPrincipal);
+    }
+
+    public MainController getMainController(){
+        return this;
     }
 
     public GrafoVisual getGrafoVisual(){
@@ -73,11 +79,6 @@ public class MainController {
         Retorno: void.
     */
     public void setMenu(){
-
-        mainMenu.setTranslateX(-(mainMenu.getPrefWidth() + 20));
-        panelFiltro.setTranslateY(-(panelFiltro.getPrefHeight() + 50));
-        panelDatos.setTranslateY((panelDatos.getPrefHeight() + 50));
-
         menuManager.setOnMouseClicked(event -> setMenuTranslations());
         menuManagerInside.setOnMouseClicked(event -> setMenuTranslations());
 }
@@ -99,6 +100,21 @@ public class MainController {
         transitions.play();
     }
 
+    /* Nombre: menuActions
+   Funcion: Maneja las acciones del menu.
+   Retorno: void.
+    */
+    public void menuActions(ActionEvent e){
+        String id = ((Button) e.getSource()).getId();
+
+        switch (id){
+            case "crearParada" -> Visual.openNewWindow("CrearParada.fxml","Estilo.css");
+            case "mostrarParada" -> Visual.openNewWindow("ShowParada.fxml","Estilo.css");
+            case "crearRuta" -> Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
+            case "mostrarRuta" -> Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
+        }
+    }
+
     public void seleccionCriterio(ActionEvent e){
         Button criterioSelected = (Button)e.getSource();
         grafoVisual.setCriterio((Ruta.Peso) criterioSelected.getUserData());
@@ -109,43 +125,6 @@ public class MainController {
         btnTiempo.setUserData(Ruta.Peso.TIEMPO);
         btnCosto.setUserData(Ruta.Peso.COSTO);
         btnTransbordo.setUserData(Ruta.Peso.TRANSBORDO);
-    }
-
-    /* Nombre: menuActions
-       Funcion: Maneja las acciones del menu.
-       Retorno: void.
-   */
-    public void menuActions(ActionEvent e){
-        String id = ((Button) e.getSource()).getId();
-
-        switch (id){
-            case "crearParada" -> openWindow("CrearParada.fxml","Estilo.css");
-            case "mostrarParada" -> openWindow("ShowParada.fxml","Estilo.css");
-            case "crearRuta" -> openWindow("CrearRuta.fxml","Estilo.css");
-            case "mostrarRuta" -> openWindow("ShowRuta.fxml","Estilo.css");
-        }
-    }
-
-    /* Nombre: openWindow
-       Funcion: Se encarga de abrir las ventanas y asginar la instancia de MainController.
-       Retorno: void.
-   */
-    private void openWindow(String fxml, String style){
-        FXMLLoader loader = Visual.openNewWindow(fxml, style,false);
-
-        Object controller = (Objects.requireNonNull(loader).getController());
-
-        if(controller instanceof CrearParadaController)
-            ((CrearParadaController) controller).setMainController(this);
-
-        else if(controller instanceof ShowParadaController)
-            ((ShowParadaController) controller).setMainController(this);
-
-        else if(controller instanceof CrearRutaController)
-            ((CrearRutaController) controller).setMainController(this);
-
-        else if(controller instanceof ShowRutaController)
-            ((ShowRutaController) controller).setMainController(this);
     }
 
 }

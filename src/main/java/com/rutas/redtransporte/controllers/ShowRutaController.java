@@ -52,7 +52,7 @@ public class ShowRutaController {
     public void verDetalles(){
         Ruta selected = table.getSelectionModel().getSelectedItem();
 
-        FXMLLoader loader = Visual.openNewWindow("CrearRuta.fxml","Estilo.css",false);
+        FXMLLoader loader = Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
         CrearRutaController controller = loader.getController();
 
         controller.setScene(selected);

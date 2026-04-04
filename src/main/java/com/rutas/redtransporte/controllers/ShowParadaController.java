@@ -2,13 +2,14 @@ package com.rutas.redtransporte.controllers;
 
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
+import com.rutas.redtransporte.servicios.ClaseService;
+import com.rutas.redtransporte.servicios.ParadaService;
 import com.rutas.redtransporte.utilidad.Mensaje;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -32,7 +33,7 @@ public class ShowParadaController {
     private TableColumn<Parada, String> colTransporte;
 
     private final Grafo grafo = Grafo.getInstance();
-    private MainController mainController;
+    ParadaService paradaService = new ParadaService();
 
     public void initialize(){
         colId.setCellValueFactory(new PropertyValueFactory<>("idParada"));
@@ -49,7 +50,6 @@ public class ShowParadaController {
         Retorno: void.
     */
     public void verDetalles(){
-        System.out.println("Entra verDetalles");
         Parada paradaSelected = table.getSelectionModel().getSelectedItem();
 
         if(grafo.getMap().isEmpty()){
@@ -61,28 +61,13 @@ public class ShowParadaController {
             return;
         }
 
-        FXMLLoader loader = Visual.openNewWindow("CrearParada.fxml","Estilo.css",true);
-        CrearParadaController controller = loader.getController();
-
-        controller.setScene(paradaSelected);
-        if(mainController == null)
-            System.out.println("Sorry, but I'm still null ;(");
-        controller.setMainController(mainController);
-        controller.setShowController(this);
+        paradaService.verDetalles(paradaSelected);
     }
 
     public void updateTable(){
         table.refresh();
 //        ObservableList<Parada> paradasUpdated = FXCollections.observableArrayList(new ArrayList<>(grafo.getSetParadas()));
 //        table.setItems(paradasUpdated);
-    }
-
-    /* Nombre: setMainController
-        Funcion: Asigna la instancia de mainController.
-        Retorno: void.
-    */
-    public void setMainController(MainController mainController){
-        this.mainController = mainController;
     }
 
     /* Nombre: volver

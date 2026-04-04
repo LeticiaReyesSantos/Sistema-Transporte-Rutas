@@ -3,12 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -22,10 +25,38 @@
                         <Image url="@../imagenes/menu.png" />
                     </image>
                 </ImageView>
+              <Pane fx:id="panelFiltro" layoutX="352.0" layoutY="10.0" prefHeight="40.0" prefWidth="470.0" styleClass="filtro">
+                  <children>
+                      <HBox layoutX="14.0" layoutY="8.0" prefHeight="23.0" prefWidth="443.0" spacing="15.0">
+                          <children>
+                              <Button fx:id="btnDistancia" mnemonicParsing="false" onAction="#seleccionCriterio" prefWidth="100.0" styleClass="btnFiltro" text="Distancia">
+                                  <font>
+                                      <Font name="SansSerif Bold" size="12.0" />
+                                  </font>
+                              </Button>
+                              <Button fx:id="btnTiempo" mnemonicParsing="false" onAction="#seleccionCriterio" prefWidth="100.0" styleClass="btnFiltro" text="Tiempo">
+                                  <font>
+                                      <Font name="SansSerif Bold" size="12.0" />
+                                  </font>
+                              </Button>
+                              <Button fx:id="btnCosto" mnemonicParsing="false" onAction="#seleccionCriterio" prefWidth="100.0" styleClass="btnFiltro" text="Costo">
+                                  <font>
+                                      <Font name="SansSerif Bold" size="12.0" />
+                                  </font>
+                              </Button>
+                              <Button fx:id="btnTransbordo" layoutX="190.0" layoutY="10.0" mnemonicParsing="false" onAction="#seleccionCriterio" prefHeight="23.0" prefWidth="100.0" styleClass="btnFiltro" text="Transbordo">
+                                  <font>
+                                      <Font name="SansSerif Bold" size="12.0" />
+                                  </font>
+                              </Button>
+                          </children>
+                      </HBox>
+                  </children>
+              </Pane>
             </children>
         </Pane>
 
-        <VBox fx:id="mainMenu" layoutX="14.0" layoutY="12.0" maxWidth="260.0" minWidth="200.0" prefWidth="220.0" spacing="10.0" stylesheets="@Estilo.css" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="12.0">
+        <VBox fx:id="mainMenu" layoutX="14.0" layoutY="12.0" maxWidth="260.0" minWidth="200.0" prefWidth="312.0" spacing="10.0" stylesheets="@Estilo.css" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="12.0">
             <children>
                 <ImageView fx:id="menuManagerInside" fitHeight="23.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                     <image>
@@ -142,114 +173,255 @@
 
             </children>
         </VBox>
-        <Pane fx:id="panelFiltro" layoutX="487.0" layoutY="29.0" prefHeight="40.0" prefWidth="470.0" styleClass="filtro" AnchorPane.leftAnchor="470.0" AnchorPane.rightAnchor="340.0" AnchorPane.topAnchor="12.0">
-            <children>
-                <HBox layoutX="14.0" layoutY="8.0" prefHeight="23.0" prefWidth="443.0" spacing="15.0">
-                    <children>
-                        <Button fx:id="btnDistancia" mnemonicParsing="false" onAction="#seleccionCriterio" prefWidth="100.0" styleClass="btnFiltro" text="Distancia">
-                            <font>
-                                <Font name="SansSerif Bold" size="12.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="btnTiempo" mnemonicParsing="false" onAction="#seleccionCriterio" prefWidth="100.0" styleClass="btnFiltro" text="Tiempo">
-                            <font>
-                                <Font name="SansSerif Bold" size="12.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="btnCosto" mnemonicParsing="false" onAction="#seleccionCriterio" prefWidth="100.0" styleClass="btnFiltro" text="Costo">
-                            <font>
-                                <Font name="SansSerif Bold" size="12.0" />
-                            </font>
-                        </Button>
-                        <Button fx:id="btnTransbordo" layoutX="190.0" layoutY="10.0" mnemonicParsing="false" onAction="#seleccionCriterio" prefHeight="23.0" prefWidth="100.0" styleClass="btnFiltro" text="Transbordo">
-                            <font>
-                                <Font name="SansSerif Bold" size="12.0" />
-                            </font>
-                        </Button>
-                    </children>
-                </HBox>
-            </children>
-        </Pane>
-        <Pane fx:id="panelDatos" layoutX="476.0" layoutY="261.0" prefHeight="88.0" prefWidth="470.0" styleClass="filtro" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="470.0" AnchorPane.rightAnchor="330.0">
-            <children>
-                <Pane layoutX="16.0" layoutY="10.0" prefHeight="66.0" prefWidth="443.0" style="-fx-background-color: #F6F3EA;">
-                    <children>
-                        <HBox layoutX="32.0" layoutY="20.0" spacing="30.0">
-                            <children>
-                                <Label prefWidth="75.0" text="Distancia:">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                                <Label prefWidth="75.0" text="Tiempo:">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                                <Label prefWidth="75.0" text="Precio">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                                <Label text="Transbordo:">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                            </children>
+      <VBox fx:id="panelDatos" layoutX="10.0" layoutY="21.0" prefHeight="770.0" prefWidth="312.0" spacing="20" style="-fx-padding: 20;" styleClass="vboxMenuOpc" AnchorPane.bottomAnchor="18.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="18.0">
+         <children>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Ruta Óptima" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label style="-fx-background-color: #e8f5e9; -fx-text-fill: #2e7d32; -fx-background-radius: 10; -fx-padding: 2 10; -fx-font-size: 11px;" text="Recomendada" />
+               </children>
+            </HBox>
+            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
+               <children>
+                  <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="A → B → C → D" />
+                  <Separator style="-fx-opacity: 0.5;" />
+                  <HBox spacing="15">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="53.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Distancia" textAlignment="CENTER">
+                                 <padding>
+                                    <Insets left="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/distance.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="53.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Tiempo" textAlignment="CENTER">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/time.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="53.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Costo" textAlignment="CENTER">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/price.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="61.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Transbordo" textAlignment="CENTER" />
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/transbordo.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Ruta Alternativa" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label style="-fx-background-color: #e3f2fd; -fx-text-fill: #1976d2; -fx-background-radius: 10; -fx-padding: 2 10; -fx-font-size: 11px;" text="Alterna" />
+               </children>
+            </HBox>
+            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
+               <children>
+                  <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="A → B → C → D" />
+                  <Separator style="-fx-opacity: 0.5;" />
+                  <HBox spacing="15">
+                     <children>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="53.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Distancia" textAlignment="CENTER">
+                                 <padding>
+                                    <Insets left="5.0" />
+                                 </padding>
+                              </Label>
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/distance.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="53.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Tiempo" textAlignment="CENTER">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/time.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="53.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Costo" textAlignment="CENTER">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/price.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="61.0" style="-fx-font-size: 10px; -fx-text-fill: #888;" styleClass="lblDatos" text="Transbordo" textAlignment="CENTER" />
+                              <Label style="-fx-font-size: 10px; -fx-text-fill: #888;" text="20 km">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/transbordo.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Simular evento" />
+            <VBox prefHeight="153.0" prefWidth="270.0" spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
+               <children>
+                  <Label style="-fx-font-size: 12px; -fx-text-fill: #555;" text="Tipo de evento" />
+                  <ScrollPane prefHeight="48.0" prefWidth="400.0">
+                     <content>
+                        <HBox prefHeight="49.0" prefWidth="600.0" spacing="10">
+                           <children>
+                              <Button prefWidth="60.0" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80; -fx-font-size: 11px;" text="Tráfico">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/traffic.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80; -fx-font-size: 11px;" text="Accidente">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/accident.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80; -fx-font-size: 11px;" text="🚗 Tráfico">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/traffic.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80; -fx-font-size: 11px;" text="Lluvia">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/rain.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80; -fx-font-size: 11px;" text="Standard">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/standard.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                              <Button style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80; -fx-font-size: 11px;" text="Descuento">
+                                 <graphic>
+                                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../imagenes/discount.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
                         </HBox>
-                        <HBox layoutX="32.0" layoutY="43.0" spacing="30.0">
-                            <children>
-                                <Label prefWidth="75.0">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                                <Label prefWidth="75.0">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                                <Label prefWidth="75.0">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                                <Label prefWidth="75.0">
-                                    <font>
-                                        <Font name="SansSerif Bold" size="12.0" />
-                                    </font>
-                                    <padding>
-                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                    </padding>
-                                </Label>
-                            </children>
-                        </HBox>
-                    </children>
-                </Pane>
-            </children>
-        </Pane>
+                     </content>
+                  </ScrollPane>
+                  <HBox spacing="10">
+                     <children>
+                        <Button style="-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-background-radius: 5; -fx-pref-width: 120; -fx-font-weight: bold;" text="Aplicar evento" />
+                        <Button style="-fx-background-color: white; -fx-text-fill: #555; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5; -fx-pref-width: 80;" text="Limpiar" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Region VBox.vgrow="ALWAYS" />
+         </children>
+      </VBox>
 
     </children>
 </AnchorPane>
