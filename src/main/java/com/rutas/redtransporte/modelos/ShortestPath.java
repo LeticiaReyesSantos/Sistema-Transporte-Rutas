@@ -15,11 +15,10 @@ public class ShortestPath {
     private double totalDistance;
     private int totalTranfers;
 
-    private List<Ruta> rutasRecorridas; //guaguas tomadas
-    private Ruta.Peso criterioEvaluado; //
+    private List<Ruta> rutasRecorridas;
+    private Ruta.Peso criterioEvaluado;
     private double pesoTotal;
 
-    //cambie el constructor porque se utiliza este calculo en todos los algoritmos
     public ShortestPath(List<Ruta> rutasRecorridas, Ruta.Peso criterioEvaluado, double pesoTotal) {
         this.rutasRecorridas = rutasRecorridas;
         this.criterioEvaluado = criterioEvaluado;
@@ -28,10 +27,9 @@ public class ShortestPath {
         this.totalPrice = 0;
         this.totalTime = 0;
         this.totalDistance = 0;
-        this.totalTranfers = 0; //Asumo que es 0
+        this.totalTranfers = 0;
 
         if (rutasRecorridas != null && !rutasRecorridas.isEmpty()) {
-            //Para contar transbordos
             String pastType = rutasRecorridas.getFirst().getOrigen().getTipo();
 
             for (Ruta r : rutasRecorridas) {

@@ -22,9 +22,9 @@ public class BellmanFord implements EstrategiaDeRuta{
 
         //Limite V-1
         for (int i = 0; i < paradasSet.size() - 1; i++) {
-            boolean changed = false; //me evito hacer iteraciones de mas si luego de la segunda vuelta la ruta mas optima no cambia
+            boolean changed = false;
             for(Parada p: paradasSet){
-                if(peso.get(p) == infinito)//ignoro la parada si aun no se llegar a ella
+                if(peso.get(p) == infinito)
                     continue;
 
                 for (Ruta route: graph.buscarRutasSalida(p)){
@@ -42,10 +42,10 @@ public class BellmanFord implements EstrategiaDeRuta{
                     }
                 }
             }
-            if(!changed) break; //si nada cambio el algoritmo termino antes de completar los recorridos
+            if(!changed) break;
         }
 
-        //No deberiamos tener un ciclo negativo
+        //No deberiamos tener un ciclo negativo REVISAR
         for(Parada p : paradasSet){
             if(peso.get(p) == infinito) continue;
             for(Ruta ruta: graph.buscarRutasSalida(p)){

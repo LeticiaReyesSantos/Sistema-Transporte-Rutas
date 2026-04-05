@@ -24,14 +24,15 @@ public class GrafoVisual {
     private Digraph<Parada, Ruta> grafoVisual;
     private AnchorPane panelPrincipal;
     private RoutingEngine routingEngine;
-
+    private MainController mainController;
     private SmartGraphVertex<Parada> vertexSelected = null;
     private Ruta.Peso criterio = Ruta.Peso.DISTANCIA;
 
     private ContextMenu menuParada;
 
-    public void inicializar(AnchorPane panelPrincipal){
+    public void inicializar(AnchorPane panelPrincipal, MainController mainController){
         this.panelPrincipal = panelPrincipal;
+        this.mainController = mainController;
         ClaseService.getInstance().registrarClase(GrafoVisual.class,this);
         iniciarMapa();
         iniciarMenu();
@@ -58,6 +59,7 @@ public class GrafoVisual {
 
         SmartPlacementStrategy placement = new SmartRandomPlacementStrategy();
         panelMapa = new SmartGraphPanel<>(grafoVisual, properties, placement, cssURI);
+        panelMapa.setStyle("-fx-background-color: transparent;");
 
         AnchorPane.setTopAnchor(panelMapa, 0.0);
         AnchorPane.setBottomAnchor(panelMapa, 0.0);
@@ -69,37 +71,34 @@ public class GrafoVisual {
 
         Platform.runLater(() -> {
             panelMapa.init();
-            panelMapa.setAutomaticLayout(true);
+            panelMapa.setAutomaticLayout(false);
             setVertexSelection();
         });
 
     }
 
     private void setVertexSelection(){
-
         for (SmartGraphVertex<Parada> currentVertex : panelMapa.getSmartVertices()) {
-
             Node node = (Node) currentVertex;
 
-            node.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            node.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
 
                     for (SmartGraphVertex<Parada> vertex : panelMapa.getSmartVertices()) {
-                        if(vertex.equals(vertexSelected))
-                            continue;
-
+                        if(vertex.equals(vertexSelected)) continue;
                         vertex.setStyleClass("vertex");
                     }
 
                     currentVertex.setStyleClass("vertex-selected");
 
-                    if(vertexSelected ==  null){
+                    if(vertexSelected == null){
                         vertexSelected = currentVertex;
-                    }else{
-                        getOptimizedPath(vertexSelected,currentVertex);
+                        mainController.setOrigen(currentVertex.getUnderlyingVertex().element());
+                    } else {
+                        mainController.setDestino(currentVertex.getUnderlyingVertex().element());
+                        getOptimizedPath(vertexSelected, currentVertex);
                         vertexSelected = null;
                     }
-
 
                     event.consume();
                 }
@@ -114,6 +113,7 @@ public class GrafoVisual {
         ShortestPath rutaPrincipal = routingEngine.optimizedPath(origen,destino,criterio);
         ShortestPath rutaAlternativa = routingEngine.alternativePath(origen,destino,criterio);
 
+        mainController.mostrarResultados(rutaPrincipal,rutaAlternativa);
         colorearRutas(rutaPrincipal, rutaAlternativa);
     }
 
@@ -124,6 +124,7 @@ public class GrafoVisual {
     public void crearParada(Parada parada){
         grafoVisual.insertVertex(parada);
         panelMapa.update();
+        Platform.runLater(this::setVertexSelection);
     }
 
     public void modificarParada(Parada oldParada, Parada newParada){
@@ -147,6 +148,7 @@ public class GrafoVisual {
     public void crearRuta(Ruta ruta){
         insertEdge(ruta);
         panelMapa.update();
+        Platform.runLater(this::setVertexSelection);
     }
 
     public void modificarRuta(Ruta oldRuta, Ruta newRuta){
@@ -260,7 +262,7 @@ public class GrafoVisual {
         }
     }
 
-    /* Nombre: resaltarRutas
+    /* Nombre: colorearRutas
        Objetivo: Cambia las clases CSS de las aristas en el SmartGraph
                 para colorear el camino encontrado
     */
@@ -290,5 +292,39 @@ public class GrafoVisual {
         sincronizarGrafo();
         panelMapa.update();
         panelMapa.setAutomaticLayout(true);
+    }
+
+    public void calcularDesdeController(Parada origen, Parada destino) {
+        SmartGraphVertex<Parada> vOrigen = null, vDestino = null;
+        for (SmartGraphVertex<Parada> v : panelMapa.getSmartVertices()) {
+            if (v.getUnderlyingVertex().element().equals(origen)) vOrigen = v;
+            if (v.getUnderlyingVertex().element().equals(destino)) vDestino = v;
+        }
+        if (vOrigen != null && vDestino != null)
+            getOptimizedPath(vOrigen, vDestino);
+    }
+
+    public void limpiarSeleccion() {
+        this.vertexSelected = null;
+
+        for (SmartGraphVertex<Parada> vertex : panelMapa.getSmartVertices()) {
+            vertex.setStyleClass("vertex");
+        }
+    }
+
+    public void colorearSimulacionEventos() {
+        for (Edge<Ruta, Parada> edge : grafoVisual.edges()) {
+            Ruta ruta = edge.element();
+            String cssClass = "edge-default";
+
+            switch (ruta.getEventoTrafico()) {
+                case TRAFICO -> cssClass = "edge-trafico";
+                case LLUVIA -> cssClass = "edge-lluvia";
+                case ACCIDENTE -> cssClass = "edge-accidente";
+                case DESCUENTO -> cssClass = "edge-descuento";
+                case STANDARD -> cssClass = "edge-default";
+            }
+            panelMapa.getStylableEdge(edge).setStyleClass(cssClass);
+        }
     }
 }

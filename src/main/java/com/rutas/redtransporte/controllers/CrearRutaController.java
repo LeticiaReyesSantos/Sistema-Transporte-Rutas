@@ -1,5 +1,6 @@
 package com.rutas.redtransporte.controllers;
 
+import com.rutas.redtransporte.db.RutaDAO;
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
@@ -79,18 +80,17 @@ public class CrearRutaController {
     */
     public void guardarRuta(){
         Ruta ruta = createRuta();
-
-        if(ruta == null)
-            return;
+        if(ruta == null) return;
 
         if(Grafo.getInstance().addRoute(ruta) == null){
             Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Esta ruta ya existe.");
             return;
         }
 
-        Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,ruta.getNombreRuta());
-        Logico.cleanFields(txtNombre,cbxOrigen,cbxDestino,txtDistancia,txtTiempo,txtCosto);
+        RutaDAO.getInstance().guardarRuta(ruta);
 
+        Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED, ruta.getNombreRuta());
+        Logico.cleanFields(txtNombre, cbxOrigen, cbxDestino, txtDistancia, txtTiempo, txtCosto);
         mainController.getGrafoVisual().crearRuta(ruta);
     }
 

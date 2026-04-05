@@ -193,6 +193,6 @@ public class Ruta {
 
     @Override
     public String toString() {
-        return nombreRuta + "-->" + destino;
+        return distancia + " km\n" + tiempo + " h\n" + "$ " + costo;
     }
 }

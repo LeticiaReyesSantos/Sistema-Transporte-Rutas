@@ -12,13 +12,13 @@ public class Dijkstra implements EstrategiaDeRuta{
         if(graph == null || origen == null || destino == null || criterio == null){
             throw new IllegalArgumentException("Ninguno de los parametros puede ser nulo");
         }
-        PriorityQueue<Node> cola = new PriorityQueue<>(Comparator.comparingDouble(Node::getTotalWeight)); //:: es lo mismo que ->, el IDE me lo cambio como method reference
+        PriorityQueue<Node> cola = new PriorityQueue<>(Comparator.comparingDouble(Node::getTotalWeight));
         Map<Parada, Double> peso = new HashMap<>();
-        Map<Parada, Ruta> anterior = new HashMap<>(); //guarda la ruta recolectando las paradas previas, tal como propone dijkstra
+        Map<Parada, Ruta> anterior = new HashMap<>();
         Set<Parada> visited = new HashSet<>();
 
         peso.put(origen, 0.0);
-        cola.add(new Node(origen, 0.0)); //se agrega la primera parada como 0, como en el video, no ha recorrido nada, lo mismo con la distancia
+        cola.add(new Node(origen, 0.0));
 
         while(!cola.isEmpty()){
             Node node = cola.poll();

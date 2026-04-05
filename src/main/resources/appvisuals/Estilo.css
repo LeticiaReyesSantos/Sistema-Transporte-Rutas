@@ -1,102 +1,122 @@
-/*Ventana Principal*/
-#panelPrincipal{
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.map-container {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #E0E2DB;
+    -fx-border-width: 1;
+    -fx-background-insets: 0;
+    -fx-overflow-pressed: hidden; //REVISAR
+}
+
+#panelPrincipal {
     -fx-background-color: #F6F3EA;
 }
 
-#mainMenu{
+#mainMenu {
     -fx-background-color: #d5ebbb;
+    -fx-background-radius: 15px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
 }
 
-.filtro{
+.filtro {
     -fx-background-color: CBDBAF;
 }
 
-.filtroMenuLabel{
+.filtroMenuLabel {
     -fx-font-weight: bold;
     -fx-font-size: 20px;
     -fx-text-fill: #6D6464;
 }
 
-.btnFiltro{
+.btnFiltro {
     -fx-background-color: #F6F3EA;
 }
 
-.titled-pane{
+.titled-pane {
     -fx-border-color: transparent;
 }
 
-.titled-pane > .title{
+.titled-pane > .title {
     -fx-background-color: #d5ebbb;
     -fx-padding: 10 10 10 10;
     -fx-graphic-text-gap: 5;
 }
 
-/*> direct child*/
-.titled-pane > .title > .arrow-button{
+.titled-pane > .title > .arrow-button {
     -fx-padding: 0;
     -fx-pref-width: 0;
     -fx-opacity: 0;
 }
 
-.vboxMenuOpc{
+.vboxMenuOpc {
     -fx-background-color: #d5ebbb;
     -fx-border-color: transparent;
 }
 
-.menuButton{
-    -fx-background-color: #d5ebbb;
-    -fx-background-radius: 0;
-    -fx-alignment: CENTER;
+.menuButton {
+    -fx-background-color: #1a6b3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-max-width: Infinity;
+    -fx-alignment: CENTER_LEFT;
     -fx-padding: 10 20 10 20;
-    -fx-graphic-text-gap: 8;
+    -fx-graphic-text-gap: 15px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
 }
 
-.menuButton:hover{
+.menuButton:hover {
     -fx-background-color: LIGHTBLUE;
+    -fx-text-fill: black;
 }
 
-/*Crear Parada y Ruta*/
-.crearBG{
+.crearBG {
     -fx-background-image: url("../imagenes/paradas.jpg");
     -fx-background-size: cover;
     -fx-background-position: center;
 }
 
-.pane{
+.pane {
     -fx-background-color: #F6F3EA;
     -fx-border-color: LIGHTGRAY;
     -fx-border-width: 3px;
 }
 
-.crearButton{
+.crearButton {
     -fx-background-color: WHITE;
     -fx-border-color: LIGHTGRAY;
     -fx-background-radius: 50px;
     -fx-border-radius: 50px;
 }
 
-/*Mostrar Parada y Ruta*/
-.windowBG{
+.windowBG {
     -fx-background-image: url("../imagenes/tabsMap.jpg");
     -fx-background-size: cover;
     -fx-background-position: center;
 }
-.windowPane{
+
+.windowPane {
     -fx-background-color: #d5ebbb;
     -fx-border-color: LIGHTGRAY;
     -fx-border-width: 3px;
 }
 
-#cbxTipo{
+#cbxTipo {
     -fx-background-color: WHITE;
     -fx-border-color: LIGHTGRAY;
 }
 
-.windowField{
+.windowField {
     -fx-background-color: WHITE;
 }
 
-.windowButton{
+.windowButton {
     -fx-background-color: #C7ECF0;
     -fx-font-weight: bold;
     -fx-border-color: LIGHTGRAY;
@@ -104,7 +124,7 @@
     -fx-border-radius: 5px;
 }
 
-.table{
+.table {
     -fx-background-color: #F6F3EA;
     -fx-border-color: LIGHTGRAY;
     -fx-border-width: 1px;
@@ -117,22 +137,108 @@
     -fx-border-width: 0.5px;
 }
 
-.TableColumn{
+.TableColumn {
     -fx-background-color: #bfdbed;
 }
 
-/*Menu nodo*/
-.btnParadaMenu{
-    -fx-font: SansSerif;
+.btnParadaMenu {
+    -fx-font: 14px "SansSerif";
     -fx-background-color: CBDBAF;
     -fx-font-weight: bold;
 }
 
-/*Panel Datos*/
-.lblDatos{
+.lblDatos {
     -fx-text-alignment: CENTER;
 }
 
-.vboxOpcs{
+.vboxOpcs {
     -fx-background-color: CBDBAF;
+}
+
+#panelDatos {
+    -fx-background-color: #F6F3EA;
+    -fx-background-radius: 15px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
+}
+
+#panelFiltro HBox {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-padding: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 5, 0, 0, 2);
+}
+
+.btnFiltro {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+    -fx-min-width: 210px;
+    -fx-min-height: 44px
+}
+.btnFiltro:hover {
+    -fx-background-color: #f0f0f0;
+}
+.btnFiltroActivo {
+    -fx-background-color: #1a6b3c;
+    -fx-border-color: #1a6b3c;
+    -fx-text-fill: white;
+}
+.btnFiltroActivo .label {
+    -fx-text-fill: white;
+}
+
+.selector-od {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.btn-calcular {
+    -fx-background-color: #1a6b3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 6 16 6 12;
+    -fx-cursor: hand;
+}
+.btn-calcular:hover {
+    -fx-background-color: derive(#1a6b3c, -10%);
+}
+.evento-btn {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+.evento-btn:selected {
+    -fx-background-color: #1a6b3c;
+    -fx-border-color: #1a6b3c;
+    -fx-text-fill: white;
+}
+.evento-btn:hover {
+    -fx-background-color: #f0fdf4;
+}
+
+.scope-btn {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+.scope-btn:selected {
+    -fx-background-color: #EFF6FF;
+    -fx-border-color: #3b82f6;
+    -fx-text-fill: #1976d2;
+    -fx-font-weight: bold;
 }

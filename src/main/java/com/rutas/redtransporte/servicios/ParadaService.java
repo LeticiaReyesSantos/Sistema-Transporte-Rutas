@@ -30,7 +30,6 @@ public class ParadaService {
 
         ParadaDAO.getInstance().guardarParada(parada);
         grafoVisual.crearParada(parada);
-
         return true;
     }
 

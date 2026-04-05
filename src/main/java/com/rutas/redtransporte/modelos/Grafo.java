@@ -124,7 +124,7 @@ public class Grafo {
         if (map.containsKey(origen)) {
             map.get(origen).remove(routeToDel);
         }
-        origen.removeRutaSalida(routeToDel); //quito la referencia de mis objetos parada
+        origen.removeRutaSalida(routeToDel);
         destino.removeRutaEntrada(routeToDel);
         allRutas.remove(routeToDel);
     }
@@ -157,24 +157,10 @@ public class Grafo {
     /* Nombre: eventSimulator
        Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
      */
-    public void eventSimulator(){
+    public void eventSimulator(Ruta.Evento evento){
         for(Ruta route: allRutas){
-            Ruta.Evento eventoActual = calcularProbabilidadEvento();
-            aplicarEvento(route, eventoActual);
+            aplicarEvento(route, evento);
         }
-    }
-
-    public Ruta.Evento calcularProbabilidadEvento(){
-        double probabilidad = Math.random();
-        if(probabilidad <= 0.05) //5% de probabilidad
-            return Ruta.Evento.ACCIDENTE;
-        if(probabilidad <= 0.10) //5% de probabilidad
-            return Ruta.Evento.LLUVIA;
-        if(probabilidad <= 0.25) //15% de probabilidad
-            return Ruta.Evento.TRAFICO;
-        if(probabilidad <= 0.35) //10% de probabilidad
-            return Ruta.Evento.DESCUENTO;
-        return Ruta.Evento.STANDARD; //65% de probabilidad
     }
 
     public void aplicarEvento(Ruta route, Ruta.Evento evento){
@@ -199,7 +185,7 @@ public class Grafo {
             case DESCUENTO -> {
                 route.setDisponibilidad(true);
                 route.setTiempo(route.getTiempoBase());
-                route.setCosto(route.getCostoBase() * -0.5); //Rebajamos el costo a la mitad 50% off, y se le devuelve al pasajero
+                route.setCosto(route.getCostoBase() * -0.5);
             }
         }
     }
