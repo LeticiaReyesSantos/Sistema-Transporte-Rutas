@@ -1,5 +1,6 @@
 package com.rutas.redtransporte.db;
 
+import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
 
@@ -18,20 +19,8 @@ public class RutaDAO {
         return instance;
     }
 
-    //Metodo auxiliar para no repetir codigo
-    private void setParametrosBase(PreparedStatement ps, Ruta ruta) throws SQLException {ps.setInt(1, ruta.getIdRuta());
-        ps.setInt(1, ruta.getIdRuta());
-        ps.setString(2, ruta.getNombreRuta());
-        ps.setInt(3, ruta.getOrigen().getIdParada());
-        ps.setInt(4, ruta.getDestino().getIdParada());
-        ps.setDouble(5, ruta.getDistancia());
-        ps.setDouble(6, ruta.getCostoBase());
-        ps.setDouble(7, ruta.getTiempoBase());
-        ps.setInt(8, ruta.getTransbordos());
-    }
-
     public void guardarRuta(Ruta ruta) {
-        final String sql = "INSERT INTO ruta (id, nombre, id_origen, id_destino, distancia, costo_base, tiempo_base, transbordos) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO ruta (nombre, id_origen, id_destino, distancia, costo_base, tiempo_base, transbordos) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -39,15 +28,27 @@ public class RutaDAO {
             setParametrosBase(ps, ruta);
             ps.executeUpdate();
 
-            // Obtenemos el ID que le asigno postgre
-//            try (ResultSet rs = ps.getGeneratedKeys()) {
-//                if (rs.next()) {
-//                    ruta.setIdRuta(rs.getInt(1));
-//                }
-//            }
+             //Obtenemos el ID que le asigno postgre
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    ruta.setIdRuta(rs.getInt(1));
+                    Grafo.getInstance().addRoute(ruta);
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Error al guardar la ruta: " + e.getMessage());
         }
+    }
+
+    //Metodo auxiliar para no repetir codigo
+    private void setParametrosBase(PreparedStatement ps, Ruta ruta) throws SQLException {ps.setInt(1, ruta.getIdRuta());
+        ps.setString(1, ruta.getNombreRuta());
+        ps.setInt(2, ruta.getOrigen().getIdParada());
+        ps.setInt(3, ruta.getDestino().getIdParada());
+        ps.setDouble(4, ruta.getDistancia());
+        ps.setDouble(5, ruta.getCostoBase());
+        ps.setDouble(6, ruta.getTiempoBase());
+        ps.setInt(7, ruta.getTransbordos());
     }
 
     public HashMap<Integer, Ruta> obtenerTodas(HashMap<Integer, Parada> paradasCargadas) {

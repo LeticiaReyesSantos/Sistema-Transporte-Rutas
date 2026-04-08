@@ -1,11 +1,12 @@
 package com.rutas.redtransporte.controllers;
 
-import com.rutas.redtransporte.db.RutaDAO;
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
+import com.rutas.redtransporte.servicios.RutaService;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Mensaje;
+import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.control.TextField;
 import java.util.Collection;
 import java.util.function.Function;
 
+//@SuppressWarnings("unused")
 public class CrearRutaController {
 
     @FXML
@@ -51,7 +53,7 @@ public class CrearRutaController {
     private Button btnEliminar;
 
     private final Grafo grafo = Grafo.getInstance();
-    private MainController mainController = null;
+    private final RutaService rutaService = new RutaService();
     private Ruta rutaSelected = null;
 
     /* Nombre: initialize
@@ -73,25 +75,24 @@ public class CrearRutaController {
         combo.setVisibleRowCount(5);
     }
 
-
-    /* Nombre: guardarRuta
-        Funcion: Guardar la ruta creada en el Grafo.
-        Retorno: void.
-    */
     public void guardarRuta(){
         Ruta ruta = createRuta();
         if(ruta == null) return;
 
-        if(Grafo.getInstance().addRoute(ruta) == null){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Esta ruta ya existe.");
-            return;
+        Resultado result = rutaService.guardar(ruta);
+        //switch (rutaService.guardar(ruta)){
+        switch (result){
+            case EXITO -> {
+                Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED, ruta.getNombreRuta());
+                Logico.cleanFields(txtNombre, cbxOrigen, cbxDestino, txtDistancia, txtTiempo, txtCosto);
+            }
+
+            case NO_CAMBIOS -> Mensaje.showMessage(Alert.AlertType.WARNING,"Modificación","No hay cambios en la ruta."," ");
+
+            case NOMBRE_EXISTE -> Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una ruta con el nombre "+ruta.getNombreRuta());
+
+            case EXISTE -> Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una ruta de "+ruta.getOrigen()+" a "+ruta.getDestino());
         }
-
-        RutaDAO.getInstance().guardarRuta(ruta);
-
-        Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED, ruta.getNombreRuta());
-        Logico.cleanFields(txtNombre, cbxOrigen, cbxDestino, txtDistancia, txtTiempo, txtCosto);
-        mainController.getGrafoVisual().crearRuta(ruta);
     }
 
     /* Nombre: createRuta
@@ -129,44 +130,33 @@ public class CrearRutaController {
 
     }
 
-    /* Nombre: setScene
-    Funcion: Organiza la ventana para mostrar el elemento seleccionado.
-    Retorno: void.
-    */
-    public void setScene(Ruta ruta){
-
-        btnEliminar.setVisible(true);
-        btnModificar.setVisible(true);
-        btnAceptar.setVisible(false);
-        btnCancelar.setLayoutX(244);
-
-        rutaSelected = ruta;
-        loadRutaInfo(ruta);
-    }
-
     /* Nombre: modificarRuta
     Funcion: Modificar una ruta.
     Retorno: void.
     */
     public void modificarRuta(){
-        Ruta oldRuta = new Ruta(rutaSelected);
+        if(!verificarRuta()) return;
 
-        if(verificarRuta()){
-            rutaSelected.setNombreRuta(txtNombre.getText());
-            rutaSelected.setOrigen(grafo.getParada(cbxOrigen.getValue()));
-            rutaSelected.setDestino(grafo.getParada(cbxDestino.getValue()));
-            rutaSelected.setDistancia(Double.parseDouble(txtDistancia.getText()));
-            rutaSelected.setTiempo(Double.parseDouble(txtTiempo.getText()));
-            rutaSelected.setCosto(Double.parseDouble(txtCosto.getText()));
+        Ruta rutaModificada = new Ruta(rutaSelected);
+        rutaModificada.setNombreRuta(txtNombre.getText());
+        rutaModificada.setOrigen(grafo.getParada(cbxOrigen.getValue()));
+        rutaModificada.setDestino(grafo.getParada(cbxDestino.getValue()));
+        rutaModificada.setDistancia(Double.parseDouble(txtDistancia.getText()));
+        rutaModificada.setTiempo(Double.parseDouble(txtTiempo.getText()));
+        rutaModificada.setCosto(Double.parseDouble(txtCosto.getText()));
+
+        switch (rutaService.modificar(rutaSelected,rutaModificada)){
+            case EXITO -> {
+                Mensaje.defaultMessages(Mensaje.OpcionMensaje.MODIFIED,null);
+                Visual.closeWindow(btnModificar);
+            }
+
+            case NO_CAMBIOS -> Mensaje.showMessage(Alert.AlertType.WARNING,"Modificación","No hay cambios en la ruta."," ");
+
+            case NOMBRE_EXISTE -> Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una ruta con el nombre "+rutaModificada.getNombreRuta());
+
+            case EXISTE -> Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una ruta de "+rutaModificada.getOrigen()+" a "+rutaModificada.getDestino());
         }
-
-        grafo.modifyRoute(oldRuta,rutaSelected);
-
-        Mensaje.defaultMessages(Mensaje.OpcionMensaje.MODIFIED,null);
-        mainController.getGrafoVisual().modificarRuta(oldRuta,rutaSelected);
-
-        Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
-        Visual.closeWindow(btnModificar);
     }
 
     /* Nombre: eliminarRuta
@@ -175,9 +165,8 @@ public class CrearRutaController {
     */
     public void eliminarRuta() {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Las paradas de esta ruta se desconectarán.");
-        grafo.deleteRoute(rutaSelected);
-
-        mainController.getGrafoVisual().eliminarRuta(rutaSelected);
+        rutaService.eliminar(rutaSelected);
+        Visual.closeWindow(btnEliminar);
     }
 
     /* Nombre: loadRutaInfo
@@ -195,18 +184,21 @@ public class CrearRutaController {
         txtCosto.setText(String.valueOf(ruta.getCosto()));
     }
 
-    /* Nombre: setMainController
-       Funcion: Asigna la instancia de mainController.
-       Retorno: void.
-   */
-    public void setMainController(MainController mainController){
-        this.mainController = mainController;
+    /* Nombre: loadDatos
+    Funcion: Organiza la ventana para mostrar el elemento seleccionado.
+    Retorno: void.
+    */
+    public void loadDatos(Ruta ruta){
+
+        btnEliminar.setVisible(true);
+        btnModificar.setVisible(true);
+        btnAceptar.setVisible(false);
+        btnCancelar.setLayoutX(244);
+
+        rutaSelected = ruta;
+        loadRutaInfo(ruta);
     }
 
-    /* Nombre: volver
-        Funcion: Volver a la ventana principal.
-        Retorno: void.
-    */
     public void volver(ActionEvent e) {
         Visual.closeWindow(e);
     }

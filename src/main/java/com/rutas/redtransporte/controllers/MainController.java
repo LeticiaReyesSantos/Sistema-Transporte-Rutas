@@ -145,16 +145,21 @@ public class MainController {
 
         switch (id){
             case "crearParada" -> {
-                FXMLLoader loader = Visual.openNewWindow("CrearParada.fxml","Estilo.css");
-                CrearParadaController ctrl = loader.getController();
+                Visual.Ventana<CrearParadaController> crearParada = Visual.prepararVentana("CrearParada.fxml", "Estilo.css");
+                crearParada.stage.show();
             }
-            case "mostrarParada" -> Visual.openNewWindow("ShowParada.fxml","Estilo.css");
+            case "mostrarParada" -> {
+                Visual.Ventana<ShowParadaController> showParada = Visual.prepararVentana("ShowParada.fxml", "Estilo.css");
+                showParada.stage.show();
+            }
             case "crearRuta" -> {
-                FXMLLoader loader = Visual.openNewWindow("CrearRuta.fxml","Estilo.css");
-                CrearRutaController ctrl = loader.getController();
-                ctrl.setMainController(this);
+                Visual.Ventana<CrearRutaController> crearRuta = Visual.prepararVentana("CrearRuta.fxml", "Estilo.css");
+                crearRuta.stage.show();
             }
-            case "mostrarRuta" -> Visual.openNewWindow("ShowRuta.fxml","Estilo.css");
+            case "mostrarRuta" -> {
+                Visual.Ventana<ShowRutaController> showRuta = Visual.prepararVentana("ShowRuta.fxml", "Estilo.css");
+                showRuta.stage.show();
+            }
         }
     }
 

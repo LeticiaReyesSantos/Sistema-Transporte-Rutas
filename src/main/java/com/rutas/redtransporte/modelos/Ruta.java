@@ -5,6 +5,8 @@ package com.rutas.redtransporte.modelos;
    Metodos:///
  */
 
+import com.rutas.redtransporte.utilidad.Resultado;
+
 import java.util.Objects;
 
 public class Ruta {
@@ -32,7 +34,6 @@ public class Ruta {
     private Parada destino;
 
     public Ruta(String nombreRuta, Parada origen, Parada destino, double costo, double tiempo, double distancia) {
-        idRuta = genIDRuta++;
         this.nombreRuta = nombreRuta;
         this.origen = origen;
         this.destino = destino;
@@ -62,20 +63,12 @@ public class Ruta {
         this.disponibilidad = ruta.isDisponibilidad();
         this.eventoTrafico = ruta.getEventoTrafico();
     }
-
-    public static void setGenIDRuta(int lastId){
-        if(lastId == 0)
-            genIDRuta = 1;
-        else
-            genIDRuta = lastId;
-    }
-
     public int getIdRuta() {
         return idRuta;
     }
 
     public void setIdRuta(int idRuta) {
-        idRuta = genIDRuta++;
+        this.idRuta = idRuta;
     }
 
     public String getNombreRuta() {
@@ -150,26 +143,72 @@ public class Ruta {
         this.destino = destino;
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if(this == o) return true;
+//        if(!(o instanceof Ruta ruta)) return false;
+//
+//        boolean nombre = nombreRuta.equalsIgnoreCase(ruta.nombreRuta);
+//        boolean origen = this.origen.equals(ruta.getOrigen());
+//        boolean destino = this.destino.equals(ruta.getDestino());
+//
+//        //return nombre || (origen && destino);
+//        return nombre && (origen && destino);
+//    }
+
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
-        if(!(o instanceof Ruta)) return false;
+        if(!(o instanceof Ruta ruta)) return false;
 
-        return equalsDatos((Ruta)o);
-    }
-
-    private boolean equalsDatos(Ruta comparar){
-        boolean nombre = nombreRuta.equalsIgnoreCase(comparar.nombreRuta);
-        boolean origen = this.origen.equals(comparar.getOrigen());
-        boolean destino = this.destino.equals(comparar.getDestino());
-
-        return nombre || (origen && destino);
+        return this.origen.equals(ruta.getOrigen()) && this.destino.equals(ruta.getDestino());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(idRuta);
     }
+
+    public Resultado compararModificacion(Ruta modificada, Resultado conflictoExterno) {
+        if (this.equals(modificada)) {
+
+//            if (!this.nombreRuta.equalsIgnoreCase(modificada.getNombreRuta())
+//                    && conflictoExterno == Resultado.NOMBRE_EXISTE) {
+//                return Resultado.NOMBRE_EXISTE;
+//            }
+
+            return this.cambiosRuta(modificada) ? Resultado.EXITO : Resultado.NO_CAMBIOS;
+        }
+
+        return (conflictoExterno != Resultado.NO_EXISTE) ? conflictoExterno : Resultado.EXITO;
+    }
+
+    public void modificarRuta(Ruta ruta){
+        this.nombreRuta = ruta.getNombreRuta();
+        this.origen = ruta.getOrigen();
+        this.destino = ruta.getDestino();
+        this.costo = ruta.getCosto();
+        this.tiempo = ruta.getTiempo();
+        this.distancia = ruta.getDistancia();
+        this.costoBase = ruta.getCostoBase();
+        this.tiempoBase = ruta.getTiempoBase();
+        this.transbordos = ruta.getTransbordos();
+        this.disponibilidad = ruta.isDisponibilidad();
+        this.eventoTrafico = ruta.getEventoTrafico();
+    }
+
+    public boolean cambiosRuta(Ruta ruta){
+        return !this.nombreRuta.equalsIgnoreCase(ruta.nombreRuta) ||
+                this.costo != ruta.costo ||
+                this.tiempo != ruta.tiempo ||
+                this.distancia != ruta.distancia ||
+                !this.origen.equals(ruta.getOrigen()) ||
+                !this.destino.equals(ruta.getDestino());
+    }
+
+//    public boolean cambiosRuta(Ruta ruta){
+//        return this.costo != ruta.costo || this.tiempo != ruta.tiempo || this.distancia != ruta.distancia;
+//    }
 
     public double obtenerCriterio(Peso peso){
 

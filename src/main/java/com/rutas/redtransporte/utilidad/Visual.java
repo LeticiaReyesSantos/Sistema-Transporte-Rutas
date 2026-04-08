@@ -19,35 +19,43 @@ import java.io.IOException;
 import java.security.Principal;
 
 public class Visual {
+    /*
+    Esta clase representa las ventanas que se crean en el programa.
+    Mantiene acceso separado al controller y al stage de una ventana.
+     */
+    public static class Ventana<T> {
+        public final T controller;
+        public final Stage stage;
 
-    /* Nombre: openNewWindow
-       Funcion: Abrir una ventana sobre la ventana principal.
-       Retorno: void
+        public Ventana(T controller, Stage stage) {
+            this.controller = controller;
+            this.stage = stage;
+        }
+    }
+
+    /* Nombre: prepararVentana
+   Funcion: Se encarga la crear la ventana.
+   Retorno: Ventana<T>
     */
-    public static FXMLLoader openNewWindow(String fxml, String css){
-
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(Visual.class.getResource("/appvisuals/"+fxml));
-            Scene scene = new Scene(fxmlLoader.load());
-
-            if(css != null)
-                scene.getStylesheets().add(Visual.class.getResource("/appvisuals/"+css).toExternalForm());
+    public static <T> Ventana<T> prepararVentana(String fxml, String css) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Visual.class.getResource("/appvisuals/" + fxml));
+            Scene scene = new Scene(loader.load());
+            if (css != null)
+                scene.getStylesheets().add(Visual.class.getResource("/appvisuals/" + css).toExternalForm());
 
             Stage stage = new Stage();
             stage.initOwner(MainVisual.mainStage);
             stage.initModality(Modality.APPLICATION_MODAL);
-
             stage.setScene(scene);
-            stage.show();
 
-            return fxmlLoader;
-
-        }catch (IOException e) {
+            return new Ventana<>(loader.getController(), stage);
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-
     }
+
 
     /* Nombre: closeWindow
          Funcion: Cerrar una ventana.

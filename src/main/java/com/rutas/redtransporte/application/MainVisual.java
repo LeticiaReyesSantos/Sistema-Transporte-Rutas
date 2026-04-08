@@ -1,5 +1,7 @@
 package com.rutas.redtransporte.application;
 
+import com.rutas.redtransporte.servicios.ClaseService;
+import com.rutas.redtransporte.servicios.ParadaService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +15,7 @@ public class MainVisual extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        mainStage = stage;
+       mainStage = stage;
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainVisual.class.getResource("/appvisuals/Main.fxml"));
         Scene scene = new Scene(fxmlLoader.load());

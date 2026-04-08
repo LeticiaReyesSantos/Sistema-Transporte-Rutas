@@ -1,14 +1,15 @@
 package com.rutas.redtransporte.controllers;
 
-import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.servicios.ClaseService;
 import com.rutas.redtransporte.servicios.ParadaService;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Mensaje;
+import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -33,7 +34,6 @@ public class CrearParadaController {
     @FXML
     private Button btnEliminar;
 
-    private final Grafo grafo = Grafo.getInstance();
     private final ParadaService paradaService = new ParadaService();
     private Parada paradaSelected = null;
 
@@ -51,29 +51,15 @@ public class CrearParadaController {
 
         Parada parada = new Parada(Logico.checkText(txtNombre),cbxTipo.getValue());
 
-        if(!paradaService.crear(parada)){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
-            return;
+        switch (paradaService.guardar(parada)){
+            case Resultado.EXITO -> {
+                Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,parada.getNombreParada());
+                Logico.cleanFields(txtNombre,cbxTipo);
+            }
+
+            case Resultado.EXISTE -> Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+parada.getNombreParada()+"\" ");
         }
 
-        Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED,parada.getNombreParada());
-        Logico.cleanFields(txtNombre,cbxTipo);
-    }
-
-    /* Nombre: setScene
-       Funcion: Organiza la ventana para mostrar el elemento seleccionado.
-       Retorno: void.
-   */
-    public void setScene(Parada parada){
-        btnEliminar.setVisible(true);
-        btnModificar.setVisible(true);
-        btnAceptar.setVisible(false);
-        btnCancelar.setLayoutX(201);
-
-        txtNombre.setText(parada.getNombreParada());
-        cbxTipo.setValue(parada.getTipo());
-
-        paradaSelected = parada;
     }
 
     public void modificarParada(){
@@ -87,23 +73,38 @@ public class CrearParadaController {
         paradaModificada.setNombreParada(txtNombre.getText());
         paradaModificada.setTipo(cbxTipo.getValue());
 
-        if(!paradaService.modificar(paradaSelected,paradaModificada)){
-            Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING,"Existe una parada en \""+paradaModificada.getNombreParada()+"\" ");
-            return;
+        switch (paradaService.modificar(paradaSelected,paradaModificada)){
+            case EXITO -> Visual.closeWindow(btnModificar);
+            case NO_CAMBIOS -> Mensaje.showMessage(Alert.AlertType.WARNING,"Modificación","No hay cambios en la parada."," ");
+            case EXISTE -> Mensaje.defaultMessages(Mensaje.OpcionMensaje.EXISTING, "Existe una parada en \"" + paradaModificada.getNombreParada() + "\" ");
         }
-            Visual.closeWindow(btnModificar);
+
     }
 
     public void eliminarParada() {
         Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Todas las rutas relacionadas serán eliminadas.");
         paradaService.eliminar(paradaSelected);
+        Visual.closeWindow(btnEliminar);
 
     }
 
-    /* Nombre: volver
-        Funcion: Volver a la ventana principal.
-        Retorno: void.
+    /* Nombre: loadDatos
+   Funcion: Organiza la ventana para mostrar el elemento seleccionado.
+   Retorno: void.
     */
+    public void loadDatos(Parada parada){
+
+        btnEliminar.setVisible(true);
+        btnModificar.setVisible(true);
+        btnAceptar.setVisible(false);
+        btnCancelar.setLayoutX(201);
+
+        txtNombre.setText(parada.getNombreParada());
+        cbxTipo.setValue(parada.getTipo());
+
+        paradaSelected = parada;
+    }
+
     public void volver(ActionEvent e) {
         Visual.closeWindow(e);
     }

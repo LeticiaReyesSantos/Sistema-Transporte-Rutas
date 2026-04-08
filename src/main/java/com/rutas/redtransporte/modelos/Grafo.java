@@ -2,6 +2,7 @@ package com.rutas.redtransporte.modelos;
 
 import com.rutas.redtransporte.db.ParadaDAO;
 import com.rutas.redtransporte.db.RutaDAO;
+import com.rutas.redtransporte.utilidad.Resultado;
 
 import java.util.*;
 
@@ -49,8 +50,21 @@ public class Grafo {
                 .orElse(null);
     }
 
-    public boolean paradaExiste(Parada nuevaParada){
-        return map.keySet().stream().anyMatch(parada -> parada.equals(nuevaParada));
+    public boolean paradaExiste(Parada parada){
+        return map.keySet().stream().anyMatch(p -> p.equals(parada));
+    }
+
+    public Resultado modificarParada (Parada paradaOriginal, Parada paradaModificada){
+
+        if(paradaOriginal.equals(paradaModificada)){
+            if (paradaOriginal.cambiosParada(paradaModificada)) return Resultado.EXITO;
+            else return Resultado.NO_CAMBIOS;
+
+        }else{
+            if(paradaExiste(paradaModificada)) return Resultado.EXISTE;
+            else return Resultado.EXITO;
+        }
+
     }
 
     public Object addParada(Parada parada) {
@@ -74,13 +88,6 @@ public class Grafo {
         }
 
         map.remove(parada);
-        ParadaDAO.getInstance().eliminarParada(parada.getIdParada());
-    }
-
-    public void modifyParade(Parada paradaMod, String nuevoNombre){
-        if(paradaMod != null){
-            paradaMod.setNombreParada(nuevoNombre);
-        }
     }
 
     public Ruta addRoute(Ruta ruta) {
@@ -92,7 +99,7 @@ public class Grafo {
             throw new IllegalArgumentException("El origen o destino de la ruta debe existir.");
         }
 
-        if(routeExists(ruta)){
+        if(rutaExiste(ruta,null) != Resultado.NO_EXISTE){
             return null;
         }else{
             map.get(ruta.getOrigen()).add(ruta);
@@ -106,11 +113,21 @@ public class Grafo {
     }
 
 
-    public boolean routeExists(Ruta newRuta){
+    public Resultado rutaExiste(Ruta newRuta, Ruta excluir) {
+        boolean existeTramo = newRuta.getOrigen().getRutasDeSalida().stream()
+                .filter(r -> r != excluir)
+                .anyMatch(r -> r.equals(newRuta));
 
-        List<Ruta> rutas = newRuta.getOrigen().getRutasDeSalida();
 
-        return rutas.stream().anyMatch(ruta -> ruta.equals(newRuta));
+        if (existeTramo) return Resultado.EXISTE;
+
+        boolean existeNombre = allRutas.stream()
+                .filter(r -> r != excluir)
+                .anyMatch(r -> r.getNombreRuta().equalsIgnoreCase(newRuta.getNombreRuta()));
+
+        if (existeNombre) return Resultado.NOMBRE_EXISTE;
+
+        return Resultado.NO_EXISTE;
     }
 
     public void deleteRoute(Ruta routeToDel) {
@@ -129,25 +146,73 @@ public class Grafo {
         allRutas.remove(routeToDel);
     }
 
-    public void modifyRoute(Ruta oldRuta, Ruta newRuta){
-        if(newRuta == null){
+    public Resultado modifyRoute(Ruta oldRuta, Ruta newRuta) {
+        if (newRuta == null) {
             throw new IllegalArgumentException("La ruta proporcionada es nula.");
         }
 
-        if(newRuta.getOrigen() != null && !newRuta.getOrigen().equals(oldRuta.getOrigen())){
-            map.get(oldRuta.getOrigen()).remove(newRuta);
-            map.get(newRuta.getOrigen()).add(newRuta);
-            newRuta.getOrigen().addRutaEntrada(newRuta);
+//        Resultado conflictoExterno = rutaExiste(newRuta, oldRuta);
+//        Resultado validacion = oldRuta.compararModificacion(newRuta, conflictoExterno);
+//
+//        if (validacion != Resultado.EXITO) {
+//            return validacion;
+//        }
+
+        if (!oldRuta.getOrigen().equals(newRuta.getOrigen())) {
+            map.get(oldRuta.getOrigen()).remove(oldRuta);
+            oldRuta.getOrigen().getRutasDeSalida().remove(oldRuta);
+
+            map.get(newRuta.getOrigen()).add(oldRuta);
+            newRuta.getOrigen().getRutasDeSalida().add(oldRuta);
         }
 
-        if(newRuta.getDestino() != null && !newRuta.getDestino().equals(oldRuta.getDestino())){
-            oldRuta.getDestino().removeRutaEntrada(newRuta);
-            newRuta.getDestino().addRutaEntrada(newRuta);
+        if (!oldRuta.getDestino().equals(newRuta.getDestino())) {
+            oldRuta.getDestino().removeRutaEntrada(oldRuta);
+            newRuta.getDestino().addRutaEntrada(oldRuta);
         }
 
-        newRuta.setDisponibilidad(true);
-        newRuta.setEventoTrafico(Ruta.Evento.STANDARD);
+        oldRuta.modificarRuta(newRuta);
+
+        oldRuta.setDisponibilidad(true);
+        oldRuta.setEventoTrafico(Ruta.Evento.STANDARD);
+
+        return Resultado.EXITO;
     }
+
+//    public Resultado verificarModificarRuta(Ruta rutaOriginal, Ruta rutaModificada) {
+//        if (rutaOriginal.equals(rutaModificada)) {
+//            if (!rutaOriginal.getNombreRuta().equalsIgnoreCase(rutaModificada.getNombreRuta())) {
+//                if (rutaExiste(rutaModificada) == Resultado.NOMBRE_EXISTE) {
+//                    return Resultado.NOMBRE_EXISTE;
+//                }
+//            }
+//
+//            return rutaOriginal.cambiosRuta(rutaModificada) ? Resultado.EXITO : Resultado.NO_CAMBIOS;
+//        }
+//
+//        Resultado existe = rutaExiste(rutaModificada);
+//        return (existe != Resultado.NO_EXISTE) ? existe : Resultado.EXITO;
+//    }
+
+//    public Resultado verificarModificarRuta (Ruta rutaOriginal, Ruta rutaModificada){
+//
+////        if(rutaOriginal.equals(rutaModificada)){
+////            System.out.println(rutaOriginal.getNombreRuta()+", "+rutaOriginal.getOrigen()+", "+rutaOriginal.getDestino());
+////            System.out.println(rutaModificada.getNombreRuta()+", "+rutaModificada.getOrigen()+", "+rutaModificada.getDestino());
+////            System.out.println("Mismo nombre, parada y destino");
+////            if (rutaOriginal.cambiosRuta(rutaModificada)) return Resultado.EXITO;
+//
+//        if(rutaOriginal.getNombreRuta().equalsIgnoreCase(rutaModificada.gete))
+//            else return Resultado.NO_CAMBIOS;
+//
+//        }else{
+//            Resultado existe = rutaExiste(rutaModificada);
+//
+//            if(existe != Resultado.NO_EXISTE) return existe;
+//            else return Resultado.EXITO;
+//        }
+//
+//    }
 
     public List<Ruta> buscarRutasSalida(Parada parade){
         return map.get(parade);
@@ -208,8 +273,6 @@ public class Grafo {
                 System.out.println("Ruta omitida: " + e.getMessage());
             }
         }
-
-        Ruta.setGenIDRuta(rutasDB.size()+1);
     }
 
     //for debugging only

@@ -55,12 +55,6 @@ public class Parada {
         if (this == o) return true;
         if (!(o instanceof Parada parada)) return false;
 
-
-        /*
-        if (this.idParada != 0 && parada.getIdParada() != 0) {
-            return this.idParada == parada.getIdParada();
-        }*/
-
         return nombreParada.equalsIgnoreCase(parada.getNombreParada());
     }
 
@@ -98,13 +92,11 @@ public class Parada {
     }
 
     public boolean cambiosParada(Parada parada) {
-        if (nombreParada.equals(parada.getNombreParada()) && tipo.equals(parada.getTipo()))
-            return false;
-
-        return true;
+        return !nombreParada.equals(parada.getNombreParada()) || !tipo.equals(parada.getTipo());
     }
 
     public void modificarParada(Parada parada){
+        if(parada == null) return;
         this.nombreParada = parada.getNombreParada();
         this.tipo = parada.getTipo();
     }

@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="686.0" prefWidth="1294.0" styleClass="pane" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.MainController">
+<AnchorPane styleClass="pane" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.MainController">
     <children>
 
-        <ImageView fx:id="menuManager" fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true"
-                   AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="18.0">
-            <Image url="@../imagenes/menu.png"/>
+        <ImageView fx:id="menuManager" fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="18.0">
+            <Image url="@../imagenes/menu.png" />
         </ImageView>
 
 
@@ -19,13 +28,13 @@
         <AnchorPane fx:id="panelPrincipal" layoutX="289.0" layoutY="67.0" prefHeight="604.0" prefWidth="652.0" styleClass="map-container" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="286.0" AnchorPane.rightAnchor="356.0" AnchorPane.topAnchor="64.0">
             <children>
 
-                <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+                <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
                     <ImageView fx:id="mapImage">
-                        <Image url="@../imagenes/mapaFinal.png"/>
+                        <Image url="@../imagenes/mapaFinal.png" />
                     </ImageView>
 
-                    <AnchorPane fx:id="graphContainer" pickOnBounds="false"/>
+                    <AnchorPane fx:id="graphContainer" pickOnBounds="false" />
 
                 </StackPane>
 
@@ -298,6 +307,25 @@
                 <Region VBox.vgrow="ALWAYS" />
             </children>
         </VBox>
+      <Accordion visible="false">
+        <panes>
+          <TitledPane animated="false" text="untitled 1">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="untitled 2">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+          <TitledPane animated="false" text="untitled 3">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
 
     </children>
 </AnchorPane>
