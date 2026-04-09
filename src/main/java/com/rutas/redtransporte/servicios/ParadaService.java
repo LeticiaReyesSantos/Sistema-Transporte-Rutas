@@ -3,7 +3,7 @@ package com.rutas.redtransporte.servicios;
 import com.rutas.redtransporte.controllers.CrearParadaController;
 import com.rutas.redtransporte.db.ParadaDAO;
 import com.rutas.redtransporte.modelos.Grafo;
-import com.rutas.redtransporte.modelos.GrafoVisual;
+import com.rutas.redtransporte.controllers.GrafoVisual;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;

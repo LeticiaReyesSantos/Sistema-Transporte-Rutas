@@ -40,7 +40,7 @@ public class FloydWarshall {
         for(Parada parada: paradasSet){
             int p = indexMap.get(parada);
             for(Ruta route: graph.buscarRutasSalida(parada)){
-                if(!route.isDisponibilidad()) continue;
+                if(!route.isDisponible()) continue;
                 int q = indexMap.get(route.getDestino());
 
                 double pesoCriterio = route.obtenerCriterio(criterio);
@@ -59,7 +59,7 @@ public class FloydWarshall {
                 for (int j = 0; j < n; j++) { //destino
                     if(peso[i][k] != infinito && peso[k][j] != infinito && peso[i][k] + peso[k][j] < peso[i][j]){
                         peso[i][j] = peso[i][k] + peso[k][j];
-                        next[i][j] = next[i][k];
+                        next[i][j] = next[i][k]; //el siguiente para la parada origen y destino es la escala
                     }
                 }
 
@@ -67,8 +67,10 @@ public class FloydWarshall {
 
         }
 
+        //Traduzco el origen y destino a su numero de indices
         int start = indexMap.get(origen);
         int end = indexMap.get(destino);
+        //si se queda en infinito no hay ruta
         if(peso[start][end] == infinito) return null;
 
         return rebuildMatrixPath(origen, destino, peso, next, indexMap, criterio);

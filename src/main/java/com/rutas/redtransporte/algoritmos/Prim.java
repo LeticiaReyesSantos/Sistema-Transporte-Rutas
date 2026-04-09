@@ -33,13 +33,13 @@ public class Prim {
         visited.add(start);
 
         for(Ruta route: graph.buscarRutasSalida(start)){
-            if(route.isDisponibilidad()) cola.add(route);
+            if(route.isDisponible()) cola.add(route);
         }
 
         while(!cola.isEmpty() && visited.size() < cantParadas){
             //Obtenemos la ruta mas barata disponible en ese momento
-            Ruta shortestEdge = cola.poll();
-            Parada destino = shortestEdge.getDestino();
+            Ruta shortestEdge = cola.poll(); //esta arriba entonces hacemos poll
+            Parada destino = shortestEdge.getDestino(); //obtenemos a donde llega
 
             //Evitamos ciclos si ya se visito esa parada, simplemente se ignora
             if(visited.contains(destino)) continue;
@@ -48,7 +48,7 @@ public class Prim {
             spanningTree.add(shortestEdge);
 
             for(Ruta route : graph.buscarRutasSalida(destino)){
-                if(!visited.contains(route.getDestino()) && route.isDisponibilidad()){
+                if(!visited.contains(route.getDestino()) && route.isDisponible()){
                     cola.add(route);
                 }
             }

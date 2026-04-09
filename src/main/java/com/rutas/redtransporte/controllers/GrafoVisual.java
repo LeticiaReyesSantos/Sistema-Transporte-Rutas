@@ -1,8 +1,11 @@
-package com.rutas.redtransporte.modelos;
+package com.rutas.redtransporte.controllers;
 
 import com.brunomnsilva.smartgraph.graph.*;
 import com.brunomnsilva.smartgraph.graphview.*;
-import com.rutas.redtransporte.controllers.MainController;
+import com.rutas.redtransporte.modelos.Grafo;
+import com.rutas.redtransporte.modelos.Parada;
+import com.rutas.redtransporte.modelos.Ruta;
+import com.rutas.redtransporte.modelos.ShortestPath;
 import com.rutas.redtransporte.servicios.ClaseService;
 import com.rutas.redtransporte.servicios.ParadaService;
 import com.rutas.redtransporte.servicios.RoutingEngine;
@@ -77,7 +80,7 @@ public class GrafoVisual {
 
         Platform.runLater(() -> {
             panelMapa.init();
-            panelMapa.setAutomaticLayout(false);
+            panelMapa.setAutomaticLayout(true);
             setVertexSelection();
         });
     }

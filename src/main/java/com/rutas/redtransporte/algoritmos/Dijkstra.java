@@ -43,7 +43,7 @@ public class Dijkstra implements EstrategiaDeRuta{
 
             for(Ruta route: graph.buscarRutasSalida(currentParade)){
                 //Omito las rutas no disponibles por eventos en la logica de negocio
-               if(!route.isDisponibilidad()){
+               if(!route.isDisponible()){
                     continue;
                 }
 

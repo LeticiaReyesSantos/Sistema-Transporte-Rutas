@@ -55,11 +55,11 @@ public class RoutingEngine {
             return null;
 
         Ruta disabledRoute = bestRoute.getRutasRecorridas().getFirst();
-        boolean originalState = disabledRoute.isDisponibilidad();
-        disabledRoute.setDisponibilidad(false);
+        boolean originalState = disabledRoute.isDisponible();
+        disabledRoute.setDisponible(false);
 
         ShortestPath alternative = optimizedPath(origen, destino, criterio);
-        disabledRoute.setDisponibilidad(originalState);
+        disabledRoute.setDisponible(originalState);
 
         return alternative;
     }

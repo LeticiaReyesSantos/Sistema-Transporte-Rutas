@@ -167,7 +167,7 @@ public class Grafo {
 
         oldRuta.modificarRuta(newRuta);
 
-        oldRuta.setDisponibilidad(true);
+        oldRuta.setDisponible(true);
         oldRuta.setEventoTrafico(Ruta.Evento.STANDARD);
 
         return Resultado.EXITO;
@@ -236,23 +236,23 @@ public class Grafo {
         route.setEventoTrafico(evento);
         switch (evento){
             case STANDARD -> {
-                route.setDisponibilidad(true);
+                route.setDisponible(true);
                 route.setTiempo(route.getTiempoBase());
                 route.setCosto(route.getCostoBase());
             }
             case TRAFICO -> {
-                route.setDisponibilidad(true);
+                route.setDisponible(true);
                 route.setTiempo(route.getTiempoBase() * 1.5);
                 route.setCosto(route.getCostoBase() * 1.5);
             }
             case LLUVIA -> {
-                route.setDisponibilidad(true);
+                route.setDisponible(true);
                 route.setTiempo(route.getTiempoBase() * 1.25);
                 route.setCosto(route.getCostoBase() * 1.25);
             }
-            case ACCIDENTE -> route.setDisponibilidad(false);
+            case ACCIDENTE -> route.setDisponible(false);
             case DESCUENTO -> {
-                route.setDisponibilidad(true);
+                route.setDisponible(true);
                 route.setTiempo(route.getTiempoBase());
                 route.setCosto(route.getCostoBase() * 0.5);
             }
@@ -290,23 +290,24 @@ public class Grafo {
         return visited.size() == map.size();
     }
 
+    //dfs recursivo
     private void dfsRecursivo(Parada current, Set<Parada> visited) {
         visited.add(current);
 
-        List<Ruta> rutasDeSalida = map.get(current);
+        List<Ruta> rutasDeSalida = map.get(current); //pido todas las rutas que salen de la parada actual
         if (rutasDeSalida != null) {
             for (Ruta ruta : rutasDeSalida) {
-                if (ruta.isDisponibilidad()) {
-                    Parada destino = ruta.getDestino();
-                    if (!visited.contains(destino)) {
-                        dfsRecursivo(destino, visited);
+                if (ruta.isDisponible()) {
+                    Parada destino = ruta.getDestino(); //veo hacia que nodo me lleva esa ruta
+                    if (!visited.contains(destino)) { //si no esta en el hash set
+                        dfsRecursivo(destino, visited); //lo llamo para que haga lo mismo nuevamente con la nueva parada
                     }
                 }
             }
         }
 
         for (Ruta ruta : current.getRutasDeEntrada()) {
-            if (ruta.isDisponibilidad()) {
+            if (ruta.isDisponible()) {
                 Parada origen = ruta.getOrigen();
                 if (!visited.contains(origen)) {
                     dfsRecursivo(origen, visited);

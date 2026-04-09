@@ -103,9 +103,9 @@ public class CrearRutaController {
             return new Ruta(txtNombre.getText(),
                     grafo.getParada(cbxOrigen.getValue()),
                     grafo.getParada(cbxDestino.getValue()),
-                    Double.parseDouble(txtDistancia.getText()),
+                    Double.parseDouble(txtCosto.getText()),
                     Double.parseDouble(txtTiempo.getText()),
-                    Double.parseDouble(txtCosto.getText()));
+                    Double.parseDouble(txtDistancia.getText()));
 
         return null;
     }

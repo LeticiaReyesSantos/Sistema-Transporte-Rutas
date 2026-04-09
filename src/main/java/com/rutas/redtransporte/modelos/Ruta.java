@@ -20,7 +20,7 @@ public class Ruta {
     private static int genIDRuta = 1;
     private int idRuta;
     private String nombreRuta;
-    private boolean disponibilidad;
+    private boolean disponible;
     private double tiempo;
     private double costo;
     private double tiempoBase;
@@ -43,7 +43,7 @@ public class Ruta {
 
         //Valores iniciales al crear una nueva ruta
         this.transbordos = 0;
-        this.disponibilidad = true;
+        this.disponible = true;
         this.eventoTrafico = Evento.STANDARD;
     }
 
@@ -58,7 +58,7 @@ public class Ruta {
         this.costoBase = ruta.getCostoBase();
         this.tiempoBase = ruta.getTiempoBase();
         this.transbordos = ruta.getTransbordos();
-        this.disponibilidad = ruta.isDisponibilidad();
+        this.disponible = ruta.isDisponible();
         this.eventoTrafico = ruta.getEventoTrafico();
     }
     public int getIdRuta() {
@@ -77,12 +77,12 @@ public class Ruta {
         this.nombreRuta = nombreRuta;
     }
 
-    public boolean isDisponibilidad() {
-        return disponibilidad;
+    public boolean isDisponible() {
+        return disponible;
     }
 
-    public void setDisponibilidad(boolean disponibilidad) {
-        this.disponibilidad = disponibilidad;
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
     }
 
     public double getCosto() {
@@ -155,7 +155,7 @@ public class Ruta {
         this.costoBase = ruta.getCostoBase();
         this.tiempoBase = ruta.getTiempoBase();
         this.transbordos = ruta.getTransbordos();
-        this.disponibilidad = ruta.isDisponibilidad();
+        this.disponible = ruta.isDisponible();
         this.eventoTrafico = ruta.getEventoTrafico();
     }
 

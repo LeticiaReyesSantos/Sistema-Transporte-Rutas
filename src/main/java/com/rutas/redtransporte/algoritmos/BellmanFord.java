@@ -35,12 +35,12 @@ public class BellmanFord implements EstrategiaDeRuta{
                     continue;
 
                 for (Ruta route: graph.buscarRutasSalida(p)){
-                    if(!route.isDisponibilidad())
+                    if(!route.isDisponible())
                         continue;
 
                     Parada neighbour = route.getDestino();
                     double routesWeight = route.obtenerCriterio(criterio);
-                    double nuevoPeso = peso.get(p)+ routesWeight;
+                    double nuevoPeso = peso.get(p)+ routesWeight; //sumo lo que me costo llegar a la parada
 
                     if(nuevoPeso < peso.getOrDefault(neighbour, infinito)){
                         peso.put(neighbour, nuevoPeso);
@@ -56,7 +56,7 @@ public class BellmanFord implements EstrategiaDeRuta{
         for(Parada p : paradasSet){
             if(peso.get(p) == infinito) continue;
             for(Ruta ruta: graph.buscarRutasSalida(p)){
-                if(!ruta.isDisponibilidad()) continue;
+                if(!ruta.isDisponible()) continue;
 
                 double currentPrice = peso.get(p);
                 double costoArista = ruta.obtenerCriterio(criterio);
