@@ -11,12 +11,10 @@ import com.rutas.redtransporte.utilidad.Visual;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Function;
 
 //@SuppressWarnings("unused")
@@ -164,9 +162,15 @@ public class CrearRutaController {
         Retorno: void.
     */
     public void eliminarRuta() {
-        Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Las paradas de esta ruta se desconectarán.");
-        rutaService.eliminar(rutaSelected);
-        Visual.closeWindow(btnEliminar);
+        Optional<ButtonType> respuesta = Mensaje.showMessage(
+                Alert.AlertType.CONFIRMATION,
+                "Eliminar", "¿Desea eliminar este elemento?",
+                "Las paradas de esta ruta se desconectarán."
+        );
+        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
+            rutaService.eliminar(rutaSelected);
+            Visual.closeWindow(btnEliminar);
+        }
     }
 
     /* Nombre: loadRutaInfo

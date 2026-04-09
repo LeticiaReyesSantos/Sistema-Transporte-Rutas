@@ -1,6 +1,5 @@
 package com.rutas.redtransporte.utilidad;
 
-import com.rutas.redtransporte.modelos.Grafo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -12,14 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Logico {
-
-    public static void crearDatosGrafo(){
-
-        Grafo grafo = Grafo.getInstance();
-        grafo.cargarDesdeDB();
-
-    }
-
     public static double limitarDecimales(double numero){
         return Math.round(numero * 100.0) / 100.0;
     }

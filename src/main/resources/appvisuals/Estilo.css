@@ -2,6 +2,8 @@
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
+/* ── Contenedores principales ─────────────────────────────── */
+
 .map-container {
     -fx-background-color: white;
     -fx-background-radius: 15px;
@@ -9,7 +11,6 @@
     -fx-border-color: #E0E2DB;
     -fx-border-width: 1;
     -fx-background-insets: 0;
-    -fx-overflow-pressed: hidden; //REVISAR
 }
 
 #panelPrincipal {
@@ -23,35 +24,14 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
 }
 
-.filtro {
-    -fx-background-color: CBDBAF;
-}
-
-.filtroMenuLabel {
-    -fx-font-weight: bold;
-    -fx-font-size: 20px;
-    -fx-text-fill: #6D6464;
-}
-
-.btnFiltro {
+#panelDatos {
     -fx-background-color: #F6F3EA;
+    -fx-background-radius: 15px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
 }
 
-.titled-pane {
-    -fx-border-color: transparent;
-}
-
-.titled-pane > .title {
-    -fx-background-color: #d5ebbb;
-    -fx-padding: 10 10 10 10;
-    -fx-graphic-text-gap: 5;
-}
-
-.titled-pane > .title > .arrow-button {
-    -fx-padding: 0;
-    -fx-pref-width: 0;
-    -fx-opacity: 0;
-}
+/* ── Menú lateral ─────────────────────────────────────────── */
 
 .vboxMenuOpc {
     -fx-background-color: #d5ebbb;
@@ -70,97 +50,26 @@
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
-
 .menuButton:hover {
     -fx-background-color: LIGHTBLUE;
     -fx-text-fill: black;
 }
 
-.crearBG {
-    -fx-background-image: url("../imagenes/paradas.jpg");
-    -fx-background-size: cover;
-    -fx-background-position: center;
+.titled-pane {
+    -fx-border-color: transparent;
 }
-
-.pane {
-    -fx-background-color: #F6F3EA;
-    -fx-border-color: LIGHTGRAY;
-    -fx-border-width: 3px;
-}
-
-.crearButton {
-    -fx-background-color: WHITE;
-    -fx-border-color: LIGHTGRAY;
-    -fx-background-radius: 50px;
-    -fx-border-radius: 50px;
-}
-
-.windowBG {
-    -fx-background-image: url("../imagenes/tabsMap.jpg");
-    -fx-background-size: cover;
-    -fx-background-position: center;
-}
-
-.windowPane {
+.titled-pane > .title {
     -fx-background-color: #d5ebbb;
-    -fx-border-color: LIGHTGRAY;
-    -fx-border-width: 3px;
+    -fx-padding: 10 10 10 10;
+    -fx-graphic-text-gap: 5;
+}
+.titled-pane > .title > .arrow-button {
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-opacity: 0;
 }
 
-#cbxTipo {
-    -fx-background-color: WHITE;
-    -fx-border-color: LIGHTGRAY;
-}
-
-.windowField {
-    -fx-background-color: WHITE;
-}
-
-.windowButton {
-    -fx-background-color: #C7ECF0;
-    -fx-font-weight: bold;
-    -fx-border-color: LIGHTGRAY;
-    -fx-background-radius: 5px;
-    -fx-border-radius: 5px;
-}
-
-.table {
-    -fx-background-color: #F6F3EA;
-    -fx-border-color: LIGHTGRAY;
-    -fx-border-width: 1px;
-}
-
-.table-view .column-header {
-    -fx-font-size: 14px;
-    -fx-background-color: #C7ECF0;
-    -fx-border-color: BLACK;
-    -fx-border-width: 0.5px;
-}
-
-.TableColumn {
-    -fx-background-color: #bfdbed;
-}
-
-.btnParadaMenu {
-    -fx-font: 14px "SansSerif";
-    -fx-background-color: CBDBAF;
-    -fx-font-weight: bold;
-}
-
-.lblDatos {
-    -fx-text-alignment: CENTER;
-}
-
-.vboxOpcs {
-    -fx-background-color: CBDBAF;
-}
-
-#panelDatos {
-    -fx-background-color: #F6F3EA;
-    -fx-background-radius: 15px;
-    -fx-padding: 15px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);
-}
+/* ── Filtros de criterio ──────────────────────────────────── */
 
 #panelFiltro HBox {
     -fx-background-color: #FFFFFF;
@@ -177,7 +86,7 @@
     -fx-padding: 6 14 6 14;
     -fx-cursor: hand;
     -fx-min-width: 210px;
-    -fx-min-height: 44px
+    -fx-min-height: 44px;
 }
 .btnFiltro:hover {
     -fx-background-color: #f0f0f0;
@@ -191,11 +100,38 @@
     -fx-text-fill: white;
 }
 
+.filtro-titulo {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+.filtro-subtitulo {
+    -fx-font-size: 9px;
+    -fx-opacity: 0.75;
+}
+
+/* ── Selector origen-destino ─────────────────────────────── */
+
 .selector-od {
     -fx-background-color: white;
     -fx-border-color: #ddd;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
+}
+
+.caption-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #888;
+}
+
+.value-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+}
+
+.arrow-separator {
+    -fx-font-size: 18px;
+    -fx-text-fill: #aaa;
 }
 
 .btn-calcular {
@@ -211,6 +147,112 @@
 .btn-calcular:hover {
     -fx-background-color: derive(#1a6b3c, -10%);
 }
+
+/* Dots de estado para origen/destino */
+.dot-od {
+    -fx-background-radius: 6;
+}
+.dot-origen {
+    -fx-background-color: #22c55e;
+}
+.dot-destino {
+    -fx-background-color: #3b82f6;
+}
+.dot-inactivo {
+    -fx-background-color: #ccc;
+}
+
+/* ── Leyenda del mapa ────────────────────────────────────── */
+
+.leyenda-box {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 10 14;
+}
+
+.leyenda-texto {
+    -fx-font-size: 11px;
+    -fx-text-fill: #333;
+}
+
+.leyenda-linea-principal {
+    -fx-background-color: #007AFF;
+    -fx-background-radius: 3;
+}
+.leyenda-linea-alternativa {
+    -fx-background-color: #A855F7;
+    -fx-background-radius: 3;
+}
+.leyenda-linea-otras {
+    -fx-background-color: #9E9E9E;
+    -fx-background-radius: 3;
+}
+
+/* ── Paneles de resultados ───────────────────────────────── */
+
+.seccion-titulo {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+}
+
+.badge-verde {
+    -fx-background-color: #E8F5E9;
+    -fx-text-fill: #2E7D32;
+    -fx-background-radius: 10;
+    -fx-padding: 2 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+.badge-morado {
+    -fx-background-color: #EEECFB;
+    -fx-text-fill: #6C63FF;
+    -fx-background-radius: 10;
+    -fx-padding: 2 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+.badge-amber {
+    -fx-background-color: #FEF3C7;
+    -fx-text-fill: #92400E;
+    -fx-background-radius: 10;
+    -fx-padding: 2 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.tarjeta {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);
+}
+
+.ruta-descripcion {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+}
+
+.separator-dim {
+    -fx-opacity: 0.4;
+}
+
+.stat-caption {
+    -fx-font-size: 10px;
+    -fx-text-fill: #999;
+}
+.stat-valor {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* ── Panel simulador ─────────────────────────────────────── */
+
 .evento-btn {
     -fx-background-color: white;
     -fx-border-color: #ddd;
@@ -228,41 +270,86 @@
     -fx-background-color: #f0fdf4;
 }
 
-.scope-btn {
-    -fx-background-color: white;
-    -fx-border-color: #ddd;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-font-size: 11px;
-    -fx-cursor: hand;
-}
-.scope-btn:selected {
-    -fx-background-color: #EFF6FF;
-    -fx-border-color: #3b82f6;
-    -fx-text-fill: #1976d2;
-    -fx-font-weight: bold;
-}
-
-#btnTrafico:selected {
+#btnTrafico:selected    {
     -fx-background-color: #F59E0B;
     -fx-border-color: #F59E0B;
     -fx-text-fill: white;
-}
 
-#btnAccidente:selected {
+}
+#btnAccidente:selected  {
     -fx-background-color: #EF4444;
     -fx-border-color: #EF4444;
     -fx-text-fill: white;
 }
 
-#btnLluvia:selected {
+#btnLluvia:selected     {
     -fx-background-color: #3B82F6;
     -fx-border-color: #3B82F6;
     -fx-text-fill: white;
 }
-
-#btnDescuento:selected {
+#btnDescuento:selected  {
     -fx-background-color: #10B981;
     -fx-border-color: #10B981;
     -fx-text-fill: white;
+}
+
+.ruta-simulada {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555;
+}
+.hint-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #aaa;
+    -fx-wrap-text: true;
+}
+.btn-limpiar {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.pane {
+    -fx-background-color: #F6F3EA;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 3px;
+}
+
+.windowPane {
+    -fx-background-color: #d5ebbb;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 3px;
+}
+
+.windowField {
+    -fx-background-color: WHITE;
+}
+
+.windowButton {
+    -fx-background-color: #C7ECF0;
+    -fx-font-weight: bold;
+    -fx-border-color: LIGHTGRAY;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+.btnParadaMenu {
+    -fx-font: 14px "SansSerif";
+    -fx-background-color: CBDBAF;
+    -fx-font-weight: bold;
+}
+
+.table {
+    -fx-background-color: #F6F3EA;
+    -fx-border-color: LIGHTGRAY;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header {
+    -fx-font-size: 14px;
+    -fx-background-color: #C7ECF0;
+    -fx-border-color: BLACK;
+    -fx-border-width: 0.5px;
 }

@@ -90,7 +90,7 @@
 
 /* Evento: Lluvia */
 .edge-lluvia {
-    -fx-stroke: #3B82F6;
+    -fx-stroke: #000080;
     -fx-stroke-width: 5;
     -fx-opacity: 1.0;
     -fx-stroke-line-cap: round;

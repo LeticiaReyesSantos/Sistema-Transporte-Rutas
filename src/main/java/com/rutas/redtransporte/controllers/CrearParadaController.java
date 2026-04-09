@@ -9,10 +9,9 @@ import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+
+import java.util.Optional;
 
 public class CrearParadaController {
 
@@ -82,9 +81,15 @@ public class CrearParadaController {
     }
 
     public void eliminarParada() {
-        Mensaje.defaultMessages(Mensaje.OpcionMensaje.DELETE, "Todas las rutas relacionadas serán eliminadas.");
-        paradaService.eliminar(paradaSelected);
-        Visual.closeWindow(btnEliminar);
+        Optional<ButtonType> respuesta = Mensaje.showMessage(
+                Alert.AlertType.CONFIRMATION,
+                "Eliminar", "¿Desea eliminar este elemento?",
+                "Todas las rutas relacionadas serán eliminadas."
+        );
+        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
+            paradaService.eliminar(paradaSelected);
+            Visual.closeWindow(btnEliminar);
+        }
 
     }
 
