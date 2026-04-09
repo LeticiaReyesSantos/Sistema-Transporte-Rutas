@@ -74,7 +74,7 @@ public class MainController {
     }
 
     private void configurarMapaVisual() {
-        grafoVisual.inicializar(graphContainer, this);
+        grafoVisual.inicializar(graphContainer);
         mapImage.fitWidthProperty().bind(panelPrincipal.widthProperty());
         mapImage.fitHeightProperty().bind(panelPrincipal.heightProperty());
     }
@@ -97,7 +97,7 @@ public class MainController {
         transitions.getChildren().addAll(
                 Visual.createTranslation(mainMenu, opening, Visual.Axis.X,-1),
                 Visual.createTranslation(panelFiltro, opening, Visual.Axis.Y,-1),
-                Visual.createTranslation(panelDatos, opening, Visual.Axis.Y,1)
+                Visual.createTranslation(panelDatos, opening, Visual.Axis.X,1)
         );
 
         menuManager.setVisible(opening);

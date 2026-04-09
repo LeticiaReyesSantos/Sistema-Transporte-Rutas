@@ -9,7 +9,7 @@ import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;
 
 /* Esta clase se encarga se hacer el enlace con las tres capas del programa:
-   visual, lógica, almacenamiento
+   visual, lógica, persistencia
 
    Actualiza los datos cuando se crea, modifica o elimina.
     */

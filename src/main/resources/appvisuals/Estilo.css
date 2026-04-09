@@ -317,6 +317,12 @@
     -fx-border-width: 3px;
 }
 
+.windowAnchor{
+    -fx-background-image: url("../imagenes/windowAnchor.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
 .windowPane {
     -fx-background-color: #d5ebbb;
     -fx-border-color: LIGHTGRAY;

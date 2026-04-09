@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="windowBG" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.ShowRutaController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="windowAnchor" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.ShowRutaController">
    <children>
       <Pane layoutX="51.0" layoutY="35.0" prefHeight="330.0" prefWidth="510.0" styleClass="windowPane">
          <children>

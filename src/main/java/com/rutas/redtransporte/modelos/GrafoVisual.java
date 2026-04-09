@@ -35,10 +35,10 @@ public class GrafoVisual {
         return rutaSelected;
     }
 
-    public void inicializar(AnchorPane panelPrincipal, MainController mainController){
-        this.panelPrincipal = panelPrincipal;
-        this.mainController = mainController;
+    public void inicializar(AnchorPane panelPrincipal){
         ClaseService.getInstance().registrarClase(GrafoVisual.class,this);
+        mainController = ClaseService.getInstance().getClase(MainController.class);
+        this.panelPrincipal = panelPrincipal;
 
         iniciarMapa();
         iniciarMenu();
