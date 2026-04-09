@@ -121,21 +121,4 @@ public class RutaDAO {
             System.err.println("Error al eliminar la ruta: " + e.getMessage());
         }
     }
-
-    //Simula ON DELETE CASCADE en el codigo para asegurar que no queden aristas huerfanas
-    public void eliminarRutasPorParada(int paradaId) {
-        final String sql = "DELETE FROM ruta WHERE id_origen = ? OR id_destino = ?";
-
-        try (Connection connection = DataBaseConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-
-            ps.setInt(1, paradaId);
-            ps.setInt(2, paradaId);
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar rutas por parada: " + e.getMessage());
-        }
-    }
 }

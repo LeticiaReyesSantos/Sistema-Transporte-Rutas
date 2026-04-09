@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 //Clase utilitaria para la gestion de conexiones en PostgreSQL
 public class DataBaseConnection {
+    //credenciales
     private static final String URL = "jdbc:postgresql://localhost:5432/test";
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";

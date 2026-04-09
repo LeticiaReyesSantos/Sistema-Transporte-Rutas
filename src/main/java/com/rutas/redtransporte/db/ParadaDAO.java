@@ -33,7 +33,7 @@ public class ParadaDAO {
             preparedStatement.setString(2, parada.getTipo());
             preparedStatement.executeUpdate();
 
-            //Se solicita un ID autogenerado para sincronizar con el objeto en memoria
+            //Se inyecta el id generado en la base de datos al onjeto
             try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
                 if (rs.next()) {
                     parada.setIdParada(rs.getInt(1));
