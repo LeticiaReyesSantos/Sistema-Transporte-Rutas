@@ -1,11 +1,15 @@
 package com.rutas.redtransporte.db;
 
-import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 
 import java.sql.*;
 import java.util.HashMap;
 
+/*
+    Patron de diseno: Data Access Object
+    Esta clase encapsula todas las consultas SQL para la entidad Parada
+    Separa la logica de persistencia de datos de la logica matematica del programa
+ */
 public class ParadaDAO {
     private static ParadaDAO instance = null;
 
@@ -21,6 +25,7 @@ public class ParadaDAO {
     public void guardarParada(Parada parada) {
         final String sql = "INSERT INTO parada (nombre, tipo) VALUES (?, ?)";
 
+        //Se utiliza try para garantizar que la conexion se cierre automaticamente, evitando memory leaks
         try (Connection connection = DataBaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -28,11 +33,10 @@ public class ParadaDAO {
             preparedStatement.setString(2, parada.getTipo());
             preparedStatement.executeUpdate();
 
-
+            //Se solicita un ID autogenerado para sincronizar con el objeto en memoria
             try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
                 if (rs.next()) {
-                    parada.setIdParada(rs.getInt(1)); // La bdd nos devuelve el id original
-                    Grafo.getInstance().addParada(parada);
+                    parada.setIdParada(rs.getInt(1));
                 }
             }
         } catch (SQLException e) {
@@ -40,6 +44,7 @@ public class ParadaDAO {
         }
     }
 
+    //Retornamos un HashMap utilizando el ID como clave, al hacer esto la complejidad de la busqueda es O(1)
     public HashMap<Integer, Parada> obtenerParadas() {
         HashMap<Integer, Parada> paradas = new HashMap<>();
         final String sql = "SELECT * FROM parada";

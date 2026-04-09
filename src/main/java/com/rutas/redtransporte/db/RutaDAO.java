@@ -1,12 +1,16 @@
 package com.rutas.redtransporte.db;
 
-import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
 
 import java.sql.*;
 import java.util.HashMap;
 
+/*
+    Patron de diseno: Data Access Object
+    Esta clase encapsula todas las consultas SQL para la entidad Ruta
+    Trabaja en conjunto a ParadaDAO para mantener las referencias entre los nodos y sus conexiones
+ */
 public class RutaDAO {
     private static RutaDAO instance = null;
 
@@ -28,11 +32,10 @@ public class RutaDAO {
             setParametrosBase(ps, ruta);
             ps.executeUpdate();
 
-             //Obtenemos el ID que le asigno postgre
+            //Recuperamos el primaryKey
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     ruta.setIdRuta(rs.getInt(1));
-                    Grafo.getInstance().addRoute(ruta);
                 }
             }
         } catch (SQLException e) {
@@ -40,7 +43,7 @@ public class RutaDAO {
         }
     }
 
-    //Metodo auxiliar para no repetir codigo
+    //Metodo auxiliar para aplicar el principio DRY (Dont repeat Yourself), centraliza la inyeccion de parametros compartidos
     private void setParametrosBase(PreparedStatement ps, Ruta ruta) throws SQLException {ps.setInt(1, ruta.getIdRuta());
         ps.setString(1, ruta.getNombreRuta());
         ps.setInt(2, ruta.getOrigen().getIdParada());
@@ -51,6 +54,10 @@ public class RutaDAO {
         ps.setInt(7, ruta.getTransbordos());
     }
 
+    /*
+        Reconstruyo la ruta desde la base de datos, con paradasCargadas actuando como un diccionario en memoria
+        con las paradas
+     */
     public HashMap<Integer, Ruta> obtenerTodas(HashMap<Integer, Parada> paradasCargadas) {
         HashMap<Integer, Ruta> rutas = new HashMap<>();
         final String sql = "SELECT * FROM ruta";
@@ -92,7 +99,7 @@ public class RutaDAO {
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             setParametrosBase(ps, ruta);
-            ps.setInt(8, ruta.getIdRuta());
+            ps.setInt(8, ruta.getIdRuta()); //Parametro 8 corresponde a WHERE
 
             ps.executeUpdate();
 
@@ -115,6 +122,7 @@ public class RutaDAO {
         }
     }
 
+    //Simula ON DELETE CASCADE en el codigo para asegurar que no queden aristas huerfanas
     public void eliminarRutasPorParada(int paradaId) {
         final String sql = "DELETE FROM ruta WHERE id_origen = ? OR id_destino = ?";
 

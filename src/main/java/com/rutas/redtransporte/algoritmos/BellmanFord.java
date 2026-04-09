@@ -4,6 +4,12 @@ import com.rutas.redtransporte.modelos.*;
 
 import java.util.*;
 
+/*
+    Implementacion algoritmo de Bellman-Ford
+    Se utiliza especificamente cuando existen aristas con pesos negativos (caso descuentos en la simulacion de eventos)
+    ya que Dijkstra no puede procesar estas.
+ */
+
 public class BellmanFord implements EstrategiaDeRuta{
     public final double infinito = Double.POSITIVE_INFINITY;
 
@@ -20,8 +26,9 @@ public class BellmanFord implements EstrategiaDeRuta{
         }
         peso.put(origen, 0.0);
 
-        //Limite V-1
+        //Relajacion de aristas -> el camino mas largo sin ciclos tiene V-1 aristas
         for (int i = 0; i < paradasSet.size() - 1; i++) {
+            //Early return en caso de que no se actualice ningun peso, ya que esto sugiere que el algoritmo ya encontro la mejor ruta
             boolean changed = false;
             for(Parada p: paradasSet){
                 if(peso.get(p) == infinito)
@@ -45,14 +52,16 @@ public class BellmanFord implements EstrategiaDeRuta{
             if(!changed) break;
         }
 
-        //No deberiamos tener un ciclo negativo REVISAR
+        //Validacion que evita un ciclo negativo en el que hacer transbordos en circulo imposibilite el calculo optimo de esta ponderacion
         for(Parada p : paradasSet){
             if(peso.get(p) == infinito) continue;
             for(Ruta ruta: graph.buscarRutasSalida(p)){
+                if(!ruta.isDisponibilidad()) continue;
+
                 double currentPrice = peso.get(p);
                 double costoArista = ruta.obtenerCriterio(criterio);
                 if(currentPrice + costoArista < peso.get(ruta.getDestino()))
-                    throw new IllegalArgumentException("Ciclo negativo detectado");
+                    return null;
             }
         }
 

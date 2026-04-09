@@ -242,3 +242,27 @@
     -fx-text-fill: #1976d2;
     -fx-font-weight: bold;
 }
+
+#btnTrafico:selected {
+    -fx-background-color: #F59E0B;
+    -fx-border-color: #F59E0B;
+    -fx-text-fill: white;
+}
+
+#btnAccidente:selected {
+    -fx-background-color: #EF4444;
+    -fx-border-color: #EF4444;
+    -fx-text-fill: white;
+}
+
+#btnLluvia:selected {
+    -fx-background-color: #3B82F6;
+    -fx-border-color: #3B82F6;
+    -fx-text-fill: white;
+}
+
+#btnDescuento:selected {
+    -fx-background-color: #10B981;
+    -fx-border-color: #10B981;
+    -fx-text-fill: white;
+}

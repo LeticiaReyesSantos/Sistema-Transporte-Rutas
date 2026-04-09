@@ -2,13 +2,7 @@ package com.rutas.redtransporte.modelos;
 
 import java.util.List;
 
-/* Nombre: ShortestPath
-   Objetivo: DTO (Data Transfer Object), que sera utilizado para presentar el resultado definitivo del
-   algoritmo utilizado, contiene la lista de rutas a recorrer, los pesos, el peso total, y el criterio por
-   el que sera evaluado el camino
-   Metodos: toString()
- */
-
+// DTO que encapsula el resultado final de los algoritmos de búsqueda y calcula el total del viaje por cada ponderacion de la arista
 public class ShortestPath {
     private double totalPrice;
     private double totalTime;
@@ -38,6 +32,8 @@ public class ShortestPath {
                 this.totalDistance += r.getDistancia();
 
                 String currentType = r.getOrigen().getTipo();
+
+                //Se cuenta un transbordo unicamente cuando se cambia el tipo de vehiculo
                 if (!pastType.equals(currentType)) {
                     this.totalTranfers++;
                     pastType = currentType;

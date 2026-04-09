@@ -1,24 +1,24 @@
 package com.rutas.redtransporte.servicios;
 
-import com.rutas.redtransporte.controllers.CrearParadaController;
 import com.rutas.redtransporte.controllers.CrearRutaController;
-import com.rutas.redtransporte.db.ParadaDAO;
 import com.rutas.redtransporte.db.RutaDAO;
 import com.rutas.redtransporte.modelos.Grafo;
 import com.rutas.redtransporte.modelos.GrafoVisual;
 import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;
-import javafx.fxml.FXMLLoader;
 
-import java.util.Objects;
 
+/* Esta clase se encarga se hacer el enlace con las tres capas del programa:
+   visual, lógica, almacenamiento
+
+   Actualiza los datos cuando se crea, modifica o elimina.
+    */
 public class RutaService {
     GrafoVisual grafoVisual = ClaseService.getInstance().getClase(GrafoVisual.class);
 
     public Resultado verDetalles(Ruta ruta){
-        if(Grafo.getInstance().getListRutas().isEmpty()) return Resultado.NO_EXISTE;
-        if(ruta == null) return Resultado.VACIO;
+        if(Grafo.getInstance().getListRutas().isEmpty()) return Resultado.VACIO;
 
         Visual.Ventana<CrearRutaController> ventana = Visual.prepararVentana("CrearRuta.fxml", "Estilo.css");
         if (ventana == null) return Resultado.ERROR;
@@ -34,24 +34,23 @@ public class RutaService {
         if(existe != Resultado.NO_EXISTE)
             return existe;
 
-        //Grafo.getInstance().addRoute(ruta);
         RutaDAO.getInstance().guardarRuta(ruta);
+        Grafo.getInstance().addRoute(ruta);
         grafoVisual.crearRuta(ruta);
         return Resultado.EXITO;
     }
 
+    /*
+    Una vez se modifica la ruta en el grafo,
+    las demás funciones solo necesitan la ruta original.
+     */
     public Resultado modificar(Ruta rutaOriginal, Ruta rutaModificada) {
-        //Resultado resultado = Grafo.getInstance().modifyRoute(rutaOriginal, rutaModificada);
-//
-//        if(resultado != Resultado.EXITO)
-//            return resultado;
+        Resultado resultado = Grafo.getInstance().modifyRoute(rutaOriginal, rutaModificada);
 
-        Resultado existe = Grafo.getInstance().rutaExiste(rutaModificada,null);
-        if(existe != Resultado.NO_EXISTE)
-            return existe;
+        if(resultado != Resultado.EXITO)
+            return resultado;
 
-
-        grafoVisual.modificarRuta(rutaOriginal, rutaModificada);
+        grafoVisual.modificarRuta(rutaOriginal);
         RutaDAO.getInstance().actualizarRuta(rutaOriginal);
 
         return Resultado.EXITO;

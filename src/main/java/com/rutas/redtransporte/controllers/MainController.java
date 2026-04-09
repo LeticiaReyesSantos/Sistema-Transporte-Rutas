@@ -5,6 +5,7 @@ import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.modelos.ShortestPath;
 import com.rutas.redtransporte.servicios.ClaseService;
+import com.rutas.redtransporte.servicios.RoutingEngine;
 import com.rutas.redtransporte.utilidad.Logico;
 import com.rutas.redtransporte.utilidad.Mensaje;
 import com.rutas.redtransporte.utilidad.Visual;
@@ -12,17 +13,13 @@ import com.rutas.redtransporte.utilidad.Visual;
 import javafx.animation.ParallelTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainController {
@@ -78,6 +75,14 @@ public class MainController {
     @FXML private Pane dotDestino;
     @FXML private Button btnCalcular;
 
+    @FXML private Pane panelSimulador;
+    @FXML private Label lblRutaSimulada;
+    @FXML private ToggleGroup toggleEvento;
+    @FXML private ToggleButton btnTrafico;
+    @FXML private ToggleButton btnAccidente;
+    @FXML private ToggleButton btnLluvia;
+    @FXML private ToggleButton btnDescuento;
+
     @FXML
     private ImageView mapImage;
 
@@ -90,6 +95,7 @@ public class MainController {
     private AtomicBoolean isMenuOpen = new AtomicBoolean(true);
 
     private final GrafoVisual grafoVisual = new GrafoVisual();
+    private final RoutingEngine routingEngine = new RoutingEngine();
 
     public void initialize() {
         ClaseService.getInstance().registrarClase(MainController.class,this);
@@ -181,23 +187,29 @@ public class MainController {
         btnTiempo.setUserData(Ruta.Peso.TIEMPO);
         btnCosto.setUserData(Ruta.Peso.COSTO);
         btnTransbordo.setUserData(Ruta.Peso.TRANSBORDO);
+        btnTrafico.setUserData(Ruta.Evento.TRAFICO);
+        btnAccidente.setUserData(Ruta.Evento.ACCIDENTE);
+        btnLluvia.setUserData(Ruta.Evento.LLUVIA);
+        btnDescuento.setUserData(Ruta.Evento.DESCUENTO);
     }
 
     public void mostrarResultados(ShortestPath optima, ShortestPath alterna) {
         if (optima != null) {
-            actualizarCajaRuta(optima, lblDescripcionOptima, lblDistanciaOptima,
+            actualizarPanelRuta(optima, lblDescripcionOptima, lblDistanciaOptima,
                     lblTiempoOptimo, lblCostoOptimo, lblTransbordoOptimo);
+        } else {
+            limpiarPanelRuta(lblDescripcionOptima, lblDistanciaOptima, lblTiempoOptimo, lblCostoOptimo, lblTransbordoOptimo);
         }
 
         if (alterna != null) {
-            actualizarCajaRuta(alterna, lblDescripcionAlterna, lblDistanciaAlterna,
+            actualizarPanelRuta(alterna, lblDescripcionAlterna, lblDistanciaAlterna,
                     lblTiempoAlterno, lblCostoAlterno, lblTransbordoAlterno);
         } else {
-            limpiarCajaRuta(lblDescripcionAlterna, lblDistanciaAlterna, lblTiempoAlterno, lblCostoAlterno, lblTransbordoAlterno);
+            limpiarPanelRuta(lblDescripcionAlterna, lblDistanciaAlterna, lblTiempoAlterno, lblCostoAlterno, lblTransbordoAlterno);
         }
     }
 
-    private void actualizarCajaRuta(ShortestPath path, Label desc, Label dist, Label tiempo, Label costo, Label trans) {
+    private void actualizarPanelRuta(ShortestPath path, Label desc, Label dist, Label tiempo, Label costo, Label trans) {
         List<Ruta> rutas = path.getRutasRecorridas();
         if (rutas == null || rutas.isEmpty()) return;
 
@@ -213,7 +225,7 @@ public class MainController {
         costo.setText("$ " + Logico.limitarDecimales(path.getTotalPrice()));
         trans.setText(String.valueOf(path.getTotalTranfers()));
     }
-    private void limpiarCajaRuta(Label desc, Label dist, Label tiempo, Label costo, Label trans) {
+    private void limpiarPanelRuta(Label desc, Label dist, Label tiempo, Label costo, Label trans) {
         desc.setText("Ruta no disponible");
         dist.setText("—");
         tiempo.setText("—");
@@ -236,9 +248,17 @@ public class MainController {
 
     public void calcularRuta(ActionEvent e) {
         if(esEntradaValida()){
+            if (routingEngine.esGrafoConexo()) {
+                Mensaje.showMessage(Alert.AlertType.ERROR, "Calculo Bloqueado", "El grafo no es conexo.", "Una los nodos aislados");
+                mostrarResultados(null, null);
+                grafoVisual.colorearRutas(null, null);
+                grafoVisual.limpiarSeleccion();
+                return;
+            }
             grafoVisual.calcularDesdeController(paradaOrigen, paradaDestino);
         }
     }
+
     private boolean esEntradaValida() {
         String nombreOrigen = lblOrigen.getText();
         String nombreDestino = lblDestino.getText();
@@ -258,5 +278,56 @@ public class MainController {
         }
 
         return true;
+    }
+
+    public void limpiarSeleccionEliminada(Parada parada) {
+        if (paradaOrigen != null && paradaOrigen.equals(parada)) {
+            paradaOrigen = null;
+            lblOrigen.setText("Seleccionar...");
+            dotOrigen.setStyle("-fx-background-color:#ccc; -fx-background-radius:5;");
+        }
+        if (paradaDestino != null && paradaDestino.equals(parada)) {
+            paradaDestino = null;
+            lblDestino.setText("Seleccionar...");
+        }
+        grafoVisual.limpiarSeleccion();
+    }
+
+    public void onRutaSeleccionada(Ruta ruta) {
+        lblRutaSimulada.setText(ruta.getOrigen().getNombreParada() + " → " + ruta.getDestino().getNombreParada());
+    }
+
+    public void aplicarEvento() {
+        Toggle selected = toggleEvento.getSelectedToggle();
+        if (selected == null) {
+            Mensaje.showMessage(Alert.AlertType.WARNING, "Sin selección", null, "Selecciona un tipo de evento.");
+            return;
+        }
+        if (grafoVisual.getRutaSelected() == null) {
+            Mensaje.showMessage(Alert.AlertType.WARNING, "Sin ruta", null, "Haz doble clic en una ruta del mapa.");
+            return;
+        }
+
+        Ruta.Evento evento = (Ruta.Evento) selected.getUserData();
+        grafoVisual.aplicarEventoArista(evento);
+
+        String descripcion = switch (evento) {
+            case TRAFICO   -> "Tiempo y costo incrementados un 50%. La ruta sigue disponible.";
+            case ACCIDENTE -> "Ruta bloqueada. Los algoritmos la ignoraran al calcular caminos.";
+            case LLUVIA    -> "Tiempo y costo incrementados un 25%. La ruta sigue disponible.";
+            case DESCUENTO -> "Descuento del 50%. El costo ha bajado.";
+            default        -> "";
+        };
+
+        Mensaje.showMessage(Alert.AlertType.INFORMATION, "Evento aplicado", "Evento: " + evento.name(), descripcion);
+        if (paradaOrigen != null && paradaDestino != null) {
+            calcularRuta(null);
+        }
+    }
+
+    public void limpiarSimulacion() {
+        grafoVisual.limpiarEventoArista();
+        toggleEvento.selectToggle(null);
+        lblRutaSimulada.setText("Ninguna seleccionada");
     }
 }

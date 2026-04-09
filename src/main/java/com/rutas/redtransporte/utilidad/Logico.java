@@ -1,26 +1,18 @@
 package com.rutas.redtransporte.utilidad;
 
 import com.rutas.redtransporte.modelos.Grafo;
-import com.rutas.redtransporte.modelos.Parada;
-import com.rutas.redtransporte.modelos.Ruta;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Logico {
 
-    /* Nombre: crearDatosGrafo
-             Funcion: Crear datos iniciales para generar Grafo.
-             Retorno: void.
-         */
     public static void crearDatosGrafo(){
 
         Grafo grafo = Grafo.getInstance();

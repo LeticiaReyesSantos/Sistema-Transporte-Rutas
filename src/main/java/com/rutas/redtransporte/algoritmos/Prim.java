@@ -7,9 +7,12 @@ import com.rutas.redtransporte.modelos.Ruta;
 import java.util.*;
 
 /*
-- Genero la red minima (MST) Minimum Spanning Tree
-- Devuelvo null si no es conexo, si lo es, devuelve la lista
--Prim es muy parecido a dijkstra
+    Implementacion algoritmo de Prim
+    Se utiliza para encontrar el arbol de expansion minima, y es una buena opcion para verificar la conectividad de un
+    grafo no dirigido, por lo que no esta conectado a la UI y solo se muestra su implementacion y comprension a la hora de
+    buscar las rutas que conectan a todas las paradas del grafo con el costo minimo
+    Al igual que dijkstra es un algoritmo greedy, por lo que hace uso del priority queue y sus implementaciones
+    son similares
  */
 public class Prim {
     public List<Ruta> construirRed(Grafo graph, Ruta.Peso criterio){
@@ -22,8 +25,10 @@ public class Prim {
         Set<Parada> visited = new HashSet<>();
         int cantParadas = paradasList.size();
 
+        // Cola de prioridad que ordena las rutas disponibles de menor a mayor costo
         PriorityQueue<Ruta> cola = new PriorityQueue<>(Comparator.comparingDouble(r -> r.obtenerCriterio(criterio)));
 
+        //Prim puede inicializar desde cualquier nodo, en este caso iniciamos en el primero por comodidad
         Parada start = paradasList.getFirst();
         visited.add(start);
 
@@ -32,21 +37,25 @@ public class Prim {
         }
 
         while(!cola.isEmpty() && visited.size() < cantParadas){
-            Ruta aristaMasCorta = cola.poll(); //obtengo la ruta mas barata ya que prim es greedy, solo le interesa el mejor
-            Parada destino = aristaMasCorta.getDestino();
+            //Obtenemos la ruta mas barata disponible en ese momento
+            Ruta shortestEdge = cola.poll();
+            Parada destino = shortestEdge.getDestino();
 
-            if(visited.contains(destino)) continue; //convierto de grafo a arbol asegurandome de que no existan ciclos
+            //Evitamos ciclos si ya se visito esa parada, simplemente se ignora
+            if(visited.contains(destino)) continue;
 
             visited.add(destino);
-            spanningTree.add(aristaMasCorta);
+            spanningTree.add(shortestEdge);
 
             for(Ruta route : graph.buscarRutasSalida(destino)){
-                if(!visited.contains(route.getDestino()) && route.isDisponibilidad()){ //si no la he visitado y esta disponible la agrego a mi cola como opcion
+                if(!visited.contains(route.getDestino()) && route.isDisponibilidad()){
                     cola.add(route);
                 }
             }
         }
-        if(visited.size() < cantParadas) return null; //el grafo no es conexo
+
+        // Si al finalizar no pudimos conectar todas las paradas, devolvemos null
+        if(visited.size() < cantParadas) return null;
         return spanningTree;
     }
 }

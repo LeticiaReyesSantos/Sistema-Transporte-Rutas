@@ -6,6 +6,11 @@ import com.rutas.redtransporte.utilidad.Resultado;
 
 import java.util.*;
 
+/*
+    Clase principal del modelo
+    Utiliza el Patron Singleton
+    Maneja la relacion Parada-Ruta, centralizando la estructura de datos del mapa
+ */
 public class Grafo {
     private Map<Parada, List<Ruta>> map;
     private static Grafo grafo;
@@ -113,6 +118,11 @@ public class Grafo {
     }
 
 
+    /*
+    Detemina si una para existe basado en:
+        Tramo(origen-destino): EXISTE
+        Nombre: NOMBRE_EXISTE:
+     */
     public Resultado rutaExiste(Ruta newRuta, Ruta excluir) {
         boolean existeTramo = newRuta.getOrigen().getRutasDeSalida().stream()
                 .filter(r -> r != excluir)
@@ -130,33 +140,17 @@ public class Grafo {
         return Resultado.NO_EXISTE;
     }
 
-    public void deleteRoute(Ruta routeToDel) {
-        if (routeToDel == null) {
-            throw new IllegalArgumentException("La ruta proporcionada es nula.");
-        }
-
-        Parada origen = routeToDel.getOrigen();
-        Parada destino = routeToDel.getDestino();
-
-        if (map.containsKey(origen)) {
-            map.get(origen).remove(routeToDel);
-        }
-        origen.removeRutaSalida(routeToDel);
-        destino.removeRutaEntrada(routeToDel);
-        allRutas.remove(routeToDel);
-    }
-
+    /*
+    Valida si es posible hacer la modificación.
+    Si es posible, realiza los cambios necesarios.
+     */
     public Resultado modifyRoute(Ruta oldRuta, Ruta newRuta) {
         if (newRuta == null) {
             throw new IllegalArgumentException("La ruta proporcionada es nula.");
         }
 
-//        Resultado conflictoExterno = rutaExiste(newRuta, oldRuta);
-//        Resultado validacion = oldRuta.compararModificacion(newRuta, conflictoExterno);
-//
-//        if (validacion != Resultado.EXITO) {
-//            return validacion;
-//        }
+        Resultado validacion = verificarRutaModificada(oldRuta, newRuta);
+        if (validacion != Resultado.EXITO)  return validacion;
 
         if (!oldRuta.getOrigen().equals(newRuta.getOrigen())) {
             map.get(oldRuta.getOrigen()).remove(oldRuta);
@@ -179,55 +173,65 @@ public class Grafo {
         return Resultado.EXITO;
     }
 
-//    public Resultado verificarModificarRuta(Ruta rutaOriginal, Ruta rutaModificada) {
-//        if (rutaOriginal.equals(rutaModificada)) {
-//            if (!rutaOriginal.getNombreRuta().equalsIgnoreCase(rutaModificada.getNombreRuta())) {
-//                if (rutaExiste(rutaModificada) == Resultado.NOMBRE_EXISTE) {
-//                    return Resultado.NOMBRE_EXISTE;
-//                }
-//            }
-//
-//            return rutaOriginal.cambiosRuta(rutaModificada) ? Resultado.EXITO : Resultado.NO_CAMBIOS;
-//        }
-//
-//        Resultado existe = rutaExiste(rutaModificada);
-//        return (existe != Resultado.NO_EXISTE) ? existe : Resultado.EXITO;
-//    }
+    /*
+    Verifica si la ruta puede ser modificada.
+        1. Al verificar si existe, se excluye la original para evitar un falso existe.
+            Existe : Devuelve el resultado.
 
-//    public Resultado verificarModificarRuta (Ruta rutaOriginal, Ruta rutaModificada){
-//
-////        if(rutaOriginal.equals(rutaModificada)){
-////            System.out.println(rutaOriginal.getNombreRuta()+", "+rutaOriginal.getOrigen()+", "+rutaOriginal.getDestino());
-////            System.out.println(rutaModificada.getNombreRuta()+", "+rutaModificada.getOrigen()+", "+rutaModificada.getDestino());
-////            System.out.println("Mismo nombre, parada y destino");
-////            if (rutaOriginal.cambiosRuta(rutaModificada)) return Resultado.EXITO;
-//
-//        if(rutaOriginal.getNombreRuta().equalsIgnoreCase(rutaModificada.gete))
-//            else return Resultado.NO_CAMBIOS;
-//
-//        }else{
-//            Resultado existe = rutaExiste(rutaModificada);
-//
-//            if(existe != Resultado.NO_EXISTE) return existe;
-//            else return Resultado.EXITO;
-//        }
-//
-//    }
+            No existe: Verifica si tiene el mismo tramo y nombre.
+                       Verifica si hay cambios.
+     */
+    public Resultado verificarRutaModificada(Ruta rutaOriginal, Ruta rutaModificada){
 
-    public List<Ruta> buscarRutasSalida(Parada parade){
-        return map.get(parade);
+        Resultado existe = rutaExiste(rutaModificada, rutaOriginal);
+
+        if(existe != Resultado.NO_EXISTE){
+            return existe;
+
+        }else{
+
+            if(rutaOriginal.equals(rutaModificada)) {
+                if (rutaOriginal.cambiosRuta(rutaModificada)) return Resultado.EXITO;
+                else return Resultado.NO_CAMBIOS;
+            }
+
+            return Resultado.EXITO;
+        }
+
+    }
+
+    public void deleteRoute(Ruta routeToDel) {
+        if (routeToDel == null) {
+            throw new IllegalArgumentException("La ruta proporcionada es nula.");
+        }
+
+        Parada origen = routeToDel.getOrigen();
+        Parada destino = routeToDel.getDestino();
+
+        if (map.containsKey(origen)) {
+            map.get(origen).remove(routeToDel);
+        }
+        origen.removeRutaSalida(routeToDel);
+        destino.removeRutaEntrada(routeToDel);
+        allRutas.remove(routeToDel);
     }
 
 
-    /* Nombre: eventSimulator
-       Objetivo: Simular diferentes eventualidades que cambien el flujo del trafico
-     */
-    public void eventSimulator(Ruta.Evento evento){
-        for(Ruta route: allRutas){
-            aplicarEvento(route, evento);
+
+    public List<Ruta> buscarRutasSalida(Parada parade){
+        List<Ruta> rutas = map.get(parade);
+        if (rutas != null) {
+            return rutas;
+        } else {
+
+            return Collections.emptyList();
         }
     }
 
+
+    /*
+        Utilizado para simular alteraciones en el flujo del trafico
+     */
     public void aplicarEvento(Ruta route, Ruta.Evento evento){
         route.setEventoTrafico(evento);
         switch (evento){
@@ -250,7 +254,7 @@ public class Grafo {
             case DESCUENTO -> {
                 route.setDisponibilidad(true);
                 route.setTiempo(route.getTiempoBase());
-                route.setCosto(route.getCostoBase() * -0.5);
+                route.setCosto(route.getCostoBase() * 0.5);
             }
         }
     }
@@ -275,10 +279,39 @@ public class Grafo {
         }
     }
 
-    //for debugging only
-    public void show(){
-        for(Parada parade : map.keySet()){
-            System.out.println(parade + "--> " + map.get(parade));
+
+    public boolean esConexo() {
+        if (map.isEmpty()) return true;
+        List<Parada> paradasList = new ArrayList<>(map.keySet());
+        Parada inicio = paradasList.getFirst();
+        Set<Parada> visited = new HashSet<>();
+
+        dfsRecursivo(inicio, visited);
+        return visited.size() == map.size();
+    }
+
+    private void dfsRecursivo(Parada current, Set<Parada> visited) {
+        visited.add(current);
+
+        List<Ruta> rutasDeSalida = map.get(current);
+        if (rutasDeSalida != null) {
+            for (Ruta ruta : rutasDeSalida) {
+                if (ruta.isDisponibilidad()) {
+                    Parada destino = ruta.getDestino();
+                    if (!visited.contains(destino)) {
+                        dfsRecursivo(destino, visited);
+                    }
+                }
+            }
+        }
+
+        for (Ruta ruta : current.getRutasDeEntrada()) {
+            if (ruta.isDisponibilidad()) {
+                Parada origen = ruta.getOrigen();
+                if (!visited.contains(origen)) {
+                    dfsRecursivo(origen, visited);
+                }
+            }
         }
     }
 }

@@ -49,9 +49,13 @@ public class ShowRutaController {
     public void verDetalles(){
         Ruta rutaSelected = table.getSelectionModel().getSelectedItem();
 
+        if(rutaSelected == null){
+            Mensaje.showMessage(Alert.AlertType.ERROR, "Opción inválida", "", "Debe elegir una ruta.");
+            return;
+        }
+
         switch (rutaService.verDetalles(rutaSelected)){
             case NO_EXISTE -> Mensaje.showMessage(Alert.AlertType.ERROR, "Opción inválida", "", "No hay rutas creadas.");
-            case VACIO -> Mensaje.showMessage(Alert.AlertType.ERROR, "Opción inválida", "", "Debe elegir una ruta.");
             case EXITO -> updateTable();
         }
     }

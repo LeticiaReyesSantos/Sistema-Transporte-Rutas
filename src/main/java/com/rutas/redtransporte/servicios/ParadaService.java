@@ -8,9 +8,10 @@ import com.rutas.redtransporte.modelos.Parada;
 import com.rutas.redtransporte.utilidad.Resultado;
 import com.rutas.redtransporte.utilidad.Visual;
 
-/* Esta clase se encarga se hacer el enlace con las tres capas del programa
-   cuando se utilizan paradas. Actualiza los datos cuando se crea, modifica o elimina
-   una parada en el visual, la estructura lógica (mapa) y la base de datos.
+/* Esta clase se encarga se hacer el enlace con las tres capas del programa:
+   visual, lógica, almacenamiento
+
+   Actualiza los datos cuando se crea, modifica o elimina.
     */
 public class ParadaService {
     GrafoVisual grafoVisual;
@@ -40,6 +41,7 @@ public class ParadaService {
 
 
         ParadaDAO.getInstance().guardarParada(parada);
+        Grafo.getInstance().addParada(parada);
         grafoVisual.crearParada(parada);
         return Resultado.EXITO;
     }
@@ -50,9 +52,9 @@ public class ParadaService {
         if(resultado != Resultado.EXITO)
             return resultado;
 
-         grafoVisual.modificarParada(paradaOriginal,paradaModificada);
-         paradaOriginal.modificarParada(paradaModificada);
-         ParadaDAO.getInstance().actualizarParada(paradaOriginal);
+        paradaOriginal.modificarParada(paradaModificada);
+        grafoVisual.modificarParada();
+        ParadaDAO.getInstance().actualizarParada(paradaOriginal);
 
         return Resultado.EXITO;
     }

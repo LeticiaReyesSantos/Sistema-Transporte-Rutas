@@ -69,3 +69,48 @@
     -fx-stroke-line-cap: round;
     -fx-fill: transparent;
 }
+
+.edge-trafico {
+    -fx-stroke: #F59E0B;
+    -fx-stroke-width: 5;
+    -fx-opacity: 1.0;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+}
+
+/* Evento: Accidente (inhabilitada) */
+.edge-accidente {
+    -fx-stroke: #EF4444;
+    -fx-stroke-width: 5;
+    -fx-stroke-dash-array: 8 6;
+    -fx-opacity: 1.0;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+}
+
+/* Evento: Lluvia */
+.edge-lluvia {
+    -fx-stroke: #3B82F6;
+    -fx-stroke-width: 5;
+    -fx-opacity: 1.0;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+}
+
+/* Evento: Descuento */
+.edge-descuento {
+    -fx-stroke: #10B981;
+    -fx-stroke-width: 5;
+    -fx-opacity: 1.0;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+}
+
+.edge-seleccionada {
+    -fx-stroke: #F59E0B;
+    -fx-stroke-width: 6;
+    -fx-stroke-dash-array: 6 4;
+    -fx-opacity: 1.0;
+    -fx-stroke-line-cap: round;
+    -fx-fill: transparent;
+}

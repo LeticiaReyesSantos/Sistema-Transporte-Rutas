@@ -80,7 +80,7 @@ public class CrearRutaController {
         if(ruta == null) return;
 
         Resultado result = rutaService.guardar(ruta);
-        //switch (rutaService.guardar(ruta)){
+
         switch (result){
             case EXITO -> {
                 Mensaje.defaultMessages(Mensaje.OpcionMensaje.SAVED, ruta.getNombreRuta());
@@ -130,9 +130,9 @@ public class CrearRutaController {
 
     }
 
-    /* Nombre: modificarRuta
-    Funcion: Modificar una ruta.
-    Retorno: void.
+    /*
+    Crea una ruta con el mismo id de la original para mantener la referencia en el mapa.
+    Una vez se verifica la modificación, se reemplaza los datos en la ruta original.
     */
     public void modificarRuta(){
         if(!verificarRuta()) return;

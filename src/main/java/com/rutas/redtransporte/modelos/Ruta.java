@@ -5,8 +5,6 @@ package com.rutas.redtransporte.modelos;
    Metodos:///
  */
 
-import com.rutas.redtransporte.utilidad.Resultado;
-
 import java.util.Objects;
 
 public class Ruta {
@@ -143,46 +141,10 @@ public class Ruta {
         this.destino = destino;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if(this == o) return true;
-//        if(!(o instanceof Ruta ruta)) return false;
-//
-//        boolean nombre = nombreRuta.equalsIgnoreCase(ruta.nombreRuta);
-//        boolean origen = this.origen.equals(ruta.getOrigen());
-//        boolean destino = this.destino.equals(ruta.getDestino());
-//
-//        //return nombre || (origen && destino);
-//        return nombre && (origen && destino);
-//    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(this == o) return true;
-        if(!(o instanceof Ruta ruta)) return false;
-
-        return this.origen.equals(ruta.getOrigen()) && this.destino.equals(ruta.getDestino());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idRuta);
-    }
-
-    public Resultado compararModificacion(Ruta modificada, Resultado conflictoExterno) {
-        if (this.equals(modificada)) {
-
-//            if (!this.nombreRuta.equalsIgnoreCase(modificada.getNombreRuta())
-//                    && conflictoExterno == Resultado.NOMBRE_EXISTE) {
-//                return Resultado.NOMBRE_EXISTE;
-//            }
-
-            return this.cambiosRuta(modificada) ? Resultado.EXITO : Resultado.NO_CAMBIOS;
-        }
-
-        return (conflictoExterno != Resultado.NO_EXISTE) ? conflictoExterno : Resultado.EXITO;
-    }
-
+    /*
+   Permite modificar una ruta a partir de los datos de otra ruta.
+   Se hace de esta manera para mantener la referencia de la ruta en el mapa.
+    */
     public void modificarRuta(Ruta ruta){
         this.nombreRuta = ruta.getNombreRuta();
         this.origen = ruta.getOrigen();
@@ -197,18 +159,18 @@ public class Ruta {
         this.eventoTrafico = ruta.getEventoTrafico();
     }
 
+    /*
+    Verifica si se han hecho cambios a una ruta.
+    Se usa para notificar si es posible modificar.
+     */
     public boolean cambiosRuta(Ruta ruta){
         return !this.nombreRuta.equalsIgnoreCase(ruta.nombreRuta) ||
+                !this.origen.equals(ruta.getOrigen()) ||
+                !this.destino.equals(ruta.getDestino()) ||
                 this.costo != ruta.costo ||
                 this.tiempo != ruta.tiempo ||
-                this.distancia != ruta.distancia ||
-                !this.origen.equals(ruta.getOrigen()) ||
-                !this.destino.equals(ruta.getDestino());
+                this.distancia != ruta.distancia;
     }
-
-//    public boolean cambiosRuta(Ruta ruta){
-//        return this.costo != ruta.costo || this.tiempo != ruta.tiempo || this.distancia != ruta.distancia;
-//    }
 
     public double obtenerCriterio(Peso peso){
 
@@ -231,7 +193,20 @@ public class Ruta {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Ruta ruta)) return false;
+
+        return this.origen.equals(ruta.getOrigen()) && this.destino.equals(ruta.getDestino());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idRuta);
+    }
+
+    @Override
     public String toString() {
-        return distancia + " km\n" + tiempo + " h\n" + "$ " + costo;
+        return "";
     }
 }

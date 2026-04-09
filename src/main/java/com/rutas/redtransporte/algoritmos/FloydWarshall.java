@@ -6,7 +6,11 @@ import com.rutas.redtransporte.modelos.Ruta;
 import com.rutas.redtransporte.modelos.ShortestPath;
 
 import java.util.*;
-
+/*
+    Implementacion del algoritmo Floyd-Warshall
+    Este algoritmo utiliza programacion dinamica para encontrar la ruta mas corta entre todos los nodos
+    Debido a su complejidad O(v^3) es bastante pesado para calculos en tiempo real
+ */
 public class FloydWarshall {
     public final double infinito = Double.POSITIVE_INFINITY;
     public ShortestPath bestRoute(Grafo graph, Parada origen, Parada destino, Ruta.Peso criterio) {
@@ -17,7 +21,7 @@ public class FloydWarshall {
         Set<Parada> paradasSet = graph.getSetParadas();
         int n = paradasSet.size();
 
-        //Baja la complejidad de armar la matriz a O(V + E), el hecho de usar un hace que se tarde un tiempo de O(1) para obtener los indices de las paradas
+        //Mapeamos las paradas a indices numericos para bajar la complejidad a O(1) al construir la matriz
         Map<Parada, Integer> indexMap = new HashMap<>();
         int index = 0;
         for (Parada parada : paradasSet) {
@@ -27,7 +31,7 @@ public class FloydWarshall {
         double [][] peso  = new double[n][n];
         Ruta[][] next = new Ruta[n][n];
 
-        //Inicializo la matriz, diagonales en 0, y lo que no es ruta directa en infinito, tal como el video
+        //La distancia para rutas lejanas inicializa en infinito y en caso de no encontrar forma de llegar se queda como tal
         for (int i = 0; i < n; i++) {
             Arrays.fill(peso[i], infinito);
             peso[i][i] = 0.0;
@@ -47,13 +51,15 @@ public class FloydWarshall {
             }
         }
 
-        //Corazon del Floyd-Warshall O(v^3)
+        //Relajacion de la matriz y el corazon del floyd-warshall
+        //i= nodo origen, j = nodo destino, k = nodo intermedio entre estos
+        //Se encarga de evaluar si ir directamente de origen a destino es mas caro que hacer una parada en el nodo intermedio
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) { //origen
                 for (int j = 0; j < n; j++) { //destino
-                    if(peso[i][k] != infinito && peso[k][j] != infinito && peso[i][k] + peso[k][j] < peso[i][j]){ //verifico si existe un camino desde mi origen hasta la escala, luego lo mismo para destino y por ultimo, el costo de ir origen -> escala -> destino es menor al que ya tenia
-                        peso[i][j] = peso[i][k] + peso[k][j]; //me olvido del precio viejo ya que encontre uno mas barato
-                        next[i][j] = next[i][k]; //actualizo el intermediario
+                    if(peso[i][k] != infinito && peso[k][j] != infinito && peso[i][k] + peso[k][j] < peso[i][j]){
+                        peso[i][j] = peso[i][k] + peso[k][j];
+                        next[i][j] = next[i][k];
                     }
                 }
 
@@ -63,7 +69,7 @@ public class FloydWarshall {
 
         int start = indexMap.get(origen);
         int end = indexMap.get(destino);
-        if(peso[start][end] == infinito) return null; //si la ruta es inalcanzable retorno null
+        if(peso[start][end] == infinito) return null;
 
         return rebuildMatrixPath(origen, destino, peso, next, indexMap, criterio);
     }
@@ -77,7 +83,7 @@ public class FloydWarshall {
             Ruta pathTaken = next[current][end];
             if(pathTaken == null) return null;
             path.add(pathTaken);
-            current = indexMap.get(pathTaken.getDestino()); //mi nuevo actual es la parada del camino que tome
+            current = indexMap.get(pathTaken.getDestino());
         }
         return new ShortestPath(path, criterio, peso[indexMap.get(origen)][end]);
     }

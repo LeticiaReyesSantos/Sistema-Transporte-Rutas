@@ -12,7 +12,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URI;
@@ -26,9 +25,14 @@ public class GrafoVisual {
     private RoutingEngine routingEngine;
     private MainController mainController;
     private SmartGraphVertex<Parada> vertexSelected = null;
+    private Ruta rutaSelected = null;
     private Ruta.Peso criterio = Ruta.Peso.DISTANCIA;
 
     private ContextMenu menuParada;
+
+    public Ruta getRutaSelected() {
+        return rutaSelected;
+    }
 
     public void inicializar(AnchorPane panelPrincipal, MainController mainController){
         this.panelPrincipal = panelPrincipal;
@@ -107,6 +111,12 @@ public class GrafoVisual {
     }
 
     public void getOptimizedPath(SmartGraphVertex<Parada>  vertexOrigen, SmartGraphVertex<Parada>  vertexDestino){
+        if (routingEngine.esGrafoConexo()) {
+            mainController.mostrarResultados(null, null);
+            colorearRutas(null, null);
+            return;
+        }
+
         Parada origen = vertexOrigen.getUnderlyingVertex().element();
         Parada destino = vertexDestino.getUnderlyingVertex().element();
 
@@ -127,22 +137,21 @@ public class GrafoVisual {
         Platform.runLater(this::setVertexSelection);
     }
 
-    public void modificarParada(Parada oldParada, Parada newParada){
-        Vertex<Parada> vertex = getVertex(oldParada);
-
-        vertex = new Vertex<Parada>() {
-            @Override
-            public Parada element() {
-                return newParada;
-            }
-        };
-
+    /*
+    Los vertex tienen una referencia a la parada,
+    por lo que simplemente se debe actualizar el mapa.
+     */
+    public void modificarParada(){
         panelMapa.update();
     }
 
     public void eliminarParada(Parada parada){
-        grafoVisual.removeVertex(getVertex(parada));
-        panelMapa.update();
+        Vertex<Parada> vertex = getVertex(parada);
+
+        if(vertex != null){
+            grafoVisual.removeVertex(vertex);
+            panelMapa.update();
+        }
     }
 
     public void crearRuta(Ruta ruta){
@@ -151,10 +160,10 @@ public class GrafoVisual {
         Platform.runLater(this::setVertexSelection);
     }
 
-    public void modificarRuta(Ruta oldRuta, Ruta newRuta){
-        grafoVisual.removeEdge(getEdge(oldRuta));
-        insertEdge(newRuta);
-        panelMapa.update();
+    public void modificarRuta(Ruta ruta){
+
+        eliminarRuta(ruta);
+        crearRuta(ruta);
 
     }
 
@@ -163,6 +172,25 @@ public class GrafoVisual {
         panelMapa.update();
     }
 
+    public Edge<Ruta,Parada> newEdge(Ruta ruta){
+        return new Edge<>() {
+            @Override
+            public Ruta element() {
+                return ruta;
+            }
+
+            @Override
+            public Vertex<Parada>[] vertices() {
+                Vertex<Parada>[] paradas = new Vertex[2];
+                paradas[0] = newVertex(ruta.getOrigen());
+                paradas[1] = newVertex(ruta.getDestino());
+
+                return paradas;
+            }
+        };
+    }
+
+
     public void insertEdge(Ruta ruta){
         grafoVisual.insertEdge(ruta.getOrigen(),ruta.getDestino(),ruta);
     }
@@ -170,15 +198,19 @@ public class GrafoVisual {
     private Edge<Ruta,Parada> getEdge(Ruta rutaBuscada){
         return grafoVisual.edges()
                 .stream()
-                .filter(edge -> edge.element().equals(rutaBuscada))
+                .filter(edge -> edge.element().getIdRuta() == rutaBuscada.getIdRuta())
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Vertex<Parada> newVertex(Parada parada){
+        return () -> parada;
     }
 
     public Vertex<Parada> getVertex(Parada parada){
         return grafoVisual.vertices()
                 .stream()
-                .filter(vertex -> vertex.element().equals(parada))
+                .filter(vertex -> vertex.element().getIdParada() == parada.getIdParada())
                 .findFirst()
                 .orElse(null);
 
@@ -196,10 +228,6 @@ public class GrafoVisual {
         deleteItem.getStyleClass().add("btnParadaMenu");
         deleteItem.setGraphic(Visual.setIcon("/imagenes/eliminar.png"));
 
-        MenuItem reconnectItem = new MenuItem("Reconectar");
-        reconnectItem.getStyleClass().add("btnParadaMenu");
-        reconnectItem.setGraphic(Visual.setIcon("/imagenes/reconnect.png"));
-
         editItem.setOnAction(event -> {
             ParadaService paradaService = new ParadaService();
             Vertex<Parada> actualVertex = (Vertex<Parada>) menuParada.getUserData();
@@ -212,42 +240,46 @@ public class GrafoVisual {
             paradaService.eliminar(actualVertex.element());
         });
 
-        /// Método para reconectar
-//        reconnectItem.setOnAction(event -> {
-//            Vertex<Parada> actualVertex = (Vertex<Parada>) menuParada.getUserData();
-//            crearParada.eliminarParada(false);
-//        });
-
-        menuParada.getItems().addAll(editItem, deleteItem, reconnectItem);
+        menuParada.getItems().addAll(editItem, deleteItem);
 
     }
 
     private void setNodeInteraction() {
-        panelMapa.setVertexDoubleClickAction(graphVertex -> {
-            Platform.runLater(() -> {
-                try {
-                    SmartGraphVertexNode<Parada> smartVertex = (SmartGraphVertexNode<Parada>) graphVertex;
-                    Vertex<Parada> vertex = smartVertex.getUnderlyingVertex();
-                    menuParada.setUserData(vertex);
+        panelMapa.setVertexDoubleClickAction(graphVertex -> Platform.runLater(() -> {
+            try {
+                SmartGraphVertexNode<Parada> smartVertex = (SmartGraphVertexNode<Parada>) graphVertex;
+                Vertex<Parada> vertex = smartVertex.getUnderlyingVertex();
+                menuParada.setUserData(vertex);
 
-                    javafx.geometry.Bounds bounds = smartVertex.localToScreen(smartVertex.getBoundsInLocal());
+                javafx.geometry.Bounds bounds = smartVertex.localToScreen(smartVertex.getBoundsInLocal());
 
-                    if (bounds != null) {
-                        double centerX = bounds.getMinX() + (bounds.getWidth() / 2);
-                        double centerY = bounds.getMinY() + (bounds.getHeight() / 2);
+                if (bounds != null) {
+                    double centerX = bounds.getMinX() + (bounds.getWidth() / 2);
+                    double centerY = bounds.getMinY() + (bounds.getHeight() / 2);
 
-                        menuParada.show(smartVertex.getScene().getWindow(), centerX + 10, centerY);
-                    }
-                }catch (ClassCastException e) {
-                    System.err.println("Error: SmartGraph no devolvió un Node visual esperado.");
+                    menuParada.show(smartVertex.getScene().getWindow(), centerX + 10, centerY);
                 }
-            });
+            }catch (ClassCastException e) {
+                System.err.println("Error: SmartGraph no devolvió un Node visual esperado.");
+            }
+        }));
+
+        panelMapa.setEdgeDoubleClickAction(graphEdge -> {
+            rutaSelected = graphEdge.getUnderlyingEdge().element();
+
+            for (Edge<Ruta, Parada> edge : grafoVisual.edges()) {
+                String css = edge.element().equals(rutaSelected) ? "edge-seleccionada" : "edge-default";
+                panelMapa.getStylableEdge(edge).setStyleClass(css);
+            }
+
+            mainController.onRutaSeleccionada(rutaSelected);
         });
     }
 
     public void sincronizarGrafo() {
         var mapaBackend = Grafo.getInstance().getMap();
 
+        // Se usa try-catch porque SmartGraph lanza excepciones si el nodo o arista ya existe
         for (Parada p : mapaBackend.keySet()) {
             try { grafoVisual.insertVertex(p); } catch (Exception ignored) {}
         }
@@ -262,32 +294,48 @@ public class GrafoVisual {
         }
     }
 
-    /* Nombre: colorearRutas
-       Objetivo: Cambia las clases CSS de las aristas en el SmartGraph
-                para colorear el camino encontrado
-    */
-    public void colorearRutas(ShortestPath principal, ShortestPath alternativa){
+    public void colorearRutas(ShortestPath principal, ShortestPath alternativa) {
         for (Edge<Ruta, Parada> edge : grafoVisual.edges()) {
-            panelMapa.getStylableEdge(edge).setStyleClass("edge-default");
+            Ruta ruta = edge.element();
+            if (ruta.getEventoTrafico() != Ruta.Evento.STANDARD) {
+                colorearSimulacionEventos();
+            } else {
+                panelMapa.getStylableEdge(edge).setStyleClass("edge-default");
+            }
         }
 
         if (alternativa != null && alternativa.getRutasRecorridas() != null) {
             for (Ruta r : alternativa.getRutasRecorridas()) {
-                Edge<Ruta, Parada> edgeGrafico = getEdge(r);
-                if (edgeGrafico != null) {
-                    panelMapa.getStylableEdge(edgeGrafico).setStyleClass("edge-alternativa");
-                }
+                Edge<Ruta, Parada> e = getEdge(r);
+                if (e != null) panelMapa.getStylableEdge(e).setStyleClass("edge-alternativa");
             }
         }
         if (principal != null && principal.getRutasRecorridas() != null) {
             for (Ruta r : principal.getRutasRecorridas()) {
-                Edge<Ruta, Parada> edgeGrafico = getEdge(r);
-                if (edgeGrafico != null) {
-                    panelMapa.getStylableEdge(edgeGrafico).setStyleClass("edge-principal");
-                }
+                Edge<Ruta, Parada> e = getEdge(r);
+                if (e != null) panelMapa.getStylableEdge(e).setStyleClass("edge-principal");
             }
         }
     }
+
+    public void aplicarEventoArista(Ruta.Evento evento) {
+        if (rutaSelected == null) return;
+        Grafo.getInstance().aplicarEvento(rutaSelected, evento);
+        colorearSimulacionEventos();
+    }
+
+
+    public void limpiarEventoArista() {
+        if (rutaSelected == null) return;
+        Grafo.getInstance().aplicarEvento(rutaSelected, Ruta.Evento.STANDARD);
+        colorearSimulacionEventos();
+        rutaSelected = null;
+
+        for (Edge<Ruta, Parada> edge : grafoVisual.edges()) {
+            panelMapa.getStylableEdge(edge).setStyleClass("edge-default");
+        }
+    }
+
     public void actualizarMapa() {
         sincronizarGrafo();
         panelMapa.update();
@@ -327,4 +375,5 @@ public class GrafoVisual {
             panelMapa.getStylableEdge(edge).setStyleClass(cssClass);
         }
     }
+
 }
