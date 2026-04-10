@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane styleClass="pane" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.MainController">
+<AnchorPane styleClass="pane" stylesheets="@Estilo.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rutas.redtransporte.controllers.MainController">
     <children>
 
         <ImageView fx:id="menuManager" fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="18.0">
@@ -205,7 +218,7 @@
             </children>
         </VBox>
 
-        <VBox fx:id="panelDatos" prefWidth="324.0" spacing="20" style="-fx-padding: 20;" styleClass="vboxMenuOpc" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="21.0">
+        <VBox fx:id="panelDatos" layoutY="28.666666666666664" prefWidth="290.0" spacing="20" style="-fx-padding: 20;" styleClass="vboxMenuOpc" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="25.0">
             <children>
                 <HBox alignment="CENTER_LEFT">
                     <children>
@@ -214,40 +227,75 @@
                         <Label style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-background-radius: 10; -fx-padding: 2 10; -fx-font-size: 11px;-fx-font-weight: bold;" text="Recomendada" />
                     </children>
                 </HBox>
-                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
-                    <children>
-                        <Label fx:id="lblDescripcionOptima" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" text="Seleccione origen y destino" />
-                        <Separator style="-fx-opacity: 0.4;" />
-                        <HBox alignment="CENTER" spacing="10">
-                            <children>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"> <children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Distancia" />
-                                    <Label fx:id="lblDistanciaOptima" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/distance.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Tiempo" />
-                                    <Label fx:id="lblTiempoOptimo" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/time.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Costo" />
-                                    <Label fx:id="lblCostoOptimo" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/price.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Transbordo" />
-                                    <Label fx:id="lblTransbordoOptimo" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/transbordo.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
+            <ScrollPane>
+               <content>
+                      <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
+                          <children>
+                              <Label fx:id="lblDescripcionOptima" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" text="Seleccione origen y destino" />
+                              <Separator style="-fx-opacity: 0.4;" />
+                              <HBox alignment="CENTER" spacing="10">
+                                  <children>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS"> <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Distancia" />
+                                          <Label fx:id="lblDistanciaOptima" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/distance.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Tiempo" />
+                                          <Label fx:id="lblTiempoOptimo" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/time.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Costo" />
+                                          <Label fx:id="lblCostoOptimo" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/price.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Transbordo" />
+                                          <Label fx:id="lblTransbordoOptimo" prefHeight="18.0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/transbordo.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                  </children>
+                              </HBox>
+                          </children>
+                      </VBox>
+               </content>
+            </ScrollPane>
 
                 <HBox alignment="CENTER_LEFT">
                     <children>
@@ -256,40 +304,76 @@
                         <Label style="-fx-background-color: #EEECFB; -fx-text-fill: #6C63FF; -fx-background-radius: 10; -fx-padding: 2 10; -fx-font-size: 11px;-fx-font-weight: bold;" text="Alterna" />
                     </children>
                 </HBox>
-                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
-                    <children>
-                        <Label fx:id="lblDescripcionAlterna" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" text="-" />
-                        <Separator style="-fx-opacity: 0.4;" />
-                        <HBox alignment="CENTER" spacing="10">
-                            <children>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Distancia" />
-                                    <Label fx:id="lblDistanciaAlterna" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/distance.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Tiempo" />
-                                    <Label fx:id="lblTiempoAlterno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/time.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Costo" />
-                                    <Label fx:id="lblCostoAlterno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/price.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"><children>
-                                    <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Transbordo" />
-                                    <Label fx:id="lblTransbordoAlterno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
-                                        <graphic><ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true"><image><Image url="@../imagenes/transbordo.png" /></image></ImageView></graphic>
-                                    </Label>
-                                </children></VBox>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
+            <ScrollPane>
+               <content>
+                      <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 0);">
+                          <children>
+                              <Label fx:id="lblDescripcionAlterna" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" text="-" />
+                              <Separator style="-fx-opacity: 0.4;" />
+                              <HBox alignment="CENTER" spacing="10">
+                                  <children>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Distancia" />
+                                          <Label fx:id="lblDistanciaAlterna" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/distance.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Tiempo" />
+                                          <Label fx:id="lblTiempoAlterno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/time.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Costo" />
+                                          <Label fx:id="lblCostoAlterno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/price.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                      <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <children>
+                                          <Label style="-fx-font-size: 10px; -fx-text-fill: #999;" text="Transbordo" />
+                                          <Label fx:id="lblTransbordoAlterno" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;" text="—">
+                                              <graphic>
+                                          <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../imagenes/transbordo.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                          </Label>
+                                      </children>
+                              </VBox>
+                                  </children>
+                              </HBox>
+                          </children>
+                      </VBox>
+               </content>
+            </ScrollPane>
 
                 <HBox alignment="CENTER_LEFT">
                     <children>
