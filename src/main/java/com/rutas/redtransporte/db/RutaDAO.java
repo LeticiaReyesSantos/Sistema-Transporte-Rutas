@@ -44,7 +44,7 @@ public class RutaDAO {
     }
 
     //Metodo auxiliar para aplicar el principio DRY (Dont repeat Yourself), centraliza la inyeccion de parametros compartidos
-    private void setParametrosBase(PreparedStatement ps, Ruta ruta) throws SQLException {ps.setInt(1, ruta.getIdRuta());
+    private void setParametrosBase(PreparedStatement ps, Ruta ruta) throws SQLException {
         ps.setString(1, ruta.getNombreRuta());
         ps.setInt(2, ruta.getOrigen().getIdParada());
         ps.setInt(3, ruta.getDestino().getIdParada());
